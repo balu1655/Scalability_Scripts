@@ -1,0 +1,78 @@
+﻿(**************************************
+Script Name: RCA_Scalability-Sched_ConfirmAppointment
+Description: This script verifies the functionality for re-scheduling single appointment from the Add Appointment Plus screen through firstavailable. 
+Author: BS075655
+Date of creation: 19-AUG-2020
+***************************************)
+
+global credentials, patientData, pauseDuration, iterationNumber
+//global credentials, patientData, pauseDuration, iterationNumber, registrationData, sutUsername, sutPassword,sutcredentials,citrixShortcut
+Run "RCA_Sched_Scalability_DataLoader"
+//Login Information
+set userName to the first item of credentials
+set password to the second item of credentials
+set domain to the third item of credentials
+set rcaPath to the fourth item of credentials
+
+put  patientData.patientName into patientName
+put item 1 of patientData.appointmentName into appointmentType
+put  patientData.confirmedDate into confirmedDate
+put patientData.confirmedTime into confirmedTime
+put item 1 of patientData.rescheduleReason into rescheduleReason
+
+Try
+	"OpenApplication".subRulesoftheRoad
+	Run_Window.openApplication rcaPath
+	waitfor 500, "RCRegGeneral/Label_LoginScreenRevenueCycle"
+	Millennium_Login_window.LogIntoRevenuCycleApps userName,password,domain
+	Run "RevenueCycleCore".SubSelectUserExperience "Acute Ambulatory"
+	waitfor 500, "ConvoIcons/Icon_Search"
+	"RCRegSearch".selectOptionSearchBy "Appointments"
+	"RCRegGeneralWorkflow".searchAndSelectPatient patientName
+	//To Reschedule an Appointment
+	click (WaitFor:30,Image:"RevCycleViewMaximize",SearchRectangle:("MiscScreenUtilities").Screen_Part("TopRightQuadrant"))	
+	"FutureAppointments".subSelectRightClickOptionsOnAppt  confirmedDate,confirmedTime,appointmentType,"Confirmed","Reschedule Appointment"
+	WaitFor 60,Text: "Locations",SearchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant")
+	WaitFor 30,Text:"Reschedule Reason", EnableAggresivetextextraction:On,EnhanceLocalContrast:On ,SearchRectangle:"MiscScreenUtilities".Screen_Part("VerticalMiddle")	
+	"AAP_EnterInformation".subSelectRescheduleReason rescheduleReason
+	Set the SearchRectangle to ("MiscScreenUtilities".Screen_Part ("BottomHalf"))
+	click imageLocation(Text:"Reason Comments")+(0,30)
+	TypeText "rescheduled"
+	Click imageName:"AAP_EnterInformation/button_FirstAvailableEnabled",SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"), WaitFor:70
+	//WaitFor 30, ImageName:"Scalability_Captures/RCAFirstAvailable",SearchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant")
+	WaitFor 30, ImageName: "Scalability_Prep_Captures/FirstAvailableTimes",SearchRectangle:("MiscScreenUtilities").Screen_Part("VerticalMiddle")
+	//To select the first available slot
+	//If slots found
+	if ImageFound(Text:appointmentType,SearchRectangle:ImageRectangle(Image:"Scalability_Prep_Captures/FirstAvailableTimes") + (-550,75,-360,610))
+		Click Text:"Appointments",HotSpot:(680,30),Waitfor:90,SearchRectangle:("MiscScreenUtilities").Screen_Part("TopHalf")+((290,30),(390,260))
+		Click Image:"Scalability_Captures/Button_Enabled_Select",SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"), WaitFor:30
+		WaitFor 70, Text:"Pending Confirmation",SearchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant")
+		#Details on Pending Confirmation Screen
+		Log ("Confirm the appointment to the date and time selected ")
+		put "AAP_PendingConfirmation".funReadPendingConfirmationDetails("Date",appointmentType) into confirmedDate
+		Log confirmedDate
+		put "AAP_PendingConfirmation".funReadPendingConfirmationDetails("Patient Arrival Time:",appointmentType)into confirmedTime
+		Log confirmedTime
+		If imagefound(Text:"Encounter Type",SearchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"), WaitFor:20)then
+			Click ImageLocation(Text:"Encounter Type",SearchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"), WaitFor:20)+(-10,20)
+		Else
+			Log "No Enconter selection is required"
+		End if
+		Click Text:"Confirm",SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"), WaitFor:70
+		WaitFor 40, text:"Past Cancellations by Patient",EnableAggresivetextextraction:on,EnhanceLocalContrast:On
+		Run "RevenueCycleCore".subExit_RevenueCycle
+		Log "RevenueCycle is closed"
+	else
+		WaitFor 20, ImageName:"Scalability_Captures/Nosuggestedtimeswerefound",SearchRectangle:("MiscScreenUtilities").Screen_Part("VerticalMiddle")
+		Click ImageName:"Scalability_Captures/Btn_Cancel_FA",SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")
+		Click ImageName:"AAP_EnterInformation/button_Cancel"
+		WaitFor 40, text:"Past Cancellations by Patient",EnableAggresivetextextraction:on,EnhanceLocalContrast:On
+		Run "RevenueCycleCore".subExit_RevenueCycle
+		Log "RevenueCycle is closed"
+	END IF
+	catch Exception
+	Run KillApplications
+	//RCRegGeneralWorkflow.closeAllApps
+	LogError Exception
+End Try
+

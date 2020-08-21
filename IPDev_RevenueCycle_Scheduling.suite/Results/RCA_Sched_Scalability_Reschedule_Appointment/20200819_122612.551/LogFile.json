@@ -1,0 +1,53 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_Reschedule_Appointment.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 12:26:12.566 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 12:26:13.769 +0530",
+				"message": "Using local data",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 12:26:13.846 +0530",
+				"message": "((domain:\"ablgmprep\", password:\"system\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle\\\\RevenueCycle.exe\", userName:\"system\"))",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 8,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_subrulesoftheroad",
+				"timestamp": "2020-08-19 12:26:25.914 +0530",
+				"scriptName": "OpenApplication.script",
+				"message": "Unable to Find Image (TEXT:\"Rules of the road\") within 10.00 seconds. Text might be too low contrast to detect.",
+				"image": "(TEXT:\"Rules of the road\")",
+				"handlerLine": 2,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_subrulesoftheroad",
+				"timestamp": "2020-08-19 12:26:49.104 +0530",
+				"message": "Rules of the road not found",
+				"scriptName": "OpenApplication.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"message": "(Duration:\"50.326\", Errors:\"1\", Exceptions:\"0\", StartTime:\"2020-08-19 12:26:12 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_Reschedule_Appointment.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 12:27:02.922 +0530"
+			},
+		{
+				"message": "Execution Time 0:00:50 RCA_Sched_Scalability_Reschedule_Appointment.script",
+				"identifier": "ABORTED",
+				"timestamp": "2020-08-19 12:27:02.985 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 12:26:12.593 +0530"
+}

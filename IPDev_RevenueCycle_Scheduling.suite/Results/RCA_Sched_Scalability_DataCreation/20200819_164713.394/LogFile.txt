@@ -1,0 +1,6 @@
+﻿2020-08-19 16:47:13.409 +0530	START		Running RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:47:13.644 +0530	Log		(Location1:"FirstLoc", Location2:"SecondLoc")	5	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:47:13.659 +0530	Log		1	6	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:47:13.705 +0530	Log		IT	10	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:47:14.301 +0530	EndTestCase		(Duration:"0.875", Errors:"0", Exceptions:"0", StartTime:"2020-08-19 16:47:13 +0530", Successes:"1", TestCase:"RCA_Sched_Scalability_DataCreation.script", Warnings:"0")
+2020-08-19 16:47:14.501 +0530	SUCCESS		Execution Time 0:00:00 RCA_Sched_Scalability_DataCreation.script

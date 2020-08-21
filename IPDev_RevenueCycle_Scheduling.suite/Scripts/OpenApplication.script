@@ -1,0 +1,217 @@
+﻿/////////////////////////////////
+//Handlers to open applications and interact with Millennium login
+/////////////////////////////////
+
+/////////////////////////////////
+//Subfunction to open applications from Citrix box
+/////////////////////////////////
+to subCitrixOpenApplication strApplication, strUsername, strPassword, strDomain
+	//strApplication: String containing application name (spaces allowed) (REQUIRED)
+	//strUsername: String containing username for Millennium login (REQUIRED)
+	//strPassword: String containing password for associated username (REQUIRED)
+	//strDomain: String containing domain name for Millennium login (REQUIRED)
+	//strTemp: String containing application name with no spaces for searching purposes
+	
+	log "Call handler: subCitrixOpenApplication"
+	
+	//Find application and open login window
+	typetext f4, f4, controlKey & "a"
+	put strApplication into strTemp
+	delete every occurrence of " " from strTemp
+	typetext strTemp&".lnk",return
+	
+	//Enter credentials to login window
+	repeat until imagefound(text:"Username",searchrectangle:("MiscScreenUtilities".funTopLeftRectangle),waitfor:5)
+		"MiscScreenUtilities".subRefreshScreen 1
+	end repeat
+	
+	click text:"Username",hotspot:(25,25),searchrectangle:("MiscScreenUtilities".funTopLeftRectangle)
+	typetext strUsername, tabkey
+	TypeText strPassword
+	typetext tabkey, strDomain, return
+	
+	//Check for general login error message
+	if imagefound(text:"Authorization",searchRectangle:("MiscScreenUtilities".funCenterRectangle),waitfor:10) or if imagefound(text:"Error",searchRectangle:("MiscScreenUtilities".funCenterRectangle),waitfor:10)
+		logerror "General error occurred when attempting to log in"
+		typetext return
+		Exit all
+	end if
+	
+	//Check for security failure or invalid login message
+	if imagefound(text:"Security Failure",searchRectangle:("MiscScreenUtilities".funCenterRectangle),waitfor:10) or if imagefound(text:"Invalid Username and/or Password",searchRectangle:("MiscScreenUtilities".funCenterRectangle),waitfor:10)
+		logerror FoundImageInfo().text && "when attempting login"
+		click text:"Cancel",searchRectangle:("MiscScreenUtilities".funBottomRightRectangle)
+		Exit all
+	end if
+	
+	//Check for Application has stopped working error
+	if imagefound(text:"has stopped working",searchRectangle:("MiscScreenUtilities".funCenterRectangle),waitfor:10)
+		logerror strApplication && "has stopped working error occurred"
+		put everyimagelocation(text:"Close the program",searchRectangle:("MiscScreenUtilities".funCenterRectangle)) into lstTempEveryImageLoc
+		repeat 2 times
+			click the last item of lstTempEveryImageLoc
+			wait 1
+		end repeat
+		Exit all
+	end if
+	
+	//Validation that application has opened
+	repeat until imagefound(text:strApplication,searchrectangle:("MiscScreenUtilities".funTopRectangle),waitfor:60)
+		if repeatindex() > 5
+			logwarning strApplication && "taking over 5 minutes to open."
+		else if repeatindex() > 15
+			logerror strApplication && "has failed to open."
+			exit all
+		end if
+	end repeat
+	
+	logsuccess strApplication && "successfully opened"
+	
+	log "End handler: subCitrixOpenApplication"
+	
+end subCitrixOpenApplication
+
+
+/////////////////////////////////
+//Subfunction to open applications from VDM desktop
+//Variables:
+//strApplication - String containing application name (spaces allowed) (REQUIRED)
+//strApplicationPath - String containing file path on SUT to .exe for target application (REQUIRED)
+//strUsername - String containing username for Millennium login (REQUIRED)
+//strPassword - String containing password for associated username (REQUIRED)
+//strDomain - String containing domain name for Millennium login (REQUIRED)
+//NOTE: Old version.  Going forward use subOpenApplication, subLogin, and(or) subPassAvailableExperiencesDialog
+/////////////////////////////////
+to subVDMOpenApplication strApplication, strApplicationPath, strUsername, strPassword, strDomain, strExperience
+	Log "Call handler: subVDMOpenApplication"
+	
+	//Run .exe for application
+	Set WindowsRunDialogSearch To (text: "Run", searchRectangle:("MiscScreenUtilities").funBottomLeftRectangle, waitFor: 2 seconds)
+	
+	Repeat One Time And Continue While not ImageFound(WindowsRunDialogSearch)
+		If repeatIndex() > 5 
+			LogError "Did not detect windows run dialog.  Failing script."
+			Exit All
+		End If
+		
+		TypeText windowskey, "r"
+	End Repeat
+	
+	// After run has been found, type the shortcut one more time.  This is because there have been situations where the run dialog loses focus
+	TypeText windowskey, "r"
+	Typetext strApplicationPath
+	
+	TypeText returnKey
+	
+	//Enter credentials to login window
+	Click text:"Username",hotspot:(0,25),searchRectangle:("MiscScreenUtilities").Screen_Part("Center"),waitfor:120
+	TypeText strUsername, tabkey
+	TypeText strPassword
+	if strDomain equals "solm64" then
+		TypeText returnKey
+	else
+		TypeText tabkey, strDomain, return
+	end if
+	
+	// The Available Experiences dialog MIGHT show up.  This subfunction will either click through it or do nothing. 
+	subPassAvailableExperiencesDialog(strExperience)
+	subValidateApplicationOpened(strApplication)
+	
+	Log "End handler: subVDMOpenApplication"
+	
+end subVDMOpenApplication
+
+/////////////////////////////////
+(*Function that will not assume an experience and seperates the application validation
+strApplicationPath - String containing file path on SUT to .exe for target application (REQUIRED)
+strUsername - String containing username for Millennium login (REQUIRED)
+strPassword - String containing password for associated username (REQUIRED)
+strDomain - String containing domain name for Millennium login (REQUIRED)
+ *)
+to subOpenApplication strApplicationPath, strUsername, strPassword, strDomain
+	//Run .exe for application
+	Set WindowsRunDialogSearch To (text: "Run",textdifference:1,validWords:"Run", searchRectangle:("MiscScreenUtilities").funBottomLeftRectangle, waitFor: 2 seconds)
+	
+	Repeat One Time And Continue While not ImageFound(WindowsRunDialogSearch)
+		If repeatIndex() > 5 
+			LogError "Did not detect windows run dialog.  Failing script."
+			Exit All
+		End If
+		TypeText windowskey, "r"
+	End Repeat
+	
+	// After run has been found, type the shortcut one more time.  This is because there have been situations where the run dialog loses focus
+	TypeText windowskey, "r"
+	TypeText strApplicationPath
+	TypeText returnKey
+	
+	//Enter credentials to login window
+	if imagefound(120,text:"Username",textDifference: 1,searchRectangle:("MiscScreenUtilities").Screen_Part("Center")) then
+		click foundimagelocation()+(0,25)
+		TypeText strUsername, tabkey
+		TypeText strPassword
+		if strDomain equals "solm64" then
+			TypeText returnKey
+		else
+			TypeText tabkey, strDomain, return
+		end if
+	else 
+		logerror "Login window is not displaying"
+	end if
+	
+end subOpenApplication
+
+
+/////////////////////////////////
+// Subfunction that gets through the Available Experience dialog.  In situations where the Available Experience dialog does
+// not show, this subfunction will do nothing (except for waits to attempt to find the dialog).
+/////////////////////////////////
+To subPassAvailableExperiencesDialog strExperience
+	//Available Experience dialog selection
+	Set AvailableExperienceSearchRectangle To ("MiscScreenUtilities".funTopRectangle)
+	Set AvailableExperiencesSearch To (text: "Available Experiences", searchrectangle: AvailableExperienceSearchRectangle, waitfor: 5 seconds)
+	Repeat One Time And Continue While not ImageFound(AvailableExperiencesSearch)
+		If repeatIndex() equals 12
+			Log "Did not detect Available Experiences dialog"
+			Exit Repeat
+		End If
+		
+		TypeText windowsKey, upArrow
+	End Repeat
+	
+	If ImageFound (AvailableExperiencesSearch)
+		// if we have found the Available Experiences Dialog, we want to make sure that we maximize it.  If it has already been maximized from above, then this will do nothing
+		TypeText windowsKey, upArrow
+		Click (Text: strExperience, Textdifference:1, ValidWords: strExperience, searchrectangle:("MiscScreenUtilities".funTopRectangle))
+		Click (Image: "RevCycleOK")
+	End If
+End subPassAvailableExperiencesDialog
+
+
+/////////////////////////////////
+// Subfunction that validates that the assembly has been launched.
+// Parameters:
+//     applicationName: The name of the application that will be looked for on the title bar of the window.
+/////////////////////////////////
+To subValidateApplicationOpened applicationName
+	Repeat Until ImageFound(text:applicationName, searchrectangle:("MiscScreenUtilities".funTopRectangle), waitfor:60)
+		If repeatindex() > 2
+			LogError applicationName && "taking over 5 minutes to open. Failing script."
+			Exit All
+		End If
+	End Repeat
+End subValidateApplicationOpened
+
+/////////////////////////////////
+// Subfunction that handles the rules of the road 
+/////////////////////////////////
+to subRulesoftheRoad
+	if imagefound(10,text:"Rules of the road",searchrectangle:("MiscScreenUtilities".Screen_Part ("TopHalf"))) then
+		click (imagename:"button_RulesoftheRoadOk",SearchRectangle:("MiscScreenUtilities".Screen_Part ("BottomHalf")))
+		waitfor 120,"icon_Windows10CloudBox"
+	else
+		Log "Rules of the road not found"
+	end if
+end subRulesoftheRoad
+
+

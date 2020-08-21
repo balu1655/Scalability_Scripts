@@ -1,0 +1,108 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "START",
+				"timestamp": "2020-08-20 08:43:53.882 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:54.615 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 5,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:54.649 +0530",
+				"message": "(Locations:(Location1:\"FirstLoc\", Location2:\"SecondLoc\"), ResourceList1:(ResourceName1:\"FirstResource\", ResourceName2:\"SecondResource\", ResourceName3:\"ThirdResource\", ResourceName4:\"FourthResource\"))",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:54.684 +0530",
+				"message": "2",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 9,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:54.713 +0530",
+				"message": "4",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 10,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:55.161 +0530",
+				"message": "(Location1:\"FirstLoc\", Location2:\"SecondLoc\")",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 12,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:55.192 +0530",
+				"message": "locations ++++++++++++++++++",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 13,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:55.238 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 14,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:55.271 +0530",
+				"message": "(ResourceName1:\"FirstResource\", ResourceName2:\"SecondResource\", ResourceName3:\"ThirdResource\", ResourceName4:\"FourthResource\")",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 15,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:55.302 +0530",
+				"message": "reslist+++++++++++++++++++++++++",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 16,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:55.333 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 17,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 08:43:55.363 +0530",
+				"message": "(Locations:(Location1:\"FirstLoc\", Location2:\"SecondLoc\"), ResourceList1:(ResourceName1:\"FirstResource\", ResourceName2:\"SecondResource\", ResourceName3:\"ThirdResource\", ResourceName4:\"FourthResource\"))",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 20,
+				"identifier": "Log"
+			},
+		{
+				"message": "(Duration:\"2.065\", Errors:\"1\", Exceptions:\"0\", StartTime:\"2020-08-20 08:43:53 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_DataCreation.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-20 08:43:55.963 +0530"
+			},
+		{
+				"message": "Invalid Property Cannot set global property 'KEYS' -- Execution Time 0:00:02 RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "FAILURE",
+				"timestamp": "2020-08-20 08:43:56.150 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-20 08:43:53.898 +0530"
+}

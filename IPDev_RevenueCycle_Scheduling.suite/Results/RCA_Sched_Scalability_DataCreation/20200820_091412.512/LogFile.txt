@@ -1,0 +1,24 @@
+﻿2020-08-20 09:14:12.527 +0530	START		Running RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:12.746 +0530	Log		1	5	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:12.777 +0530	Log		(Locations:(Location1:"FirstLoc", Location2:"SecondLoc"), ResourceList1:(ResourceName1:"FirstResource", ResourceName2:"SecondResource", ResourceName3:"ThirdResource", ResourceName4:"FourthResource"))	6	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:12.809 +0530	Log		2	9	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:12.841 +0530	Log		4	10	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:12.874 +0530	Log		(Location1:"FirstLoc", Location2:"SecondLoc")	12	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:12.935 +0530	Log		locations ++++++++++++++++++	13	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:12.968 +0530	Log		1	14	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:12.999 +0530	Log		(ResourceName1:"FirstResource", ResourceName2:"SecondResource", ResourceName3:"ThirdResource", ResourceName4:"FourthResource")	15	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:13.030 +0530	Log		reslist+++++++++++++++++++++++++	16	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:13.093 +0530	Log		1	17	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:13.139 +0530	Log		(Locations:(Location1:"FirstLoc", Location2:"SecondLoc"), ResourceList1:(ResourceName1:"FirstResource", ResourceName2:"SecondResource", ResourceName3:"ThirdResource", ResourceName4:"FourthResource"))	20	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:13.306 +0530	Log		FirstLoc	25	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:13.475 +0530	Log		FirstResource	28	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:13.622 +0530	Log		SecondResource	28	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:13.753 +0530	Log		ThirdResource	28	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:13.888 +0530	Log		FourthResource	28	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:14.064 +0530	Log		SecondLoc	25	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:14.199 +0530	Log		FirstResource	28	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:14.333 +0530	Log		SecondResource	28	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:14.465 +0530	Log		ThirdResource	28	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:14.606 +0530	Log		FourthResource	28	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:14:15.199 +0530	EndTestCase		(Duration:"2.655", Errors:"0", Exceptions:"0", StartTime:"2020-08-20 09:14:12 +0530", Successes:"1", TestCase:"RCA_Sched_Scalability_DataCreation.script", Warnings:"0")
+2020-08-20 09:14:15.404 +0530	SUCCESS		Execution Time 0:00:02 RCA_Sched_Scalability_DataCreation.script

@@ -1,0 +1,92 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_Reschedule_Appointment.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 12:24:31.459 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 12:24:32.668 +0530",
+				"message": "Using local data",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 12:24:32.737 +0530",
+				"message": "((domain:\"ablgmprep\", password:\"system\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle\\\\RevenueCycle.exe\", userName:\"system\"))",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 8,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_subrulesoftheroad",
+				"timestamp": "2020-08-19 12:24:44.987 +0530",
+				"scriptName": "OpenApplication.script",
+				"message": "Unable to Find Image (TEXT:\"Rules of the road\") within 10.00 seconds. Text might be too low contrast to detect.",
+				"image": "(TEXT:\"Rules of the road\")",
+				"handlerLine": 2,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_subrulesoftheroad",
+				"timestamp": "2020-08-19 12:24:45.133 +0530",
+				"message": "Rules of the road not found",
+				"scriptName": "OpenApplication.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 12:24:45.630 +0530",
+				"message": "[windowsKey]r",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 2,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 12:24:46.712 +0530",
+				"message": "[controlKey]a",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 3,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 12:24:47.771 +0530",
+				"message": "[deleteKey]",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 4,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 12:24:48.786 +0530",
+				"scriptName": "Run_Window.script",
+				"identifier": "typetext",
+				"handlerLine": 5
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 12:24:49.814 +0530",
+				"message": "[returnKey]",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 6,
+				"identifier": "typetext"
+			},
+		{
+				"message": "(Duration:\"42.454\", Errors:\"1\", Exceptions:\"0\", StartTime:\"2020-08-19 12:24:31 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_Reschedule_Appointment.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 12:25:13.946 +0530"
+			},
+		{
+				"message": "Execution Time 0:00:42 RCA_Sched_Scalability_Reschedule_Appointment.script",
+				"identifier": "ABORTED",
+				"timestamp": "2020-08-19 12:25:14.008 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 12:24:31.490 +0530"
+}

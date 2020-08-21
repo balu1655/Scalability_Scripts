@@ -1,0 +1,5 @@
+﻿2020-08-19 13:08:34.977 +0530	START		Running RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 13:08:36.449 +0530	Log		Using local data	6	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 13:08:36.530 +0530	Log		((domain:"ablgmprep", password:"system", rcaPath:@"C:\\Program Files\\Cerner\\RevenueCycle\\RevenueCycle.exe", userName:"system"))	8	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 13:11:09.779 +0530	EndTestCase		(Duration:"154.779", Errors:"1", Exceptions:"0", StartTime:"2020-08-19 13:08:34 +0530", Successes:"0", TestCase:"RCA_Sched_Scalability_ConfirmAppointment.script", Warnings:"0")
+2020-08-19 13:11:09.842 +0530	ABORTED		Execution Time 0:02:34 RCA_Sched_Scalability_ConfirmAppointment.script

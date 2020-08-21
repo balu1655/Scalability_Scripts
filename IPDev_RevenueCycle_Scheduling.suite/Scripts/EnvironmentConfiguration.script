@@ -1,0 +1,39 @@
+﻿/////////////////////////////////
+// Handlers for dealing with environment related configuration, such as the location of the assembly, domain, etc.
+/////////////////////////////////
+
+/////////////////////////////////
+// Handler to get the environment configuration.  This handler will look up the parameters that are passed to the command line through
+// the runscript batch file.  If there are no parameters specified or the test script was not started through the runscript batch file, then
+// the returned value will be populated based on the information that was passed into this handler.
+//
+// Parameters:
+// environmentKey: The key to the environment to look up data for.  Supported values are "jenkins" and "default".
+//
+// Returns a container that has the following properties:
+//     loginDetails: Container with properties for the different information necessary for logging in.
+//         loginDetails.application: The name of the application to run.
+//         loginDetails.applicationPath: The path to the application specified in loginDetails.application.  
+//                                                This path will contain enough information for windows explorer to open the assembly.
+//         loginDetails.username: The name of the user to use when performing authentication to the loginDetails.application specified.
+//         loginDetails.password: The password of the user to use when performing authentication to loginDetails.application specified.
+//         loginDetails.domain: The domain to use when performing authentication to loginDetails.application specified.
+// 
+to funGetEnvironment environmentKey
+	log "Call handler: funGetEnvironmentConfiguration"
+	if environmentKey is "jenkins" then
+		log "Using Jenkins Environment Configuration"
+		log "End handler: funGetEnvironmentConfiguration"
+		set jenkins to JSONValue(file ResourcePath("Utilities/Environments.json")).ecosystem.jenkins
+		return jenkins
+	else 
+		log "Using Default Environment Configuration"
+		log "End handler: funGetEnvironmentConfiguration"
+		set default to JSONValue(file ResourcePath("Utilities/Environments.json")).ecosystem.default
+		return default
+	end if 
+	
+end funGetEnvironment
+
+
+

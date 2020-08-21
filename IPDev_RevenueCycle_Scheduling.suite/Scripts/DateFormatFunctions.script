@@ -1,0 +1,100 @@
+﻿//Convert the date from Mon Dec 31, 2018 to MM/dd/yyyy
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to return the date format in MM/dd/yyyy
+//Variables: datDate
+//datDate  :Enter the date format in Day Mon Date, yyyy(Mon Dec 31, 2018)
+//////////////////////////////////////////////////////////////////////////////////////////
+to funReturnMMddyyy datDate
+	log "Call handler: funReturnMMddyyy"
+	split datDate by " "
+	delete item 1 of datDate
+	put item 2 of datDate into date
+	put item 3 of datDate into year
+	put item 1of datDate into month
+	put month&&date&&year into formatteddatDate
+	put asDate(formatteddatDate) into datFormat
+	convert datFormat to date
+	split datFormat by "/"
+	put item 2 of datFormat into date
+	put item 3 of datFormat into year
+	put item 1 of datFormat into month
+	put year(formatteddatDate) into year
+	put month&"/"&date&"/"&year into formattedFinalDatDate
+	return formattedFinalDatDate
+	log "End handler:  funReturnMMddyyy"
+end funReturnMMddyyy
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to return the date format in MM/dd/yyyy
+//Variables: datDate
+//datDate  :Enter the date format in yyyy-mm-day (2000/01/15)
+//////////////////////////////////////////////////////////////////////////////////////////
+to funReturnBasicDate datDate
+	log "Call handler: funReturnBasicDate"
+	set datDate to today
+	split datDate by "-"
+	Set Month to item 2 of datDate
+	Set Date to  item 3 of datDate
+	Set Year to item 1 of datDate
+	Set formatteddate to month&"/"&date&"/"&year
+	return formatteddate
+	log "End handler:  funReturnBasicDate"
+	
+end funReturnBasicDate
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to return the date format in Day, MonthName Date(Ex:-Wed, January 31)
+//Variables: datDate
+//datDate  :Enter the date format in mm/dd/yyyy(Ex:-04/14/2019)
+//////////////////////////////////////////////////////////////////////////////////////////
+to funReturnDayMonthNameDate datDate
+	log "Call handler: funReturnDayMonthNameDate"
+	put  datDate into tmpDate
+	put  datDate into tmpDateA
+	convert tmpDate to long simple date
+	convert tmpDateA to abbreviated date 
+	put item 1 of tmpDateA&","&&tmpDate into resultDate
+	log "Required Formatted Date--"&&resultDate//Wed, October 5th
+	return resultDate
+	log "End handler:  funReturnDayMonthNameDate"
+end funReturnDayMonthNameDate
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to return the date format in Day, MonthName Date(Ex:-Wed Oct 10, 2018)
+//Variables: datDate
+//datDate  :Enter the date format in Day Mon Date, yyyy(mm/dd/2019)
+//////////////////////////////////////////////////////////////////////////////////////////
+to funReturnDayMonthNameDateYear datInputDate
+	log "Call handler: funReturnDayMonthNameDateYear"
+	put item 3 of dateitems( datInputDate) into finalDate
+	convert datInputDate to abbreviated date 
+	put  item 2 of datInputDate into monthString
+	put  item 2 of datInputDate into monthNameString
+	split monthNameString by " "
+	put item 2 of monthNameString into monthName
+	replace monthString in datInputDate with monthName&&finalDate
+	replace the first comma in datInputDate with " "
+	return datInputDate
+	log "End handler:  funReturnDayMonthNameDateYear"
+end funReturnDayMonthNameDateYear
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to return the date format in MM/dd/yyyy
+//Variables: datDate
+//datDate  :Enter the date format in Date Month yyyy(10 April 2019)
+//////////////////////////////////////////////////////////////////////////////////////////
+to funReturnMMddyyyFromDateMonthyyyy datInputDate
+	log "Call handler: funReturnMMddyyyFromDateMonthyyyy"
+	convert datInputDate to dateItems
+	put item 1 of datInputDate into year
+	put item 2 of datInputDate into month
+	put item 3 of datInputDate into date
+	//put year(formatteddatDate) into year
+	put month&"/"&date&"/"&year into formattedFinalDatDate
+	return formattedFinalDatDate
+	log "End handler:  funReturnMMddyyyFromDateMonthyyyy"
+end funReturnMMddyyyFromDateMonthyyyy

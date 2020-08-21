@@ -1,0 +1,246 @@
+﻿//////////////////////////////////////////////////////////////////////////////////////////////////////// 
+//Appointments Perspective   
+//FutureAppointments-It will load after clicking on Future Appointments tab
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function returns coordinates of appointment type row if exists if not returns False based on 3 inputs
+//Intilal State: Maximize Future Appointments tab
+//Variables: datDate: Required variable, Provide date which should be verified (Required)
+//              tmeTime: Required variable, Provide time which will be verified based on date (Required)
+//              strCellValue: Required variable, Provide any input cell value (Required)
+//              strCellValue2: Optional variable, Provide any input cell value (Optional)
+////////////////////////////////////////////////////////////////////////////////////////////////////////-gr043002
+
+To funApptCoordinates datDate,tmeTime,strCellValue, strCellValue2
+	Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("TopLeftQuadrant")
+	put ImageRectangle(Text:"Past Cancellations by Patient",validCharacters:"*") into futureAppts //Sets searchrectangle for first row based on "Past Cancellations by Patient" text
+	put futureAppts+(-18,70,1400,73) into diff
+	Set the searchRectangle to (diff) //Sets search rectangle to first row
+	put 19 into diff2 // Height of each row
+	Repeat until ReadText(diff) is empty
+		put item 1 of diff into Xaxis
+		put item 2 of diff into Yaxis
+		if ImageFound((text:datDate),(text:datDate,DPI:131),(text:datDate,DPI:250),(text:datDate,DPI:200),(text:datDate,DPI:150),(text:datDate,enablecontrast:On,Enableaggressivetextextraction:on,ignoreSpaces:on),(text:datDate,ignorespaces:yes),(text:datDate,enablecontrast:On,Enableaggressivetextextraction:on,ignoreSpaces:on,DPI:131))
+			if ImageFound((text:tmeTime,Enableaggressivetextextraction:on),(text:tmeTime,DPI:131))
+				if ImageFound((text:strCellValue,Enableaggressivetextextraction:on,validCharacters:"*",enablecontrast:On),(text:strCellValue,DPI:131))
+					if strCellValue2 is not empty
+						if ImageFound((text:strCellValue2,validCharacters:"*",ignoreSpaces:On,validWords:"*",enablecontrast:On))
+							set the SearchRectangle to empty
+							return diff
+						end if
+					else
+						set the SearchRectangle to empty
+						return diff
+					end if
+				end if
+			end if
+		end if
+		put diff+(0,diff2,0,diff2) into diff 
+		Set the searchRectangle to (diff)
+	End Repeat
+	set the SearchRectangle to empty
+	return False
+End funApptCoordinates
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+(*Subfunction takes the values passed in (Date, Time, Appointment Type, etc.. ) in order to determin if the correct values appear on the same row within the Future Appointemts tab.  
+
+Variables:
+gridDetails: Container for the grid details data.
+gridDetails.strAppointmentType: A container for the Appointment Type name. [REQUIRED]
+gridDetails.Date: A container for the Date. [REQUIRED]
+gridDetails.Time: A container for the Time. [REQUIRED]
+
+Note: 
+The following handler can be used to pass in the variables for compairison:
+     readPendingConfirmApptDetails
+
+Works either minimized or maximized
+*)
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+to funSelectFutureAppointment datDate,tmeTime,strLocation,strApptType
+	log "Call handler: funSelectFutureAppointment"	
+	
+	//Locates the tab image and then proceeds to ensure tab is in focus
+	If Imagefound(60,imagename:"FutureAppointments/label_FutureAppointments")
+		set srtabImage to foundimageinfo().imagerectangle
+		if imagefound (60,imagename:"RevenueCycleCore/icon_close",SearchRectangle:srtabImage+(0,0,22,0))
+			log "Future Appointments Tab is in focus"
+			set HeaderRow to imagerectangle(text:"Past Cancellations by Patient")+(62,40,1208,55)
+		else 
+			click (item 1 of srtabImage,item 2 of srtabImage)
+			if imagefound (60,limagename:"RevenueCycleCore/icon_TabClose",SearchRectangle:srtabImage+(0,0,22,0))
+				
+				log "Future Appointments Tab is in focus"
+				set HeaderRow to imagerectangle(text:"Past Cancellations by Patient")+(62,40,1208,55)
+			else 
+				log "Tab is Not Selected: Future Appointments Tab" 
+				exit Handler
+			End If
+		End If	
+	End If
+	
+	Set srApptType to imagerectangle(text:"Appointment Type",SearchRectangle:HeaderRow)+(-5,18,45,24)
+	Set srDate to imagerectangle(text:"Date",SearchRectangle:HeaderRow)+(-5,18,75,27)
+	
+	Set srTime to imagerectangle(text:"Time",SearchRectangle:HeaderRow)+(-8,18,32,27)
+	Set srLocation to imagerectangle(text:"Location",SearchRectangle:HeaderRow)+(-8,18,78,27)
+	Set LocationOffset to imagelocation(imagename:"RevenueCycleCore/icon_HeaderBreak",SearchRectangle:srLocation)
+	put item 1 of LocationOffset into item 3 of srLocation
+	Set srEncounter to imagerectangle(text:"Encounter",SearchRectangle:HeaderRow)+(-5,18,50,27)
+	Set EncounterOffset to imagelocation(imagename:"RevenueCycleCore/icon_HeaderBreak",SearchRectangle:srEncounter)
+	put item 1 of EncounterOffset into item 3 of srEncounter
+	
+	
+	
+	Set RowFound to False
+	Set srListReset to ("srApptType":srApptType,"srDate":srDate,"srlocation":srLocation,"srTime":srTime)
+	Repeat until RowFound = True 
+		If imagefound(text:datDate,SearchRectangle:(srDate),TextStyle:"text") then
+			Log "Found Date"
+			If imagefound(text:tmeTime,SearchRectangle:(srTime), TextStyle:"text") then
+				Log "Found time"
+				If imagefound(text:strApptType,SearchRectangle:(srApptType), TextStyle:"text")
+					Log "Found Appointment Type"
+					If imagefound(text:strLocation,SearchRectangle:(srLocation), TextStyle:"text") then
+						Set RowFound to True
+						set EncounterID to readtext(srEncounter)
+					else
+						Set srApptType to srApptType+(0,19,0,19)
+						Set srDate to srDate+(0,19,0,19)
+						Set srlocation to srlocation+(0,19,0,19)
+						Set srTime to srTime+(0,19,0,19)
+						Set srEncounter to srEncounter +(0,19,0,19)
+					End If
+				else
+					Set srApptType to srApptType+(0,19,0,19)
+					Set srDate to srDate+(0,19,0,19)
+					Set srlocation to srlocation+(0,19,0,19)
+					Set srTime to srTime+(0,19,0,19)
+					Set srEncounter to srEncounter +(0,19,0,19)
+				End If
+			else
+				Set srApptType to srApptType+(0,19,0,19)
+				Set srDate to srDate+(0,19,0,19)
+				Set srlocation to srlocation+(0,19,0,19)
+				Set srTime to srTime+(0,19,0,19)
+				Set srEncounter to srEncounter +(0,19,0,19)
+			End If
+		else
+			Set tableend to readtext(srApptType)
+			Set srApptType to srApptType+(0,19,0,19)
+			Set srDate to srDate+(0,19,0,19)
+			Set srlocation to srlocation+(0,19,0,19)
+			Set srTime to srTime+(0,19,0,19)
+			Set srEncounter to srEncounter +(0,19,0,19)
+		End If
+		If tableend is empty
+			return False
+			//exit handler
+		End If
+		
+	End Repeat
+	Return (RowFound:RowFound,DateCoords:srDate,Encounter:EncounterID)
+	
+	log "End handler: funSelectFutureAppointment"
+end funSelectFutureAppointment
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//Function performs right click on appointment time and selects action from menu drop down
+//Intilal State: Maximize Future Appointments tab
+//Variables: datDate: Provide date which should be verified (Required)
+//              tmeTime: Provide time which will be verified based on date (Required)
+//              strCellValue: Provide any input cell value (Required)
+//              strCellValue2: Optional variable, Provide any input cell value (Optional)
+//              strMenuOption: Provide menu action to perform on menu drop down (Optional)
+////////////////////////////////////////////////////////////////////////////////////////////////////////-gr043002
+
+To subSelectRightClickOptionsOnAppt datDate,tmeTime,strCellValue,strCellValue2,strMenuOption
+	set outputText to funApptCoordinates(datDate,tmeTime,strCellValue,strCellValue2)
+	set the SearchRectangle to outputText
+	put item 1 of outputText into Xaxis
+	put item 2 of outputText into Yaxis
+	RightClick [(Xaxis+100),(Yaxis+10)]
+	Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("LeftHalf")
+	Repeat until ImageFound("FutureAppointments/label_modifyAppointment")
+		set the SearchRectangle to outputText
+		RightClick [(Xaxis+10),(Yaxis+10)]
+		Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("LeftHalf")
+	end repeat
+	if strMenuOption is not empty then
+		Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("LeftHalf")
+		put ImageRectangle("FutureAppointments/label_modifyAppointment") into apptMenu //Assuming "Modify Appointment" is the first option in menu dropdown and sets SearchRectangle
+		set the SearchRectangle to (apptMenu+(-8,-10,130,280))
+		click((text:strMenuOption),(text:strMenuOption,ignoreSpaces:yes),(text:strMenuOption,DPI:131),(text:strMenuOption,textDifference:1),(text:strMenuOption,textDifference:2))
+	end if
+	set the SearchRectangle to empty
+End subSelectRightClickOptionsOnAppt
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function performs single click on appointment time and selects action from drop down menu
+//Intilal State: Maximize Future Appointments tab
+//Variables: datDate: Provide date which should be verified (Required)
+//              tmeTime: Provide time which will be verified based on date (Required)
+//              strCellValue: Provide any input cell value (Required)
+//              strMenuOption: Provide menu action to perform on menu drop down (Optional)
+////////////////////////////////////////////////////////////////////////////////////////////////////////-MC043487
+To subSelectToolbarOnAppt datDate,tmeTime,strCellValue,strMenuOption
+	log "Call handler: subSelectToolbarOnAppt"
+	set outputText to funApptCoordinates(datDate,tmeTime,strCellValue)
+	set the SearchRectangle to outputText
+	click text:tmeTime
+	set the SearchRectangle to empty
+	click "RevenueCycleCore/icon_ToolbarMenu"
+	if strMenuOption is not empty then
+		Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("RightHalf")
+		put ImageRectangle(text:"Modify Appointment",validCharacters:"*") into apptMenu //Assuming "Modify Appointment" is the first option in menu dropdown and sets SearchRectangle
+		set the SearchRectangle to (apptMenu+(-38,-10,130,250))
+		click(text:strMenuOption,validCharacters:"*")
+		set the SearchRectangle to empty
+	end if
+	log "End handler: subSelectToolbarOnAppt"
+End subSelectToolbarOnAppt
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to maximize/minimize Future Appointments tab
+//Intilal State: Appointments view should be displayed
+//Variables: state: Provide max or min value to set the state of future appointments tab (Required)
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+To SubMaxMinFutureAppointmentsTab state
+	log "Call handler: SubMaxMinFutureAppointmentsTab"
+	if state is equal to "max"
+		if(imagefound("RevenueCycleCore/Icon_Maximize")) then
+			Set the SearchRectangle to ImageRectangle("FutureAppointments/label_FutureAppointments")+(1200,-20,1400,20)
+			Click "RevenueCycleCore/Icon_Maximize"
+		end if
+	end if
+	if state is equal to "min"
+		if(imagefound("RevenueCycleCore/Icon_Minimize")) then
+			Set the SearchRectangle to ImageRectangle("FutureAppointments/label_FutureAppointments")+(1400,-20,RemoteScreenSize().x,20)
+			Click "RevenueCycleCore/Icon_Minimize"
+		end if
+	end if	
+	set the SearchRectangle to ()
+	log "End handler: SubMaxMinFutureAppointmentsTab"
+End SubMaxMinFutureAppointmentsTab
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function piggybacks off of subSelectRightClickOptionsOnAppt above to open Appointment History. Once open the function will readtext on encounter number and trim to just the number and put into a Gloabl variable.
+//Global Variable: Global strReadEnc
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////JF054127
+To subDisplayAppointmentHistoryReadTextEncounterNum
+	Click (Text: "Display Appointment History",TextDifference:1)
+	Wait Until Imagefound(Text: "Appointment Information",ValidWords: "Appointment Information")
+	put ReadText(ImageRectangle(text:"Appointment History",TextDifference:1,validWords:"Appointment History",contrast:On,contrastcolor:White,ContrastTolerance: 96)+[-55,400,46,426]) into strReadEnc
+	Delete Every occurrence of "Encounter" in strReadEnc
+	//Delete the first 5 "0" in strReadEnc
+	set strReadEnc to trimAll(strReadEnc,"(")
+	set strReadEnc to trimAll(strReadEnc,")")
+	Put strReadEnc into Global strReadEnc
+	//Close the Display Appointment History dialog
+	Click Text: "Close", searchrectangle: ("MiscScreenUtilities".funBottomRightRectangle)
+End subDisplayAppointmentHistoryReadTextEncounterNum
+

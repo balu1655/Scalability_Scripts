@@ -1,0 +1,44 @@
+{
+	"Locations": {
+		"Location1": "FirstLoc",
+		"Location2": "SecondLoc",
+		"Location3": "ThirdLoc",
+		"Location4": "FourthLoc",
+		"Location5": "FifthLoc"
+	},
+	"ResourceList1": {
+		"ResourceName1": "FirstResource",
+		"ResourceName2": "SecondResource",
+		"ResourceName3": "ThirdResource",
+		"ResourceName4": "FourthResource",
+		"ResourceName5": "FifthResource"
+	},
+	"ResourceList2": {
+		"ResourceName1": "6",
+		"ResourceName2": "7",
+		"ResourceName3": "8",
+		"ResourceName4": "9",
+		"ResourceName5": "10"
+	},
+	"ResourceList3": {
+		"ResourceName1": "11",
+		"ResourceName2": "12",
+		"ResourceName3": "13",
+		"ResourceName4": "14",
+		"ResourceName5": "15"
+	},
+	"ResourceList4": {
+		"ResourceName1": "16",
+		"ResourceName2": "17",
+		"ResourceName3": "18",
+		"ResourceName4": "19",
+		"ResourceName5": "20"
+	},
+	"ResourceList5": {
+		"ResourceName1": "21",
+		"ResourceName2": "22",
+		"ResourceName3": "23",
+		"ResourceName4": "24",
+		"ResourceName5": "25"
+	}
+}

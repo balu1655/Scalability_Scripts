@@ -1,0 +1,32 @@
+﻿//Script to block 80% slots
+
+
+set Data to JSONValue(file ResourcePath("Scalability_Scripts/LocationsAndResources.json"))
+
+Log number of keys in Data.Locations
+Log number of keys in Data.ResourceList1
+
+(*log data.Locations
+log "locations ++++++++++++++++++"
+log number of items in Data.Locations
+log Data.ResourceList1
+log "reslist+++++++++++++++++++++++++"
+log number of items in Data.ResourceList1
+
+
+log Item 1 of Data*)
+
+//repeat for 20 locations
+repeat number of keys in Data.Locations times
+	put "Data.Locations.Location"&repeatIndex() into LocationName
+	Log value of LocationName
+	put "Data.ResourceList"&repeatIndex() into RL
+	repeat number of keys in value of RL times
+		Put RL&".ResourceName"&repeatIndex() into ResourceName
+		Log value of ResourceName
+	end repeat
+end repeat
+
+
+
+

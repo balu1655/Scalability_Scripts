@@ -1,0 +1,720 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Appointments Perspective   
+//Add Appointment Plus tab - Enter Information section
+//Note:Kindly maximize your view before consuming below handler[Double click on Add Appointment Plus Tab to maximize]
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to validate that the Add Appointment Plus tab displays and then selects the tab in the minimized state
+//Variables:
+//All variables are hard coded since they are formal names in the application. Changing these names will result in new code development.
+//texted used: "Add Appointment Plus"
+///////////////////////////////////////////////////////////////////////////
+to SubAAPTabLaunched
+	Log "Call handler: SubAAPTabLaunched"
+	//Validate Add Appt Plus is launched
+	If imagefound(text:"Add Appointment Plus", validwords: "Add Appointment Plus", searchRectangle:("MiscScreenUtilities".funBottomRectangle),waitfor:30)
+	then
+		//Expand the Add Appointment Plus tab
+		doubleclick (text: "Add Appointment Plus")
+	Else
+		if not imagefound(text:"Add Appointment Plus", validwords: "Add Appointment Plus", searchRectangle:("MiscScreenUtilities".funBottomRectangle),waitfor:30)
+			log "Add Appt Plus tab has not launched."
+		end if
+	End If
+	Log "End handler: SubAAPTabLaunched"
+	
+end SubAAPTabLaunched
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Subfunction to verify a warning banner on the Enter Information section and an option button to dismiss the banner
+//
+//Variables:
+//strWarningBanner: A string containing the Warning banner message. [REQUIRED]
+//strButtonOption: A string containing what action to take (i.e. Click "Dismiss") [REQUIRED]
+//bolValidateRequirement: is the boolen set to False and if true will capture the requirement's evidence [INTERNAL]
+//
+//Note: 
+//This is to validate a banner on the Enter Information section
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+to subWarningBanner strWarningBanner, strButtonOption
+	log "Call handler:  subWarningBanner"
+	
+	//Initialize Internal Variables
+	Set bolValidateRequirement to "False"
+	
+	//Find the location of the 'Enter Information' header and store it in strEnterInfoLoc
+	put imagelocation(Text: "Enter Information", validwords: "Enter Information") into strEnterInfoLoc
+	
+	//Find the Warning Banner
+	If imagefound(text: strWarningBanner, validCharacters: strWarningBanner, EnableAggressiveTextExtraction:"True", TextDifference: 2,searchrectangle:(strEnterInfoLoc+(-100,-5), strEnterInfoLoc+(900, 130))) then
+		//If the banner displays then click the desired button
+		Click (text: strButtonOption, validwords: strButtonOption, searchRectangle:("MiscScreenUtilities").Screen_Part("RightHalf"))
+		set bolValidateRequirement to "True"
+	Else
+		Log "The following banner does not display - " & strWarningBanner
+		set bolValidateRequirement to "False"
+	End If
+	log "End handler: subWarningBanner"
+end subWarningBanner
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Subfunction to verify and select 'here' on the 'Patient dismissal designation' banner on the Enter Information section
+
+//Variables:
+//strDimissedMessage: the patient dismissal message. [REQUIRED]
+//bolValidateRequirement: is the boolen set to False and if true will capture the requirement's evidence [INTERNAL]
+//
+//Note: 
+//This is to validate that the 'Patient has Dismissed Patient designations.' banner for the Add Appointment Plus tab
+//This is on the Enter Information section
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+To subPatientDismissalBanner strDimissedMessage
+	log "Call handler:  subPatientDismissalBanner"
+	
+	//Initialize Internal Variables
+	Set bolValidateRequirement to "False"
+	
+	If imagefound(text: strDimissedMessage, validCharacters: strDimissedMessage, EnableAggressiveTextExtraction:"True", TextDifference: 2,searchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf")) then
+		//If the banner displays then click the "Here" link
+		Click (text: "here", validwords: "here", searchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"))
+		set bolValidateRequirement to "True"
+	Else
+		Log "The following banner does not display - " & strDimissedMessage
+		set bolValidateRequirement to "False"
+	End If
+	log "End handler: subPatientDismissalBanner"
+End subPatientDismissalBanner
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to verify the actual Patient Dismissal dialog displays and the columns in the table
+
+//Variables:
+//The column headers are hard coded here since a redesign of the table will require an update to this handler.
+//
+//Note: 
+//This is to validate the actual 'Patient Dismissal' dialog
+//Uses the following handlers:
+//HandlerHelpers >> function textRectangle
+//Uses the following image Collection: dialog_PatientDismissal
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+To funPatientDismissalDialog
+	log "Call handler: funPatientDismissalDialog"
+	
+	//Initialize the Column Headers for the Dismissal dialog
+	Set headerList to "Facility,Building,Nurse,Provider,Dismissed,Reinstate,Reason,Action,Notification"
+	
+	//Starts with looking for the Patient Dismissals dialog
+	If imagefound(text: "Patient Dismissals", validwords: "*", searchrectangle:("MiscScreenUtilities".Screen_Part ("LeftHalf"))) 
+	then
+		//Repeats through the header list
+		repeat for each header in headerList
+			set headerTopLeft to imageLocation("AAP_EnterInformation/dialog_PatientDismissal/TopLeft_PatientDismissal")
+			set headerBottomRight to imageLocation("AAP_EnterInformation/dialog_PatientDismissal/BottomRight_PatientDismissal")
+			set headerTextRectangle to "HandlerHelpers".textRectangle(header, (headerTopLeft, headerBottomRight))
+			set columnTopLeft to headerTextRectangle.topLeft +(-5, -20)
+			set columnBottomRight to headerTextRectangle.bottomRight + (30, 700)
+			log readText(columnTopLeft, columnBottomRight)
+		end repeat
+	Else
+		Log "The Patient Dismissals dialog did not display."
+	End If
+	
+	log "End handler: funPatientDismissalDialog"
+	
+End funPatientDismissalDialog
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to select the scheduling path on the top of the Enter Information section to select a path for the search functionality
+//
+//Variable:
+//strSchPath: String value containing the scheduling path to select (i.e. 'Appointment Type', 'Location', or Speciality)  (REQUIRED)
+//Note: 
+//This handler will select the desired scheduling path..
+//////////////////////////////////////////////////////////////////////////
+To subPathSelection strSchPath
+	Log "Call Handler: subPathSelection"
+	
+	If ImageFound(20,(text:"Enter Information", validwords:"Enter Information", searchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf")))
+	then
+		//setting a search rectangle around the drop down
+		set locEnterInfo to FoundImageLocation()
+		//Checks to see if the path sent in is selected if not then it will select it
+		if imagefound(text:strSchPath,SearchRectangle:(locEnterInfo+(-65,-1),locEnterInfo+(850, 63))) then
+			Log "Scheduling Path of "&strSchPath&" is selected"
+		else
+			click locEnterInfo+(0,40)
+			click (text:strschPath,SearchRectangle:(locEnterInfo+(-59,23),locEnterInfo+(129,158)))
+		end if
+	end if
+	set the searchRectangle to empty
+	Log "End Handler: subPathSelection"
+End subPathSelection
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to search for and select your desired appointment type
+//Variable:
+//strAppointment: String value for the Appointment Type search  (REQUIRED)
+//bolOrion: Boolean variable to pass in when toggling the Orion uplift feature toggle
+//Note: This will work for both Appointment Type and Location Scheduling Paths
+///////////////////////////////////////////////////////////////////////////-vr043596,CW030848
+To SubApptSelect strAppointment,bolOrion
+	Log "Call Handler: SubApptSelect"
+	
+	//Toggling between the Existing Add Appointment Plus and the Orion Uplift Add Appointment Plus
+	if bolOrion =true
+		if imagefound(60,imagename:"AAP_EnterInformation/label_AddAppointmentType",searchrectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"))
+			set srApptSearch to FoundImageInfo().imagerectangle+(-48,55,479,227)
+			log srApptSearch
+			click FoundImageLocation()+(10,30)
+			typetext strAppointment,returnkey
+			if imagefound(15,text:strAppointment,SearchRectangle:srApptSearch)
+				click FoundImageLocation()
+			end if
+		end if
+		
+	else
+		//Looks at the left quadrant.  Uses the relative location of Enter Information to click the search area.
+		if imagefound(40,imagename:"AAP_EnterInformation/label_EnterInformation",searchrectangle:("MiscScreenUtilities").Screen_Part("LeftHalf")) then
+			set evAppt to everyimagelocation(text:"Appointment Type",searchrectangle:(foundimageinfo().imagerectangle+(-11,-15,395,185)))
+			
+			if evAppt = 1 then
+				click evAppt +(10,30)
+			else 
+				click item 2 of evAppt+(10,30)
+			end if
+			typetext strAppointment, returnkey 
+		else 
+			logerror "Something is seriously messed up!"
+		end if		
+	end if
+	
+	Log "End Handler: SubApptSelect"
+End SubApptSelect
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to search for and select your desired location(s)
+//Variable:
+//lstLocation: List values for the locations for location search.    (REQUIRED)
+//Note: This only works when Enter Information section is minimized.  
+//Note: If searching for a location group, just put the location group name.  it will be selected and the locations added to the selected location area
+//Note: User preference of Scheduling - Do not automatically slect all available locations is checked.  No locations will be selected when the Add Locations section is displayed
+///////////////////////////////////////////////////////////////////////////
+To subLocationSelect lstLocation,bolOrion,bolAutoSelect
+	Log "Call Handler: subLocationSelect"	
+	if bolOrion=True then
+		if imagefound(25,imagename:"AAP_EnterInformation/label_AddLocations",SearchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf")) then
+			set srLocSearch to FoundImageLocation()+(10,30)
+			set srLocationResults to FoundImageInfo().imagerectangle+(-49,65,528,185)
+		else if imagefound(25,imagename:"AAP_EnterInformation/label_AddLocations",SearchRectangle:("MiscScreenUtilities").Screen_Part("VerticalMiddle")) then
+			set srLocSearch to FoundImageLocation()+(10,30)
+			set srLocationResults to FoundImageInfo().imagerectangle+(-49,65,528,185)
+		else 
+			logerror "Unable to location the Add Location Search section"
+		end if
+		
+		repeat with each item of lstLocation
+			click srLocSearch
+			typetext controlKey,"a"
+			typetext item repeatindex() of lstLocation,returnKey
+			if imagefound(text:item repeatindex() of lstLocation,SearchRectangle:srLocationResults)
+				click FoundImageLocation()
+			else
+				logerror "Location Search did not return the location:"&&item repeatindex() of lstLocation
+			end if
+			
+		end repeat
+		
+	else
+		if imagefound((text:"Enter Information",searchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"))) then
+			Set srEnterInfo to FoundImageLocation()
+			Set locationsearchresultSR to (srEnterInfo+(-53,129),srEnterInfo+(617,433))
+			repeat with each item locationitem of lstLocation
+				doubleclick (srEnterInfo+(0,101))
+				typetext controlKey&"a"
+				typetext locationitem&returnKey
+				click (text:locationitem,SearchRectangle:locationsearchresultSR)
+			end repeat
+		end if
+	end if
+	
+	set the searchRectangle to empty
+	Log "End Handler: subLocationSelect"
+End subLocationSelect
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to search for the Protocol icon prior to the desired appointment type in the Enter Information section. 
+//
+//Variable:
+//strAppointment: String containing the desired appointment type  (REQUIRED)
+//bolValidateRequirement: is the boolen set to False used in the test script for requirement validation [INTERNAL]
+//
+//Note: 
+//Uses the image collction: AAP_EnterInformation>img_ProtocolIcon
+//////////////////////////////////////////////////////////////////////////
+to subLocateProtocolIcon strAppointment
+	Log "Start Handler: subLocateProtocolIcon"
+	
+	//Initialize Internal Variables
+	Set bolValidateRequirement to "False"
+	
+	//Puts the location of the Appointment Type name and uses the 2nd instance as the location for Appointment Type.  Then uses this for the search rectangle
+	put everyimagelocation(Text:strAppointment, validwords: strAppointment) into apptLoc
+	put item 2 of apptLoc into apptLoc
+	
+	//Looking for the protocol icon prior to the appointment type in the list
+	If imagefound(image:"AAP_EnterInformation/img_ProtocolIcon", searchrectangle:(apptLoc+(-95,-10), apptLoc+(-65,12))) then
+		log "The protocol icon displays prior to the appointment type. Appointment Type Name:  " & strAppointment
+		set bolValidateRequirement to "True"
+	else
+		log "The protocol icon does not display piror to the appointment type. Appointment Type Name:  " & strAppointment
+		set bolValidateRequirement to "False"
+	End If
+	Log "End Handler: subLocateProtocolIcon"
+end subLocateProtocolIcon
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction validates that the word "Protocol" displays after the desired appointment type.
+//
+//Variable:
+//strAppointment: String containing the desired appointment type  (REQUIRED)
+//bolValidateRequirement: is the boolen set to False used in the test script for requirement validation [INTERNAL]
+//
+//Note: 
+// This searches off of the full appointment name. 
+//////////////////////////////////////////////////////////////////////////
+to subLocateProtocolText strAppointment
+	Log "Start Handler: subLocateProtocolText"
+	
+	//Initialize Internal Variables
+	Set bolValidateRequirement to "False"
+	
+	//Puts the location of the Appointment Type name and uses the 2nd instance as the location for Appointment Type.  Then uses this for the search rectangle
+	put everyimagelocation(Text:strAppointment, validwords:strAppointment) into apptLoc
+	put item 2 of apptLoc into apptLoc
+	
+	//Look for the 'Protocol' text after the desired appointment name
+	If imagefound(text:"Protocol", searchrectangle:(apptLoc+(242,-8), apptLoc+(310,12))) then
+		log "The word 'Protocol' is written after the desired appointment type. Appointment Type Name: " & strAppointment
+		set bolValidateRequirement to "True"
+	else
+		log "The word 'Protocol' is NOT written after the desired appointment type. Appointment Type Name:  " & strAppointment
+		set bolValidateRequirement to "False"
+	End If
+	
+	Log "End Handler: subLocateProtocolText"
+end subLocateProtocolText
+
+////////////////////////////////////////////////////////////////////////////////
+//It selects modify reason in Modify Appointment Plus.If modifyreason is blank,it will select the first reason in list.
+//Variables: strModifyReason
+//strModifyReason:Provide required modify reason[Optional]
+////////////////////////////////////////////////////////////////////////////////-MC043487
+To subSelectModifyReason strModifyReason
+	(*Log "Call Handler:subSelectModifyReason"
+	Set the SearchRectangle to ("MiscScreenUtilities".Screen_Part ("BottomHalf"))
+	click imageLocation(Text:"Modify Reason")+(0,30) // Modify Reason is a label that is used to select drop down
+	if strModifyReason is empty then
+		TypeText downArrow &returnKey
+	else
+		set the searchRectangle to( (ImageRectangle(text:"Modify Reason"))+(-10,20,300,125)) // // Modify Reason is a label that is used to select drop down
+		wait 2.0 //Wait until all reasons are loaded
+		Click (Text:strModifyReason,validCharacters:"*",TextDifference:2)		
+	end if
+	set the SearchRectangle to empty
+	log "End handler: subSelectModifyReason"*)
+	Log "Call Handler:subSelectModifyReason"
+	Set the SearchRectangle to ("MiscScreenUtilities".Screen_Part ("BottomHalf"))
+	//click imageLocation(Text:"Modify Reason")+(0,30) // Modify Reason is a label that is used to select drop down
+	if strModifyReason is empty then
+		TypeText downArrow &returnKey
+	else
+		set the searchRectangle to( (ImageRectangle(text:"Modify Reason"))+(-10,-80,300,145)) // // Modify Reason is a label that is used to select drop down
+		Click ImageLocation(text:"ModifyReason",ignoreSpaces:"yes",textDifference:1)+(0,30)
+		wait 2.0 //Wait until all reasons are loaded
+		Click (Text:strModifyReason,validCharacters:"*",TextDifference:2)		
+	end if
+	set the SearchRectangle to empty
+	log "End handler: subSelectModifyReason"
+	
+End subSelectModifyReason
+
+////////////////////////////////////////////////////////////////////////////////
+//It selects reschedule reason in Reschdule Appointment Plus. If reschedulereason is blank,it will select the first reason in list.
+//Variables: strRescheduleReason
+//strRescheduleReason:Provide required Reschedule reason[Optional]
+////////////////////////////////////////////////////////////////////////////////-MC043487
+to subSelectRescheduleReason strRescheduleReason
+	Log "Call Handler:subSelectRescheduleReason"
+	Set the SearchRectangle to ("MiscScreenUtilities".Screen_Part ("BottomHalf"))
+	click imageLocation(Text:"Patient")+(0,30)// Reschedule Reason is a label that is used to select drop down
+	if strRescheduleReason is empty then
+		TypeText downArrow &returnKey
+	else
+		set the searchRectangle to( (ImageRectangle(text:"Reschedule Reason"))+(-20,20,300,120)) // // Reschedule Reason is a label that is used to select drop down
+		wait 2.0 //Wait until all reasons are loaded
+		Click (Text:strRescheduleReason,validCharacters:"*", TextDifference:2)		
+	end if
+	set the SearchRectangle to empty
+	log "End handler: subSelectRescheduleReason"
+end subSelectRescheduleReason
+
+//////////////////////////////////////////////////////////////////////////////
+//function to read the appointment type
+//Variable:strAppointment
+//strAppointment:It will return the Appointment type
+///////////////////////////////////////////////////////////////////////////-vr043596
+to funReadAppt 
+	Log "Call Handler: funReadAppt"
+	Set the SearchRectangle to ("MiscScreenUtilities".Screen_Part ("LeftHalf"))
+	put everyimagelocation(Text:"Appointment Type") into apptLoc
+	put item 2 of apptLoc into apptLoc//Out of two "AppointmentType" strings in screen.Considering the second location of "AppointmentType" which used to set the search rectangle or to click the text box area
+	click apptLoc+(0,30)
+	put readtext(((apptLoc+ (-55,12)),(apptLoc+(800,43)))) into strAppointment
+	set the searchRectangle to empty
+	Log "End Handler: funReadAppt"
+	return strAppointment
+End funReadAppt
+
+
+////////////////////////////////////////////////////////////////////////////////
+//Sub function to enter the Appointment comments in Add Appointment plus view
+//Variables: strComments
+//strComments:Provide comments to be entered
+////////////////////////////////////////////////////////////////////////////////-NS030544
+to subEnterApptComments strComments
+	Log "Call Handler:subEnterApptComments"
+	Set the SearchRectangle to ("MiscScreenUtilities".Screen_Part ("TopHalf"))
+	click((Imagelocation(text:"Comments",EnableAggresivetextextraction:on,EnhanceLocalContrast:On)+(-20,20)))
+	wait 3.0//wait for application to respond
+	typetext strComments
+	Set the SearchRectangle to ()
+	log "End handler: subEnterApptComments"
+end subEnterApptComments
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to find and select the desired order from the Recommended Orders column
+//
+//Variable:
+//listOrderSelection: String value containing the desired order to select  (REQUIRED)
+//Note: 
+//This uses the Recommended Orders header for the search rectangle
+//This handler assumes that if you are using it then an order is to be selected.
+//
+//Currently this handler does not scroll up in the list so the orders must all be visible or in order in 
+//which you scroll down the list in.
+//////////////////////////////////////////////////////////////////////////
+to subRecommendedOrdersSelect lstOrderSelection,bolOrion
+	Log "Call Handler: subRecommendedOrdersSelect"
+	
+	if bolOrion=True
+		if imagefound(30,imagename:"AAP_EnterInformation/label_AddOrders", searchrectangle:("MiscScreenUtilities").Screen_Part("TopHalf")) then
+			set srOrderSection to FoundImageInfo().imagerectangle+(-51,18,561,268)
+			if imagefound(15,imagename:"AAP_EnterInformation/label_RecommendedOrders",SearchRectangle:srOrderSection) then
+				
+				Log "I got it"	
+				
+				repeat with each item of lstOrderSelection
+					if imagefound(text:item repeatindex() of lstOrderSelection,SearchRectangle:srOrderSection)
+						click FoundImageLocation()
+					end if
+				end repeat
+			end if
+			
+		end if	
+	else
+		If imagefound(text: "Recommended Orders", validwords: "Recommended Orders",  searchrectangle:("MiscScreenUtilities").Screen_Part("RightHalf")+((-200,0),(0,0))) then
+			//Sets the search rectangle to the Recommended Orders column
+			Set the searchRectangle to (FoundImageLocation()+(-70,10),FoundImageLocation()+(345, 175))
+			//Search the Recommended Orders list for your order
+			repeat with each item of lstOrderSelection 
+				if imageFound (2, (text:item repeatindex() of lstOrderSelection, ValidWords: lstOrderSelection))
+					//Click the order
+					click (text:item repeatindex() of lstOrderSelection)
+				else
+					LogWarning "The desired Order cannot be found - " & lstOrderSelection
+					Set bolBadData to True
+					Exit repeat
+				end if
+			End Repeat
+		Else 
+			Log "The Recommended Orders column does not display."
+		end if
+	end if
+	
+	
+	
+	//Clearing out the searchRectangle
+	set the searchRectangle to empty
+	
+	Log "End Handler: subRecommendedOrdersSelect"
+	return lstOrderSelection
+end subRecommendedOrdersSelect
+
+//////////////////////////////////////////////////////////////////////////////
+//Function to search for and select a list of orders from the Order search.  Will return a True or False to validate orders are selected.
+//////////////////////////////////////////////////////////////////////////////
+to funSearchOrders lstOrders
+	Log "Call Handler: funSearchOrders"
+	if imagefound(20,imagename:"AAP_EnterInformation/button_OrderSearch",SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")) then
+		set srSelectedOrders to FoundImageInfo().imagerectangle
+		click foundimagelocation()
+	else 
+		LogWarning "Order Search is not available"		
+	end if
+	
+	If imagefound(20,imagename:"AAP_EnterInformation/label_OrderSearch",SearchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant")) then
+		set srOrderSearch to FoundImageInfo().imagerectangle+(25,198,644,479)
+		set clickOrderSearch to FoundImageInfo().ImageLocation+(71,177)
+		if imagefound(20,imagename:"RevenueCycleCore/icon_Search",SearchRectangle:("MiscScreenUtilities").Screen_Part("VerticalMiddle")) then
+			repeat with each item of lstOrders
+				click clickOrderSearch
+				typetext controlKey,"a"
+				typetext backspace
+				wait .5
+				typetext item repeatindex() of lstOrders
+				typetext returnKey
+				click (text:item repeatindex() of lstOrders,SearchRectangle:srOrderSearch,validCharacters:"*")
+			end repeat
+		end if
+	End If
+	
+	Click (imagename:"RevenueCycleCore/button_Submit",SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"))
+	
+	if imagefound(20,imagename:"AAP_EnterInformation/button_OrderSearch",SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")) then
+		set srSelectedOrders to FoundImageInfo().imagerectangle+(-557,26,13,291)
+	else 
+		LogWarning "Order Search did not close correctly"		
+	end if
+	
+	repeat with each item of lstOrders
+		if imagefound(5,text:item repeatindex() of lstOrders,SearchRectangle:srSelectedOrders)
+			set SelectedOrder to True
+		else 
+			set SelectedOrder to False
+			exit repeat
+		end if		
+	end repeat
+	
+	Return SelectedOrder
+	
+	Log "End Handler: funSearchOrders"
+end funSearchOrders
+
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to validate that the word "Required" displays after the desiredorder name from the
+//Recommended Orders column
+//
+//Variable:
+//strOrder: String containing the desired order name [REQUIRED]
+//bolValidateRequirement: is the boolen set to False used in the test script for requirement validation [INTERNAL]
+//
+//Note: 
+//This handler is used when the Enter Information section is minimized.
+//This uses the Recommended Orders header for the search rectangle
+//This handler assumes that if you are using it then the desired order is already found and displays.
+//
+//This handler maybe use with subRecommendedOrderSelect to search for the desired Order
+//////////////////////////////////////////////////////////////////////////
+to subRecommendedOrderLocateRequiredText strOrder
+	Log "Call Handler: subRecommendedOrderLocateRequiredText"
+	
+	//Initialize Internal Variables
+	Set bolValidateRequirement to "False"
+	
+	//Set the search rectangle to the Recommended Orders column
+	Set srRecOrder to imagelocation(text:"Recommended Orders",searchRectangle:("MiscScreenUtilities").Screen_Part("BottomHalf"))
+	Set the SearchRectangle to (srRecOrder+(-74,10),srRecOrder+(350,215))
+	
+	//Puts the location of the desired order name into orderLoc
+	put imagelocation(Text:strOrder, validwords:strOrder) into orderLoc
+	
+	//Look for the 'Required' text after the desired order name
+	If imagefound(text:"Required", searchrectangle:(orderLoc+(180,-12), orderLoc+(600,14))) then
+		log "The word 'Required' is written after the desired order. Order Name: " & strOrder
+		set bolValidateRequirement to "True"
+	else
+		log "The word 'Required' is not written after the desired order. Order Name:  " & strOrder
+		set bolValidateRequirement to "False"
+	End If
+	
+	//Clearing out the searchRectangle
+	set the searchRectangle to empty
+	
+	Log "End Handler: subRecommendedOrderLocateRequiredText"
+	return strOrder
+end subRecommendedOrderLocateRequiredText
+
+
+//////////////////////////////////////////////////////////////////////////////
+//Functions to click the buttons in the enter information section using the subEnterInfoButtons.
+//Note: 
+//The click action functions need to be use to clearly show the in the test scripts
+//Use this handler for when the Enter Information minimized.
+//////////////////////////////////////////////////////////////////////////
+To clickNext
+	subEnterInfoButtons "Next"	
+End clickNext
+
+to clickAddAnotherAppt
+	subEnterInfoButtons "Add Another Appointment"
+end clickAddAnotherAppt
+
+to clickCancel
+	subEnterInfoButtons "Cancel"
+end clickCancel
+
+//Internal use only
+//Subfunction to select the Add Another Appointment, next or Cancel buttons with tab minimized
+//Variable:
+//strAction: String value containing the next action to take (i.e. 'Add Another Appointment' or 'Next')  (REQUIRED)
+
+To subEnterInfoButtons strAction
+	Log "Call Handler: subEnterInfoButtons"
+	if strAction="Next" then
+		click imagename:"AAP_EnterInformation/button_Next",searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")
+	else if strAction="Add Another Appointment"
+		click imagename:"AAP_EnterInformation/button_AddAnotherAppointment",searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")
+	else if strAction="Cancel" then
+		click imagename:"AAP_EnterInformation/button_Cancel",searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")
+	else
+		Throw exception, "Invaild Action"		
+	end if
+	
+	Log "End Handler: subEnterInfoButtons"
+End subEnterInfoButtons
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to select the Save and Add New or the Creat buttons with tab minimized
+//This will work with the buttons enabled or disabled
+//Variable:
+//strNextAction: String value containing the next action to take (i.e. 'Add Another Appointment' or 'Next')  (REQUIRED)
+//strValidateClick: String value that the script will be able to log what was clicked and the next actions (INTERNAL USE)
+//clearLoc: Contains the location of the "Clear" button [INTERNAL]
+//
+//Note: 
+//Use this handler for when the Enter Information minimized.
+//Currently this will not work when the Enter Information tab is maximized as this is not the 'normal' positioning. The gap between the Save and Add New and Create buttons changes between the Clear button when the screen is maximize.
+//////////////////////////////////////////////////////////////////////////
+To subSaveAddNewCreate strNextAction
+	Log "Call Handler: subSaveAddNewCreate"
+	//Iniialize Internal variables
+	Set strValidateClick to ""
+	
+	//Sets the searchrectangle to the Enter Information section
+	Set srEnterInfo to imagelocation(text:"Enter Information",searchRectangle:("MiscScreenUtilities").Screen_Part("BottomLeftQuadrant"))
+	Set the SearchRectangle to (srEnterInfo+(-61,19),srEnterInfo+(872,438))
+	
+	//Find the location of the Clear button
+	set clearLoc to imagelocation(Text:"Cancel", validwords:"Cancel")
+	
+	//Look for the "Clear" button then determine what action to take from there
+	If imagefound(text:"Cancel", validwords: "Cancel") then
+		if strNextAction equal "Add Another Appointment"
+		then
+			//Using the 'Clear' button click the "Save and Add New" button. 
+			//Using this as OCR doesn't read the images and the button changes
+			click (clearLoc+(-103,-40))
+			//Setting a variable to validate what was clicked. The test script will determine how to log			
+			Set strValidateClick to "Add Another Appointment"
+		else 
+			if strNextAction equal "Next"
+				//Using the 'Clear' button click the "Create" button
+				click (clearLoc+(0,-40)) 
+				
+				//Setting a variable to validate what was clicked. The test script will determine how to log
+				Set strValidateClick to "Next"
+			else
+				//Log to verify the tab
+				log "No option is selected as the next move forward point."
+				//Setting a variable to validate what was clicked. The test script will determine how to log
+				Set strValidateClick to "No Click"
+			end if
+		end if
+	End If
+	
+	//Clearing out the searchRectangle
+	set the searchRectangle to empty
+	
+	Log "End Handler: subSaveAddNewCreate"	
+End subSaveAddNewCreate
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function performs single click on appointment time and selects action from drop down menu
+//Intilal State: Default Appointments view
+////////////////////////////////////////////////////////////////////////////////////////////////////////-GR043002
+
+To subMaximizeAddAppointmentPlus
+	set the SearchRectangle to "MiscScreenUtilities".Screen_Part("HorizontalMiddle")
+	Click "AAP_EnterInformation/label_AddAppointmentPIus"
+	wait 2.0//wait until view to load
+	Click "AAP_EnterInformation/label_AddAppointment"
+	wait 2.0//wait until view to load
+	Click "AAP_EnterInformation/label_AddAppointmentPIus"
+	wait 2.0//wait until view to load
+	Click "RevenueCycleCore/Icon_Maximize"
+	set the SearchRectangle to ()
+	wait 3.0 //wait until view to maximize
+End subMaximizeAddAppointmentPlus
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to verify the appointment card has the correct appointment type, orders and locations
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+to funVerifyApptCard strApptType,lstlocations,lstorders
+	Log "Start Handler: funVerifyApptCard"	
+	
+	if imagefound(15,imagename:"AAP_EnterInformation/label_Appt_Card",searchRectangle:("MiscScreenUtilities").Screen_Part("TopRightQuadrant"))
+		set tempsr to FoundImageInfo().ImageRectangle()+(-14,-14,-84,157)
+		log tempsr
+		set tlCard to imagelocation(text:strApptType,searchrectangle:foundimageinfo().imagerectangle+(-14,-8,366,377))+(-75,0)
+		set brCard to imagelocation(imagename:"AAP_EnterInformation/img_appt_card_bottom",SearchRectangle:tempsr)+(467,0)
+		insert tlcard into srCard
+		insert brCard into srcard
+		if imagefound(imagename:"AAP_EnterInformation/label_Appt_Card_Orders",SearchRectangle:srCard)
+			set srOrders to foundimageinfo().imagerectangle
+		end if
+		set srLocations to imagerectangle(imagename:"AAP_EnterInformation/label_Appt_Card_Locations",SearchRectangle:srCard)
+		set srOrders to (item 1 of srOrders,item 2 of srOrders,item 1 of brcard,item 2 of srLocations)
+		set srLocations to (item 1 of srLocations,item 2 of srLocations)
+		insert brCard into srLocations
+	else 
+		logerror "Unable to find the appointment card"
+	end if
+	
+	
+	if lstorders is not empty 
+		repeat with each item of lstorders
+			if imagefound(text:item repeatIndex() of lstorders,SearchRectangle:srOrders)
+				set bolOrder to True
+			else 
+				set bolOrder to False
+				exit repeat
+			end if
+		end repeat
+	else 
+		log "No orders are associated to the appointment"
+		set bolOrder to True
+	end if
+	
+	
+	if lstlocations is not empty
+		repeat with each item of lstlocations
+			if imagefound(text:item repeatindex() of lstlocations,SearchRectangle:srLocations)
+				set bolLocation to True
+			else
+				set bolLocation to False
+				exit repeat
+			end if
+		end repeat
+	else
+		logerror "No locations were passed into funVerifyApptCard"
+		set bolLocation to False
+	end if
+	
+	set VerifyCard to (VerifyLocations:bolLocation,VerifyOrders:bolOrder)
+	return VerifyCard
+	
+	
+	Log "End Handler: funVerifyApptCard"	
+end funVerifyApptCard

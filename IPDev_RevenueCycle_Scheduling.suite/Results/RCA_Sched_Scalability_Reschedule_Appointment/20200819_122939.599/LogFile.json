@@ -1,0 +1,43 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_Reschedule_Appointment.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 12:29:39.613 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 12:29:40.657 +0530",
+				"message": "Using local data",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 12:29:40.720 +0530",
+				"message": "((domain:\"ablgmprep\", password:\"system\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle\\\\RevenueCycle.exe\", userName:\"system\"))",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 8,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_reschedule_appointment",
+				"timestamp": "2020-08-19 12:29:41.043 +0530",
+				"scriptName": "RCA_Sched_Scalability_Reschedule_Appointment.script",
+				"identifier": "Log",
+				"handlerLine": 16
+			},
+		{
+				"message": "(Duration:\"5.974\", Errors:\"1\", Exceptions:\"0\", StartTime:\"2020-08-19 12:29:39 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_Reschedule_Appointment.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 12:29:45.605 +0530"
+			},
+		{
+				"message": "Execution Time 0:00:06 RCA_Sched_Scalability_Reschedule_Appointment.script",
+				"identifier": "ABORTED",
+				"timestamp": "2020-08-19 12:29:45.641 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 12:29:39.628 +0530"
+}

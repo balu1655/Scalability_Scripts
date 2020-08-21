@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<testsuites>
+ <testsuite name="RCA_Sched_Scalability_CheckIn_Appointment_script" package="IPDev_RevenueCycle_Scheduling.suite" timestamp="2020-08-19 12:12:50 +0530"
+ tests="1"  failures="0" errors="0" time="218.755000">
+  <properties>
+   <property name="RunDate" value="2020-08-19 12:12:50 +0530"/>
+   <property name="Status" value="Aborted"/>
+  </properties>
+  <testcase name="RCA_Sched_Scalability_CheckIn_Appointment.script" assertions="1" status="error"  time="218.693">
+    <error type="Exception" message="No Image Found On Screen: &quot;RevenueCycleCore/icon_PatientTracking&quot;" />
+  </testcase>
+ </testsuite>
+</testsuites>

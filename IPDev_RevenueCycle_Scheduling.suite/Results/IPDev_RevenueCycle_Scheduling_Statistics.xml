@@ -1,0 +1,35 @@
+﻿<?xml version="1.0"?>
+<statistics>
+ <script name="RCA_Sched_Scalability_DataCreation">
+  <LastStatus>Success</LastStatus>
+  <NumberOfRuns>72</NumberOfRuns>
+  <NumberOfFails>17</NumberOfFails>
+  <FirstRun>Aug 19, 2020, 4:42:28 PM</FirstRun>
+  <LastRun>Aug 20, 2020, 2:02:04 PM</LastRun>
+  <TotalTimeOnSuccess>165.072001</TotalTimeOnSuccess>
+ </script>
+ <script name="RCA_Sched_Scalability_DataLoader">
+  <LastStatus>Success</LastStatus>
+  <NumberOfRuns>6</NumberOfRuns>
+  <NumberOfFails>0</NumberOfFails>
+  <FirstRun>Aug 19, 2020, 12:34:59 PM</FirstRun>
+  <LastRun>Aug 19, 2020, 12:39:01 PM</LastRun>
+  <TotalTimeOnSuccess>10.342000</TotalTimeOnSuccess>
+ </script>
+ <script name="RCA_Sched_Scalability_ConfirmAppointment">
+  <LastStatus>Success</LastStatus>
+  <NumberOfRuns>2</NumberOfRuns>
+  <NumberOfFails>1</NumberOfFails>
+  <FirstRun>Aug 19, 2020, 8:54:36 AM</FirstRun>
+  <LastRun>Aug 19, 2020, 9:37:13 AM</LastRun>
+  <TotalTimeOnSuccess>285.247000</TotalTimeOnSuccess>
+ </script>
+ <script name="RCA_Sched_Scalability_CheckIn_Appointment">
+  <LastStatus>Failure</LastStatus>
+  <NumberOfRuns>1</NumberOfRuns>
+  <NumberOfFails>1</NumberOfFails>
+  <FirstRun>Aug 19, 2020, 10:23:11 AM</FirstRun>
+  <LastRun>Aug 19, 2020, 10:23:11 AM</LastRun>
+  <TotalTimeOnSuccess>0.000000</TotalTimeOnSuccess>
+ </script>
+</statistics>

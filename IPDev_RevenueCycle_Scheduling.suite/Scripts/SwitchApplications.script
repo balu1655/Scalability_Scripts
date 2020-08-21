@@ -1,0 +1,27 @@
+﻿
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Subfunction to open a new Experience from an open application in any other Experience
+//Variables:
+//strExper - String containing the name of the Experience switching to 
+//num - Number variable for the Item location in the searchrectangle for the experience of choice (The experience is listed twice and also some have Global experiences that are seen as not a Global experience by Eggplant so there are 4. Always select the 2nd US Experience for example Practice Management has two US Experiences and two Global Experiences in the Switch Application dialog, looking at the lineup the num would = 4 because the lineup is like this: Global Practice Management, Practice Management, Global Practice Management, Practice Management) Therefore the 2nd US Experience in this example is 4.
+To subSwitchExperienceswithinApplications strExper, num
+	Log "Call handler: subSwitchExperienceswithinApplications"
+	Click (Text:"File",SearchRectangle:("MiscScreenUtilities".funTopLeftRectangle))
+	MoveTo Text: "Switch Experience"
+	
+	If Imagefound (Text: strExper, SearchRectangle:("MiscScreenUtilities".funTopLeftRectangle))
+		Set AllText to everyImageLocation(Text: strExper,TextDifference:1,SearchRectangle:(209,42,464,400), WaitFor:20)
+		Click Item num of AllText
+		//Validation that application has opened
+		repeat until imagefound(text: "Revenue Cycle" && strExper, searchrectangle:("MiscScreenUtilities".funTopRectangle),waitfor:20)
+			if repeatindex() > 5
+				logwarning "Revenue Cycle" && "taking over 5 minutes to open.", "AAP_PendingConfirmation/encounters_found/icon_encounters_found"
+				
+			else if repeatindex() > 15
+				logwarning "Revenue Cycle" && "has failed to open."
+				exit all
+			end if
+		end repeat	
+	End If
+	Log "End handler: subSwitchExperienceswithinApplication"
+End subSwitchExperienceswithinApplications

@@ -1,0 +1,67 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Creates features.properties file in C:\Users\<youruser>\RevenueCycle\Artemis, disables all features enabled 
+// through bandu and VM args, and enables the provided the features.
+// Example uses:
+// 1. enable only the provided features - 
+//     subEnableFeatures  ("urn:cerner:revenue-cycle:scheduling:feature1", "urn:cerner:revenue-cycle:scheduling:feature2")
+// 2. to disable all features call the handler without any arguments
+//     subEnableFeatures
+//
+// To use this handler C:\update-feature-properties.bat must exist on the SUT.
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+to subEnableFeatures listOfFeatures
+	join listOfFeatures using ","
+	
+	log "Enabling features: " & listOfFeatures
+	
+	TypeText windowsKey & "r"
+	// deleting anything that's in the windows run dialog. 
+	TypeText controlKey & "a"
+	TypeText deleteKey	
+	
+	// launch CMD
+	TypeText "cmd"
+	TypeText returnKey
+	waitFor 60, Image: "WindowsCMD\icon_cmd"
+	
+	// run script
+	TypeText "C:\update-feature-properties.bat "
+	TypeText quote & listOfFeatures & quote
+	TypeText returnKey
+	
+	put imageRectangle("WindowsCMD\icon_cmd") into cmdULRectangle
+	waitFor 120, text: "Updated features.properties", SearchRectangle: ((left(cmdULRectangle)-10, top(cmdULRectangle)), "WindowsCMD\img_cmdBR")
+	
+	TypeText "exit" & returnKey
+	
+end subEnableFeatures
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Handler updates the feature toggle if not exists in RevenueCycle.ini
+//Variable: strFeature - Provide the feature toggle to be updated
+//              strINIFileLocation: Provide .ini file location to update feature toggle
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+to enableFeatureToggle strINIFileLocation,strFeature
+
+	Run_Window.openApplication(strINIFileLocation)
+	waitfor 10,"RCRegPutty/Icon_NotePad" //wait till .ini file opens
+	Run RCRegGeneral.maximizeWindow
+	Click ImageLocation("RCRegPutty/Icon_NotePad")+(30,0)
+	TypeText controlKey & "a"
+	TypeText controlKey & "c"
+	put remoteClipboard() into strValue
+	
+	if strValue does not contain strFeature
+		TypeText controlKey & endKey
+		wait 2.0 //wait for cursor to move to end of file
+		TypeText strFeature
+		wait 2.0 //wait until typing completes
+		TypeText controlKey & "s"
+		wait 2.0 //wait until it saves
+	end if
+	
+	TypeText altKey & F4
+	
+end enableFeatureToggle
+

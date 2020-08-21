@@ -1,0 +1,51 @@
+﻿<?xml version="1.0"?>
+<runHistory script="RCA_Sched_Scalability_CheckIn_Appointment">
+ <run>
+  <RunDate>2020-08-19 10:23:11 +0530</RunDate>
+  <Status>Failure</Status>
+  <Duration>1.270000</Duration>
+  <Errors>1</Errors>
+  <Warnings>0</Warnings>
+  <Exceptions>0</Exceptions>
+  <Successes>0</Successes>
+  <LogFile>20200819_102311.320/LogFile.txt</LogFile>
+  <ReturnValue></ReturnValue>
+  <ErrorMessage>SRUN_BadValue -- Bad value for Object expression.  Looking for an object or script identifier, got &#x27;RCA_Scalability_Data_Loader&#x27;.</ErrorMessage>
+ </run>
+ <run>
+  <RunDate>2020-08-19 10:23:34 +0530</RunDate>
+  <Status>Aborted</Status>
+  <Duration>111.298000</Duration>
+  <Errors>1</Errors>
+  <Warnings>0</Warnings>
+  <Exceptions>1</Exceptions>
+  <Successes>0</Successes>
+  <LogFile>20200819_102334.988/LogFile.txt</LogFile>
+  <ReturnValue></ReturnValue>
+  <ErrorMessage></ErrorMessage>
+ </run>
+ <run>
+  <RunDate>2020-08-19 10:40:04 +0530</RunDate>
+  <Status>Aborted</Status>
+  <Duration>5.250000</Duration>
+  <Errors>1</Errors>
+  <Warnings>0</Warnings>
+  <Exceptions>1</Exceptions>
+  <Successes>0</Successes>
+  <LogFile>20200819_104004.356/LogFile.txt</LogFile>
+  <ReturnValue></ReturnValue>
+  <ErrorMessage></ErrorMessage>
+ </run>
+ <run>
+  <RunDate>2020-08-19 12:12:50 +0530</RunDate>
+  <Status>Aborted</Status>
+  <Duration>218.755000</Duration>
+  <Errors>1</Errors>
+  <Warnings>0</Warnings>
+  <Exceptions>1</Exceptions>
+  <Successes>0</Successes>
+  <LogFile>20200819_121250.886/LogFile.txt</LogFile>
+  <ReturnValue></ReturnValue>
+  <ErrorMessage></ErrorMessage>
+ </run>
+</runHistory>

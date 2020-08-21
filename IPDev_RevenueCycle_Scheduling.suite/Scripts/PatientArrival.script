@@ -1,0 +1,125 @@
+﻿//////////////////////////////////////////////////////////////////////////////
+//Function to verify a passed date in Patient Arrival
+//Date format: needs at least month and day
+//This handler is to interact the date navigation without a current day input
+//"PatientTracking/PatientArrival".funVerifyDatePA(varDate)
+//////////////////////////////////////////////////////////////////////////////
+function funVerifyDatePA varDate
+	set varDate to formattedTime("%B %d, %Y", varDate)
+	set the searchrectangle to "MiscScreenUtilities".Screen_Part("TopLeftQuadrant")
+	set varRectangle to (ImageRectangle(imagename:"PatientTracking/Arrow_Right_Single", waitfor:15) + (30,0,150,0))
+	set the searchrectangle to varRectangle
+	
+	if imageFound(text:varDate, contrast:"off", DPI:"72", EnableAggressiveTextExtraction:"True", waitFor:30) 
+	then
+		set the searchrectangle to empty
+		return true
+	else
+		set the searchrectangle to empty
+		return false
+	end if
+end funVerifyDatePA
+
+//////////////////////////////////////////////////////////////////////////////
+//Command to navigate to desired date in Patient Arrival
+//Date format: any as long as there is M/D/Y
+//This handler is to interact the date navigation without a current day input
+//////////////////////////////////////////////////////////////////////////////
+to subDateNavigationPA varApptDate
+	set the searchrectangle to "MiscScreenUtilities".Screen_Part("TopLeftQuadrant")
+	click ImageLocation("PatientTracking/button_ResetDate")
+	set varRectangle to (ImageRectangle(imagename:"PatientTracking/Arrow_Right_Single", waitfor:15) + (30,0,150,0))
+	set the searchrectangle to varRectangle
+	set varDate to formattedTime("%B %d, %Y", the date)
+	click imageLocation(text:varDate, Contrast:"Off", DPI:"72", EnableAggressiveTextExtraction:"True", waitfor:15)
+	set varDate to formattedTime("%B %Y", varApptDate)
+	add (0,30,80,35) to varRectangle
+	set the searchrectangle to varRectangle
+	
+	repeat until imagefound(text:varDate, contrast:"Off", waitfor:5)
+		if the date is greater than varDate then
+			click imageLocation("PTMonthBackward")
+		else if the date is less than varDate then
+			click imageLocation("PTMonthForward")
+		end if
+	end repeat
+	
+	set varDate to formattedTime("%1d", varApptDate)
+	add (0,30,0,30) to varRectangle
+	repeat 20 times
+		add (0,10,0,10) to varRectangle
+		set the searchrectangle to varRectangle
+		if imagefound(text:varDate, contrast:"Off", EnableAggressiveTextExtraction:"True") then
+			click imageLocation(text:varDate, contrast:"off")
+			exit repeat
+		end if
+	end repeat
+end if
+end subDateNavigationPA
+
+//////////////////////////////////////////////////////////////////////////////
+//Function to search patient
+//This handler searches and selects patient
+//strByValue: Enter the value to be entered in Search By Name (REQUIRED)
+//////////////////////////////////////////////////////////////////////////////
+to searchPersonByValue strByValue
+	//locate the SearchBy text box
+	click imageName:"RevenueCycleCore/icon_Search", waitFor:30,HotSpot:(-10,0),SearchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant")+((0,100),(90,60))
+	//Clear the text box field by ctrl+a and del
+	TypeText controlKey & "a", deleteKey
+	//type patient name and type enter
+	TypeText strByValue
+	TypeText returnKey
+	WaitFor 30, "ConvoLabels/Label_PersonGuarantorSearch"
+	//Maximize the Person Search 
+	Run RCRegGeneral.maximizeWindow 
+	wait 5.0//To wait until the application responds
+	//Load Patient 
+	click "RevenueCycleCore/button_Select"
+	wait 5.0//To wait until the application responds
+end searchPersonByValue
+
+//////////////////////////////////////////////////////////////////////////////
+//fucntion to return the specified row of search rectangle coordinates based on Apppointmenttime and Patient Name/AppointmentType.It wont work if its more than 10 results.It needs enhancement in futurebased on need
+//Varaiables:strApptTime,strPatientorAppt,firstRec,SecRec
+//strApptTime :Enter the Appointmnet confirmed time E.g"04:00 AM"
+//strPatientorAppt:Enter Patient Name/Appointmenttype  E.g "Admitted, pateint","dpappt01"
+//firstRec-Return the x1,y1 coordinates for search rectangle
+//SecRec-Return the x2,y2 coordinates for search rectangle
+//Note: Select Resource also in preference's patient tracking
+///////////////////////////////////////////////////////////////////////////-vr043596
+to funreturnAppointmentDetailsLocation strApptTime,strPatientorAppt
+	Log "Call Handler: funreturnAppointmentDetailsLocation"
+	Repeat 10 times
+		put ReadText(ImageRectangle("PatientTracking/label_PatientTracking")+(5,850,-10,900)) into readTextA
+		Set the SearchRectangle to (ImageRectangle("PatientTracking/label_PatientTracking")+(5,90,30,RemoteScreenSize().y))
+		if strApptTime is among  the items of ("2:00 AM","2:00 PM") then
+			if ImageFound(text:"12:00") then
+				ScrollWheelDown 1
+				set the searchRectangle to (ImageRectangle(text:"12:00")+(-20,20,50,RemoteScreenSize().y))
+			end if
+		end if
+		
+		if ImageFound(text:strApptTime)
+			put (ImageRectangle(text:strApptTime)+(-22,-18,1750,40)) into ptloc
+			Set the SearchRectangle to ptloc
+			if ImageFound((text:strPatientorAppt,EnableAggresivetextextraction:on,EnhanceLocalContrast:On,ignoreSpaces:yes,DPI:131,validCharacters:strPatientorAppt),(text:strPatientorAppt,DPI:200))
+				set the SearchRectangle to ()
+				return ptloc
+			else
+				ScrollWheelDown 4
+			end if
+		else
+			ScrollWheelDown 4
+		end if
+		set the SearchRectangle to ()
+		put ReadText(ImageRectangle("PatientTracking/label_PatientTracking")+(5,850,-10,900)) into readTextB
+		if readTextA is readTextB
+			set the SearchRectangle to ()
+			return False
+		end if
+	End Repeat
+	log "End handler: funreturnAppointmentDetailsLocation"
+end funreturnAppointmentDetailsLocation
+
+

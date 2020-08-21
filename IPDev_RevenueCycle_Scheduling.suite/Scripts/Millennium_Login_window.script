@@ -1,0 +1,350 @@
+﻿//Millennium Login window utilities. 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+(*
+Handler Name:
+   Millennium_LogIn_window.LogIntoMillenniumApps Username, Password, Domain
+
+Log's into any Millennium Application that has the blue Login screen. Allows you to open the application to the initial landing page (Example: PowerChart, hnauser, Bedrok, ect.).
+
+Variables:
+         Username = Username you wish to use for testing. 
+         Password = Password that corresponds with the specified Username being used.
+         Domain = Domain you wish to select for testing. (Example: SOLGM, 1501DEP, 15STPDEP)(Input this data even if the Domain field is already prepopulated)
+
+Expected Result:        
+After executing this handler you should be at the initial landing page for the application you selected.
+
+If your application opened, search/create handlers for the specified application for further testing. Otherwise please investigate to see why the log in failed. 
+*)
+To LogIntoMillenniumApps Username, Password, Domain
+	WaitFor 60, "Millennium_Login_window/Text_CernerMillennium"
+	
+	//Checks for the Username textbox on the Blue Millennium Applications Log on window. If found this will fill out the Username textbox. Logs a warning message to the user if not found. 	
+	If ImageFound("Millennium_Login_window/Textbox_Username") or if ImageFound(10, Text:"Username")
+		Click FoundImageLocation() + (0, 20)
+	End If
+	//Once you have found the correct image or text fill out the Username textbox.
+	TypeText controlKey & "a"
+	TypeText  Username 
+	Wait 1
+	
+	//Tab to the Password textbox. Set logging to silent so password is not shared.
+	TypeText TAB
+	Wait 1
+	
+	//Save the logging level before changing it, so it can be reverted back to previous value.
+	put the ScriptLogging into logLevel	
+	set the ScriptLogging to Silent
+	TypeText Password 
+	set the ScriptLogging to logLevel
+	Wait 1
+	
+	
+	//Checks for the Domain textbox on the Blue Millennium Applications Log on window. 
+	//If textbox is found this will check to see if it is already populated with the domain. 
+	//If populated correctly, it will attempt to log in. If not populated correctly or empty, then the correct domain will be typed into the field. 
+	//The OCR is required to support domains where the domain field cannot be edited. 
+	If ImageFound(2, "Millennium_Login_window/Textbox_Domain")
+		put FoundImageLocation() into domainBox
+		set the SearchRectangle to ((domainBox - (30,-10)), (domainBox + (120,30)))
+		
+		//If the domain text is not found, enter the text.
+		//Second check is for when the domain field is a dropdown as opposed to being dithered.
+		If  ImageFound(text:Domain, validWords:"*", waitFor: 5, DPI:"200")
+			log "Domain field is filled"
+		else If  ImageFound(text:Domain, validWords:"*", waitFor: 5)
+			log "Domain field is filled"
+		else
+			Click FoundImageLocation() + (0, 20)
+			TypeText controlKey & "a"
+			TypeText Domain
+		End If
+		
+		set the SearchRectangle to empty
+	End If
+	
+	//Press the return key to click OK
+	TypeText returnKey
+	
+	
+	//If the Millennium Change Notification dialog is displayed it will click on Acknowledge window.
+	If imagefound(waitfor:10,image:"Millennium_Login_window/Button_Acknowledge") then
+		click FoundImageLocation()
+	End If
+	
+End LogIntoMillenniumApps
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+(*Handler Name:
+Millennium_LogIn_window.LogIntoRevenuCycleApps Username, Password, Domain
+
+Log's into any RevenueCycle Application . Allows you to open the application to the initial landing page (Example: revenueCycle.exe, revenueCycleMaintenance.exe  etc.).
+
+Variables:
+Username = Username you wish to use for testing. 
+Password = Password that corresponds with the specified Username being used.
+Domain = Domain you wish to select for testing. (Example: SOLGM, 1501DEP, 15STPDEP)(Input this data even if the Domain field is already prepopulated)
+
+Expected Result:        
+After executing this handler you should be at the initial landing page for the application you selected.
+*)
+To LogIntoRevenuCycleApps Username, Password, Domain
+	//Checks for the Username textbox on the Blue Millennium Applications Log on window. If found this will fill out the Username textbox. Logs a warning message to the user if not found. 	
+	If ImageFound("Millennium_Login_window/Textbox_Username")
+	then
+		Click FoundImageLocation()+ (0, 20)
+	else if ImageFound(10, Text:"Username") 
+	then
+		click FoundImageLocation() + (0, 20)
+	else 
+		LogWarning "The Username textbox could not be found. Please investigate the images and text being used. Add more as needed."
+	End If
+	//Once you have found the correct image or text fill out the Username textbox.
+	TypeText controlKey & "a"
+	TypeText Username
+	Wait 1
+	
+	//Checks for the Password textbox on the Blue Millennium Applications Log on window. If found this will fill out the Password textbox. Logs a warning message to the user if not found. 	
+	If ImageFound("Millennium_Login_window/Textbox_Password")
+	then
+		Click FoundImageLocation() + (0, 20)
+	else if ImageFound(Text:"Password")
+		Click FoundImageLocation() + (0, 20)
+	else
+		LogWarning "The Password textbox could not be found. Please investigate the images and text being used. Add more as needed."
+	End If
+	//Once you have found the correct image or text fill out the Password textbox.
+	TypeText controlKey & "a"
+	TypeText Password
+	Wait 1
+	
+	//Checks for the Domain textbox on the Blue Millennium Applications Log on window. If empty textbox is found this will fill out the Domain textbox. If not empty then the Domain is already populated.
+	If ImageFound("Millennium_Login_window/Textbox_Domain_revCycleApp") 
+	then
+		set domainAvailable to ReadText(ImageRectangle("Millennium_Login_window/Textbox_Domain_revCycleApp")+(3,20,70,30),DPI:200,EnhancedLocalContrast:on)
+		log domainAvailable
+		if domainAvailable equal to Domain then
+			log "Domain field is filled"
+		else
+			Click FoundImageLocation()+(5,25)
+			TypeText controlKey & "a"
+			TypeText Domain
+			Wait 1
+		end if 
+	End If
+	
+	//If the OK button is found then click the Ok button to Log In to the Application the user selected. 
+	If ImageFound("Millennium_Login_window/Button_OK")
+	then
+		doubleClick FoundImageLocation()
+	else if ImageFound(10, Text:"OK")
+	then
+		Click FoundImageLocation()
+	else 
+		LogWarning "The OK Button could not be found. Investigate the Images and Text being used. Add more as needed."
+	End If
+	//If the Millennium Change Notification dialog is displayed it will click on Acknowledge window.
+	If imagefound(waitfor:10,image:"Millennium_Login_window/Button_Acknowledge") then
+		click FoundImageLocation()
+	End If
+End LogIntoRevenuCycleApps
+
+
+
+
+//Millennium Login window utilities. 
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+(*
+Handler Name:
+   Millennium_LogIn_window.OpenApplication_In_Citrix_Or_Local ApplicationLaunch, Application, Username, Password, Domain
+
+Log's into any Millennium Application that has the blue Login screen either through Local applications or through Citrix applications. Allows you to open the application to the initial landing page (Example: PowerChart, hnauser, Bedrock, ect.) whether the automated test is being run with local applications or with Citrix applications.
+
+Variables: (These variables can be put into the JSON file or hard coded)
+         Username = Username you wish to use for testing to launch the selected application. 
+         Password = Password that corresponds with the specified Username being used to launch the selected application.
+         Domain = Domain you wish to select for testing. (Example: SOLGM, 1501DEP, 15STPDEP)(Input this data even if the Domain field is already prepopulated)
+         Application = Application name that is being launched followed by ".exe". Example: Powerchart.exe
+         ApplicationLaunch = Set ApplicationLaunch to "Citrix" if launching Citrix applications. Set ApplicationLaunch to "Local" if launching local applications with the "windowskey&r" command.
+
+Expected Result:        
+After executing this handler you should be at the initial landing page for the application you selected through local applications or Citrix applications.
+
+Example: (Hard Coded Variables)
+Run Millennium_Login_window.OpenApplication_In_Citrix_Or_Local "Citrix", "PhaMedMgr.exe", "AphaDBA", "InsertPasswordHere", "SOLGM"
+
+Example: (Variables in JSON File)
+Run Millennium_Login_window.OpenApplication_In_Citrix_Or_Local dataFile.ApplicationLaunch, dataFile.Application, dataFile.Username, dataFile.Password, dataFile.Domain
+
+*)
+on OpenApplication_In_Citrix_Or_Local ApplicationLaunch, Application, Username, Password, Domain
+	//If Domain Variable selected Citrix open Citrix and log into the selected Domain
+	if ApplicationLaunch = "Citrix"
+		
+		//Launching Application
+		IF ImageFound(imageName:"Millennium_Login_window/Icon_CitrixDomainFolderIcon", waitFor:15)
+			Click FoundImageLocation()
+			typetext Application
+			typetext returnKey
+		else
+			Click "Millennium_Login_window/Icon_FolderWindows10"
+			wait 3
+			Click "Millennium_Login_window/Icon_CitrixDomainFolderIcon"
+			wait 3
+			typetext Application
+			typetext returnkey
+		end if
+		
+		//Login with Username and Password
+		waitFor 120,"Millennium_Login_window/Textbox_Username"
+		click FoundImageLocation() + (0,15)
+		wait 1
+		typetext Username
+		wait 1
+		typetext tabkey
+		wait 1
+		set the ScriptLogging to off
+		typetext Password
+		set the ScriptLogging to on
+		wait 1
+		typetext tabkey
+		wait 1
+		typetext Domain
+		wait 1
+		typetext returnkey
+		
+		//Security Failure popup
+		if ImageFound(imageName:"Millennium_Login_window/Icon_MillenniumSecurityFailure", waitFor:15)
+			Click FoundImageLocation()
+			wait 1
+			typetext Returnkey
+		end if
+		
+		//Acknowledge Popup
+		if ImageFound(imageName:"Millennium_Login_window/Button_Acknowledge", waitFor:10)
+			Click FoundImageLocation()
+		end if
+	else
+		if ApplicationLaunch = "Local"
+			typetext windowsKey&r
+			typetext "C:\Program Files\Cerner\"
+			wait 1
+			typetext Application
+			wait 1
+			typetext returnkey
+			WaitFor 50,"Millennium_Login_window/Textbox_Username"
+			Run Millennium_Login_window.LogIntoMillenniumApps Username, Password, Domain
+		end if
+	end if
+	
+end OpenApplication_In_Citrix_Or_Local 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+(*
+Handler Name:
+   Millennium_LogIn_window.LogIntoCitrix ApplicationLaunch, CredentialID, CitrixDomain
+
+Log's into the IP Domains Storefront and launches the selected Citrix application.
+
+Variables: (These variables can be put into the JSON file or hard coded)
+         CredentialID = Create a Cerner Vault Safe with a valid Username and Password for logging into the IP Domains Storefront. The CredentialID is the the unique identifier for a credential in Cerner                     Vault, it is the last number in the web address when the Safe is selected. For more information on how to set up a Cerner Vault Safe please refer to this page                                                                    https://wiki.cerner.com/display/IAG/Cerner+Vault+-+Safe+Tutorials.
+         CitrixDomain = Citrix Domain you wish to launch to be typed into the "Search All Apps" textbox. (Example: SOLGM Apps 2016, INTGM Apps 2016, ENG18 Applications 2016)
+         ApplicationLaunch = Set ApplicationLaunch to "Citrix" if launching Citrix applications. Set ApplicationLaunch to "Local" if launching local applications. This handler does not do anything if set to                  "Local" as then the test does not need to log into the IP Domains Storefront.
+
+Expected Result:        
+After executing this handler you will log into the IP Domains Storefront and maximize the selected Citrix applications window.
+
+Example: (Hard Coded Variables)
+Run Millennium_Login_window.LogIntoCitrix "Citrix", "123456", "SOLGM 2016 Apps"
+
+Example: (Variables in JSON File)
+Run Millennium_Login_window.LogIntoCitrix dataFile.ApplicationLaunch, dataFile.CredentialID, dataFile.CitrixDomain
+
+*)
+
+On LogIntoCitrix ApplicationLaunch, CredentialID, CitrixDomain
+
+	//If Domain Variable selected Citrix open Citrix and log into the selected Domain
+	if ApplicationLaunch = "Citrix"
+		//Call Username and Password from Cerner Vault
+		set resourceURL to "https://cti.stagingcerner.net/credentials/"&CredentialID
+		set requestHeaders to (<<Cerner-User-Name>>: userInfo().ShortName)
+		set request to (httpmethod: parameters.httpmethod, url: resourceURL, requestHeaders: requestHeaders)
+		
+		//Making API request using above parameters to get response
+		set response to GenericHTTP(request)
+		set credential to JSONValue(response.responsebody)
+		set Password to EncodeText(credential.Password)
+		set Username to credential.Username
+		
+		//Launching Domain
+		typetext windowskey&"r"
+		wait 1
+		set the RemoteClipboard to "chrome -incognito http://ipctxsf.northamerica.cerner.net/Citrix/IPCTXWeb/"
+		typetext controlKey&"v"
+		typetext returnkey
+		WaitFor 50, "Google_Chrome/Button_Reload_This_Page"
+		typetext windowsKey & upArrow
+		
+		//Detect Reciever
+		if ImageFound(imageName:"Millennium_Login_window/Button_DetectReceiver", waitFor:15)
+			click FoundImageLocation()
+			wait 2
+		end if
+		
+		//Citrix Workspace Launcher Popup
+		if ImageFound(imageName:"Millennium_Login_window/Button_OpenCitrixWorkspaceLauncher", waitFor:15)
+			click FoundImageLocation()
+			wait 2
+		end if
+		
+		//Login with Username and Password
+		if ImageFound(image:"Millennium_Login_window/Textbox_UsernameIPDomains", waitFor:20)
+			Click FoundImageLocation()
+			wait 1
+			typetext controlKey&a
+			typetext Username
+			typetext tabkey
+			TypeEncodedText Password
+			typetext Returnkey
+		end if
+		
+		//Select a Domain
+		WaitFor 30, "Millennium_Login_window/Dropdown_CitrixLogOff"
+		
+		typetext CitrixDomain
+		typetext tabkey, tabkey, Returnkey
+		
+		//Citrix Workspace Launcher Popup
+		if ImageFound(imageName:"Millennium_Login_window/Button_OpenCitrixWorkspaceLauncher", waitFor:15)
+			click FoundImageLocation()
+			wait 2
+		end if
+		
+		//Select Applications window if it loads in the background
+		IF ImageFound(imageName:"Millennium_Login_window/Icon_CitrixDomainFolderIcon", waitFor:60)
+			Click FoundImageLocation()
+		else
+			Click "Millennium_Login_window/Icon_FolderWindows10"
+			wait 1
+			Click "Millennium_Login_window/Icon_CitrixDomainFolderIcon"
+		end if
+		
+		//Maximize Domain Applications Window
+		if ImageFound(imageName:"Millennium_Login_window/Icon_MaximizeMillennium", waitFor:10)
+			Click FoundImageLocation()
+			wait 5
+		end if
+	else
+		if ApplicationLaunch = "Local"
+			//Opening applications in the Local instead of through Citrix
+		end if
+	end if
+	
+End LogIntoCitrix
+
+

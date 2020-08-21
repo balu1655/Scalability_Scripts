@@ -1,0 +1,3 @@
+﻿2020-08-19 16:44:06.409 +0530	START		Running RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:44:06.429 +0530	EndTestCase		(Duration:"0.001", Errors:"1", Exceptions:"0", StartTime:"2020-08-19 16:44:06 +0530", Successes:"0", TestCase:"RCA_Sched_Scalability_DataCreation.script", Warnings:"0")
+2020-08-19 16:44:06.615 +0530	FAILURE		SenseTalk Compiler Exception in rca_sched_scalability_datacreation:\nSyntax Error at line 13: Syntax Error - can't understand [end of script] at character 1 -- Execution Time 0:00:00 RCA_Sched_Scalability_DataCreation.script

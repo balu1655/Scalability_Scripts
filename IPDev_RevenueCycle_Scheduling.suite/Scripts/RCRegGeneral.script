@@ -1,0 +1,525 @@
+﻿///////GENERAL UTILITIES IN REVENUE CYCLE///////
+
+
+//Handler: RCRegGeneral.maximizeWindow
+//Description: Clicks on the Maximize button to maximize a window if the button is found.	
+to maximizeWindow	
+	Wait 1
+	If ImageFound(5,"RCRegGeneral/Button_Maximize")	
+		Click FoundImageLocation()	
+		Wait 3 //For controls to load.
+	Else	
+		Put "Window is already Maximized."	
+	End If	
+end maximizeWindow
+
+
+//Handler: RCRegGeneral.MaximizeWindowDragAndDrop "imgWindowTitle"
+//Description: used to maximize the preferred window by drag and drop the window corners
+--> imgWindowTitleOrLabel: provide preferred window title/label image
+to MaximizeWindowDragAndDrop imgWindowTitleOrLabel
+	waitfor 10, imgWindowTitleOrLabel
+	Drag ImageRectangle(imgWindowTitleOrLabel).topLeft+(30,5)
+	Drop (60,10)
+	wait 5
+	if ImageFound("ConvoSRs/BR_Window") then
+		Drag ImageLocation("ConvoSRs/BR_Window")
+		Drop (RemoteScreenSize().x+(-10), RemoteScreenSize().y+(-50))
+	end if
+end MaximizeWindowDragAndDrop 
+
+
+//Handler: RCRegGeneral.MaximizeWindowDragAndDropOCR "strWindowTitle"
+//Description: used to maximize the preferred window by drag and drop the window corners
+--> strWindowTitleOrLabel: provide preferred window title/label.
+to maximizeWindowDragAndDropOCR strWindowTitleOrLabel
+	waitfor 10, (Text:strWindowTitleOrLabel,EnableAggressiveTextExtraction:On,DPI:200,IgnoreSpaces:On)
+	Drag ImageRectangle(Text:strWindowTitleOrLabel,EnableAggressiveTextExtraction:On,DPI:200,IgnoreSpaces:On).topLeft +(40,5)
+	Drop (60,10)
+	wait 5
+	Drag ImageLocation("ConvoSRs/BR_Window")
+	Drop (RemoteScreenSize().x+(-10), RemoteScreenSize().y+(-50))
+end maximizeWindowDragAndDropOCR
+
+
+//Handler: RCRegGeneral.scrollUpOrDown "Up OR Down", "Number of Scrolls"
+//Description: Scrolls up or down by clicking the Up/Down icon in the scrollbar. Be sure focus is on the right window/area of window by setting a Search Rectangle if need be.
+--> strDirection: Enter "Up" or "Down".
+--> numScrollAmount: Number of times to click the Up/Down icon
+to scrollUpOrDown strDirection, numScrollAmount
+	If ImageFound(2,"RCRegGeneral/Scrollbar_Down")
+		If strDirection = "Up"
+			WaitFor 3,"RCRegGeneral/Scrollbar_Up"
+			Repeat numScrollAmount times
+				DoubleClick FoundImageLocation()
+			End Repeat			
+		Else If strDirection = "Down"
+			Repeat numScrollAmount times
+				DoubleClick FoundImageLocation()
+			End Repeat
+		End If
+	End If
+end scrollUpOrDown
+
+
+//Handler: RCRegGeneral.selectPatientPerspectiveAndView "Perspective", "View"
+//Description: Selects and opens a Patient perspective (Registration, Scheduling, Encounters, etc.) and View with that perspective in Revenue Cycle.
+--> strPatientPerspective: Patient perspective name to select (eg: Registration, Scheduling, Encounters, etc.) (Optional)
+--> strPatientView: View name within perspective (eg: Demographics,Encounters, Encounter Details etc.) (Optional)
+to selectPatientPerspectiveAndView strPatientPerspective, strPatientView
+	Waitfor 30,(Image:"ConvoIcons/Icon_SearchByIcon")
+	If strPatientPerspective is not empty
+		Click (text:strPatientPerspective,EnableAggressiveTextExtraction:On, dpi:200,WaitFor:10,SearchRectangle:(ImageRectangle("RCRegGeneral/Button_File")+(190,10,1400,45)))
+		Wait 5 //Wait till control loads
+	End If
+	If strPatientView is not empty
+		Click (text:strPatientView,EnableAggressiveTextExtraction:On,WaitFor:20,SearchRectangle:((image:"ConvoSRs/TL_ViewTabs", WaitFor: 20), (image:"ConvoSRs/BR_ViewTabs",WaitFor:20)))
+		Wait 5 //Wait till control loads
+	End If 
+end selectPatientPerspectiveAndView
+
+
+//Handler: RCRegGeneral.selectViewMenuOption "Option"
+//Description: Selects a View level menu option 
+--> strOption: View Menu Option (Ex: Modify, Save, Add, Refresh, etc.).
+to selectViewMenuOption strOption
+	Wait 3 //Wait for Controls to load 
+	If strOption = "Modify" or strOption = "Save" or strOption = "Add" or strOption = "Cancel" or strOption = "ChangeConversation" or strOption = "Refresh"
+		If ImageFound(image:"ConvoIcons/Icon_"&strOption,WaitFor:10,SearchRectangle:("ConvoSRs/TL_ViewTabs","ConvoSRs/BR_ViewTabs"))
+			Click FoundImageLocation()
+		Else
+			Click (image:"ConvoIcons/Icon_ViewMenu", WaitFor:20)	
+			Click (Text:strOption, EnableAggressiveTextExtraction:On, WaitFor: 20, SearchRectangle:(ImageRectangle("ConvoIcons/Icon_ViewMenu") + (-250,5,RemoteScreenSize().x,300)))
+		End If 
+	Else
+		Click (image:"ConvoIcons/Icon_ViewMenu", WaitFor:20)	
+		Click (Text:strOption, EnableAggressiveTextExtraction:On, WaitFor: 20, SearchRectangle:(ImageRectangle("ConvoIcons/Icon_ViewMenu") + (-250,5,RemoteScreenSize().x,300)))
+	End If 
+	Wait 5 //Wait for Controls to load
+end selectViewMenuOption
+
+
+//Handler: RCRegGeneral.rightClickActions "Menu Option", "Submenu Option"
+//Description: To perform rightclick actions irrespective of grid/table.
+//NOTE: Call handler to select a value/row before calling rightClickActions handler as the actions will be performed from the mouse location 
+--> strRightClickMenuOption = Enter right Click menu options
+--> strRightClickSubMenuOption = Enter right Click submenu options
+to rightClickActions strRightClickMenuOption,strRightClickSubMenuOption
+	RightClick MouseLocation()
+	Wait 2
+	TypeText upArrow //goes to the last option inorder to get the bottom right dynamically
+	If ImageFound(image:"ConvoSRs/BR_MenuWithFocus") = False
+		RightClick MouseLocation()
+	End If
+	Set locEndOfMenu to ImageRectangle("ConvoSRs/BR_MenuWithFocus") //capturing the last item's image
+	Click ImageLocation(Text:strRightClickMenuOption,EnableAggressiveTextExtraction:On, SearchRectangle:((item 1 of  MouseLocation() - (1)),(item 2 of MouseLocation() -(1)),(item 3 of locEndOfMenu+(1) ),(item 4 of locEndOfMenu+(1)))) //Click on the menu
+	If strRightClickSubMenuOption is not empty
+		Set locCurrent to MouseLocation() 
+		MoveTo (item 3 of locEndOfMenu +(15),item 2 of locCurrent )
+		Typetext upArrow
+		Set locEndOfSubMenu to the last item of EveryImageRectangle("ConvoSRs/BR_MenuWithFocus")
+		Click ImageLocation(Text:strRightClickSubMenuOption,EnableAggressiveTextExtraction:On,SearchRectangle:((item 3 of locEndOfMenu +(5),item 2 of locCurrent -(8)),((item 3 of locEndOfSubMenu+(1) ),(item 4 of locEndOfSubMenu+(1))))) //Click on submenu
+	End If
+end rightClickActions
+
+
+//Handler: RCRegGeneral.selectPreferences "strOpenPreferenceWindow","strPreferenceName"
+//Description: select filter values in preference window
+--> strPeferenceName: enter preference filter name to type and select from preference window
+--> strOpenPreferenceWindow: enter "Open" to launch and select the preferred preference in preference window, if preference window is opened then leave parameter as blank
+to selectPreferences strOpenPreferenceWindow,strPreferenceName
+	If strOpenPreferenceWindow equal "Open" then
+		Wait 2
+		//get focus on revenueCycle application and launch preferences window
+		Click image:"RCRegGeneral/Label_RevenueCycle"
+		TypeText altKey&"F"&"P"
+		Run RCRegGeneral.maximizeWindow
+		Wait 5
+	End If
+	Click ImageLocation(Text:"Preferences",EnableAggresiveTextExtraction:On,waitfor:20)+(5,30)
+	TypeText controlKey&"a"&backspace
+	TypeText strPreferenceName
+	TypeText returnKey
+end selectPreferences
+
+
+//Handler: RCRegGeneral.openRecentPatientRecord "LastName, FirstName"
+//Description: Opens a Recent Patient Record by Patient's Name from the File Menu.
+--> strPatientName: Name of Patient, usually in this format: (Last, First)
+to openRecentPatientRecord strPatientName
+	Click "RCRegGeneral/Button_File"
+	Click (Image:"RCRegGeneral/Button_RecentPatientRecords", WaitFor:3)
+	Click(text:strPatientName, EnableAggressiveTextExtraction:On, TextDifference:1, IgnoreSpaces:On, SearchRectangle:(FoundImageLocation()+(100,-15),FoundImageLocation()+(500,200)))
+	WaitFor 15,("ConvoIcons/Icon_BottomLeftOfGroup")
+	set the searchRectangle to ()
+end openRecentPatientRecord
+
+
+//Handler: RCRegGeneral.closePatientRecord
+//Description: Closes the Patient Record that is currently open from the File Menu.
+to closePatientRecord
+	Click "RCRegGeneral/Button_File"
+	Click (Text: "Close Patient Record",WaitFor:5,EnableAggressiveTextExtraction:On,SearchRectangle:(FoundImageLocation()+(-5,0),FoundImageLocation()+(200,200)))
+	set the searchRectangle to ()
+end closePatientRecord
+
+
+//Handler: Set Variable to RCRegGeneral.getTextRemoteClipboard()
+//Description: Selects and Copies whatever is currently focused on and sets the value to a variable.
+to getTextRemoteClipboard 
+	Typetext controlKey & "a"
+	Typetext controlKey & "c"
+	Set strVariable to RemoteClipboard()
+	Log strVariable
+	Return strVariable
+end getTextRemoteClipboard
+
+
+//Handler: RCRegGeneral.selectValuesInAvailableOrSelectedList "List Name", "Value"
+//Description: Used to select/highlight specified value either in Available list or Selected list (eg:Multiselect field like races, ethnicities etc)
+--> strListName: enter the list label (eg: Available Or Selected) (Optional, can set SearchRectangle outside of handler.)
+--> strListValue: enter value to select/highlight with in the list
+//Note: Maximize window for Best Results or Set a Search Rectangle around the Lists
+to selectValuesInAvailableOrSelectedList strListName,strListValue
+	//Set search rectangle to Available list or Selected list
+	If strListName is not empty
+		If strListName contains ("_","/")
+			Set srList to ImageRectangle(Image:strListName)
+		Else
+			Set srList to ImageRectangle(Text:strListName,EnableAggressiveTextExtraction:On)
+		End If 
+		set SrListHorizontal to number of characters of strListValue*20
+		If ImageFound(text:strListValue,EnableAggressiveTextExtraction:On,IgnoreSpaces:Yes, SearchRectangle:(srList.bottomLeft,(item 1 of srList.bottomLeft+(SrListHorizontal),RemoteScreenSize().y)))
+			DoubleClick FoundImageLocation()
+		End If 
+	Else
+		If ImageFound(text:strListValue,EnableAggressiveTextExtraction:On,IgnoreSpaces:Yes)
+			DoubleClick FoundImageLocation()
+		End If 
+	End If	
+end selectValuesInAvailableOrSelectedList
+
+
+//Handler: Set Variable to RCRegGeneral.retrievePopUpMessage("Title", "Yes(optional)")
+//Description: To handle/validate pop up window , using return we can validate the message and the window title
+--> strMessageTitle: window title
+--> bolGetMessageText: "Yes" to Return the content, leave blank to skip
+to retrievePopUpMessage strMessageTitle,bolGetMessageText	
+	If  ImageFound(10,Text:strMessageTitle, EnableAggresiveTextExtraction:On,ValidCharacters:strMessageTitle)		
+		If bolGetMessageText is not empty
+			Set strContent to readtext((ImageRectangle(Text:strMessageTitle,EnableAggresiveTextExtraction:On,ValidCharacters:strMessageTitle).topleft + (-30,-10)),(Imagerectangle( "ConvoSRs/BR_WarningWindow").bottomRight+(-5,-5)))
+			Return strContent
+		Else 
+			Return 1 // warning popup window  found
+		End If
+	Else
+		Return 0 // // warning popup window not found
+	End If
+end retrievePopUpMessage
+
+
+//Handler: RCRegGeneral.selectOrUnselectCheckBoxOption "Option Name", "Check OR Uncheck"
+//Description: To select Or Unselect CheckBox Option in a window
+--> strCheckOptionText: Enter the exact text next to the checkbox
+--> strCheckOrUncheck: Enter "Check" to select the checkbox and "Uncheck" to Unselect CheckBox
+//(Note:checkbox should be before text)
+to selectOrUnselectCheckBoxOption strCheckOptionText,strCheckOrUncheck
+	//Calculate the length of strCheckOptionText 
+	Set strSentenceLength to ((number of characters of strCheckOptionText)*9)+5
+	If strCheckOrUncheck equals "Check" then
+		// to select the check box option
+		Set strCheckBoxLoc to EveryImageLocation(image:"RCRegGeneral/Checkbox_Unchecked",WaitFor:1)
+		Set intItemCount to the number of items of strCheckBoxLoc
+		//repeat for limited number of time 
+		Repeat intItemCount times
+			Set strText to readtext(item repeatindex() of strCheckBoxLoc + (7,-10),item repeatindex() of strCheckBoxLoc + (strSentenceLength,10),EnableAggressiveTextExtraction:On,IgnoreSpaces:On,IgnoreLines:On)
+			//If found select checkbox option
+			If strText contains strCheckOptionText then
+				Click item repeatindex() of strCheckBoxLoc
+				log strText && "option checked"
+				Exit repeat
+			End If
+		End repeat
+	Else If strCheckOrUncheck equal "Uncheck" then
+		//to Unselect the checkbox option
+		Set strCheckBoxLoc to EveryImageLocation(image:"RCRegGeneral/Checkbox_Checked",WaitFor:1)
+		Set intItemCount to the number of items of strCheckBoxLoc
+		//repeat for limited number of time 
+		Repeat intItemCount times
+			Set strText to readtext(item repeatindex() of strCheckBoxLoc + (7,-10),item repeatindex() of strCheckBoxLoc + (strSentenceLength,10))
+			//If found Unselect checkbox option
+			If strText contains (strCheckOptionText,EnableAggressiveTextExtraction:On) then
+				Click item repeatindex() of strCheckBoxLoc
+				log strText && "option Unchecked"
+				Exit repeat
+			End If
+		End repeat
+	End If
+end selectOrUnselectCheckBoxOption
+
+
+//Handler: Set Variable to RCRegGeneral.verifyCheckBoxOption("Option Name", "Check OR Uncheck")
+//Description:To validate for expected checkbox is Selected Or Unselected in a window
+--> strCheckOptionText: Enter the exact text next to the checkbox
+--> strCheckOrUncheck: Enter "Check" to validate for checkbox If Checked/Selected  and "Uncheck" to validate for checkbox If Unchecked/Unselected
+//(Note:checkbox should be before specIfied text)
+to verifyCheckBoxOption strCheckOptionText,strCheckOrUncheck
+	//Calculate the length of strCheckOptionText 
+	Set strSentenceLength to ((number of characters of strCheckOptionText)*9)+5
+	If strCheckOrUncheck equals "Check" then
+		//validate for checkbox option wheather its checked
+		Set strCheckBoxLoc to EveryImageLocation("RCRegGeneral/Checkbox_Checked")
+		Set intItemCount to the number of items of strCheckBoxLoc
+		Repeat intItemCount times
+			Set strTextTL to item repeatindex() of strCheckBoxLoc + (7,-7)
+			Set strTextBR to item repeatindex() of strCheckBoxLoc + (strSentenceLength,10)
+			Set strText to readtext(strTextTL,strTextBR)
+			//If found verIfy preferred checkbox option as checked  
+			If strText contains (strCheckOptionText,EnableAggressiveTextExtraction:On, IgnoreSpaces:On) then
+				Log strtext &&"Option is Checked"
+				Return strText
+				Exit repeat
+			End If
+		End repeat
+	Else If strCheckOrUncheck equal "Uncheck" then
+		//validate for checkbox option wheather its Unchecked
+		Set strCheckBoxLoc to EveryImageLocation("RCRegGeneral/Checkbox_Unchecked")
+		Set intItemCount to the number of items of strCheckBoxLoc
+		Repeat intItemCount times
+			Set strTextTL to item repeatindex() of strCheckBoxLoc + (7,-7)
+			Set strTextBR to item repeatindex() of strCheckBoxLoc + (strSentenceLength,10)
+			Set strText to readtext(strTextTL,strTextBR)
+			//If found verIfy preferred checkbox option as Unchecked 
+			If strText contains (strCheckOptionText,EnableAggressiveTextExtraction:On, IgnoreSpaces:On) then
+				Log strtext &&"Option is Unchecked"
+				Return strtext
+				Exit repeat
+			End If
+		End repeat
+	End If
+end verifyCheckBoxOption
+
+
+//Handler: RCRegGeneral.selectRadioButtonOption "RadioButtonOptionText"
+//Description: to select preferred radio button in a window
+--> strRadioButtonOptionText: Enter the exact text next to the radio button
+//(Note: Radio button should be before specIfied text)
+to selectRadioButtonOption strRadioButtonOptionText
+	//Calculate the length of strRadioButtonOptionText 
+	Set strSentenceLength to ((number of characters of strRadioButtonOptionText)*12)+7
+	Set strRadioBoxLoc to EveryImageLocation("RCRegGeneral/RadioButton_Unselected")
+	Set intItemCount to the number of items of strRadioBoxLoc
+	//repeat for limited number of time 
+	Repeat intItemCount times
+		if ImageFound(text:strRadioButtonOptionText,IgnoreSpaces:On,DPI:131,SearchRectangle:(item repeatindex() of strRadioBoxLoc + (10,-8),item repeatindex() of strRadioBoxLoc + (strSentenceLength,10)))
+			//If found select checkbox option
+			Click item repeatindex() of strRadioBoxLoc
+			Exit repeat
+		End If
+	End repeat
+end selectRadioButtonOption
+
+
+//Handler:  RCRegGeneral.verifyRadioButtonSelectedOrUnSelected "RadioButtonText" ,"SelectOrUnselect"
+//Description:To validate for expected Radio button option is Selected Or Unselected in a window
+--> strRadioButtonText: Enter the exact text next to the checkbox
+--> strSelectOrUnselect: enter "Selected" if need to validate for option radio button selected  and enter "UnSelected" if need to validate for option radio button De-selected 
+//(Note:Radio button should be before specified text)
+to verifyRadioButtonSelectedOrUnSelected strRadioButtonText,strSelectOrUnselect
+	//Calculate the length of strRadioButtonText 
+	Set strSentenceLength to ((number of characters of strRadioButtonText)*12)+7
+	If strSelectOrUnSelect equals "Selected" then
+		//validate for RadioButton option is selected
+		Set strRadioButtonLoc to EveryImageLocation("RCRegGeneral/RadioButton_Selected")
+		Set intItemCount to the number of items of strRadioButtonLoc
+		Repeat intItemCount times
+			Set strText to readtext(item repeatindex() of strRadioButtonLoc + (10,-7),item repeatindex() of strRadioButtonLoc + (strSentenceLength,10),EnableAggressiveTextExtraction:On,IgnoreSpaces:On)
+			//If found verIfy preferred checkbox option as checked  
+			If strText contains (strRadioButtonText,EnableAggressiveTextExtraction:On) then
+				Log strtext &&"Option is Selected"
+				Return strText
+				Exit repeat
+			End If
+		End repeat
+	Else If strSelectOrUnselect equal "UnSelected" then
+		//validate for checkbox option wheather its Unchecked
+		Set strRadioButtonLoc to EveryImageLocation("RCRegGeneral/RadioButton_Unselected")
+		Set intItemCount to the number of items of strRadioButtonLoc
+		Repeat intItemCount times
+			Set strText to readtext(item repeatindex() of strRadioButtonLoc + (7,-7),item repeatindex() of strRadioButtonLoc + (strSentenceLength,10))
+			//If found verIfy preferred checkbox option as Unchecked 
+			If strText contains (strRadioButtonText,EnableAggressiveTextExtraction:On) then
+				Log strtext &&"Option is Unselected"
+				Return strtext
+				Exit repeat
+			End If
+		End repeat
+	End If
+end verifyRadioButtonSelectedOrUnSelected
+
+
+//Handler: Set Variable to RCRegGeneral.verifyValuePresentInDemographicsBar("Value")
+//Description: Verify that the demographics data from demographics bar contains the value specified.
+--> strPromptValue: Value to verified [ex: MRN:xxxxxxxxx]
+to verifyValuePresentInDemographicsBar strPromptValue
+	Set srDemBar to ImageRectangle("RCRegGeneral/TL_DemographicsBar")
+	//checking If the window open is of "Perspective window" or "Add/ModIfy/View window"
+	If left(srDemBar)>3
+		Set imgLeft to left(srDemBar)+(-5)     //Perspective Window
+	Else
+		Set imgLeft to 0     //Add/ModIfy/View window
+	End If
+	Set strValue to ReadText((imgLeft,top(srDemBar)), (RemoteScreenSize().x, bottom(srDemBar)+65), EnableAggressiveTextExtraction:On)
+	If strValue contains strPromptValue
+		Log <<">>&strPromptValue&<<">>&&"found in Demographics Bar."
+		Return strPromptValue 
+	Else If ImageFound("RCRegGeneral/Icon_DemographicsBarShowMore")
+		Click FoundImageLocation()
+		Set strValue to trimall(ReadText(ImageRectangle("RCRegGeneral/Icon_DemographicsBarShowMore") + (-100, 20, 10, 150), IgnoreSpaces:On,EnableAggressiveTextExtraction:On))
+		If strValue contains strPromptValue
+			Log <<">>&strPromptValue&<<">>&&"found in Demographics Bar."
+			Return strPromptValue
+		End If
+	Else 
+		Log <<">>&strValue&<<">>&&"is found but"&&<<">>&strPromptValue&<<">>&&"is NOT found in Demographics Bar."
+	End If  	
+end verifyValuePresentInDemographicsBar
+
+
+//Handler: Set Variable to RCRegGeneral.retrieveValueFromDemographicsBar("Label1", "Label2Optional")
+//Description: To retrieve demographics data from demographics bar
+--> strLabel1: Label for the value you want to verIfy. (ex: MRN:, SSN:, DOB:, etc.)
+--> strLabel2: Label that's directly to the right of the 1st label (to get the End location of the 1st label), Optional. (ex: MRN:, SSN:, DOB:, etc.)
+to retrieveValueFromDemographicsBar strLabel1, strLabel2
+	Set srDemBar to ImageRectangle("RCRegGeneral/TL_DemographicsBar")
+	//checking If the window open is of "Perspective window" or "Add/ModIfy/View window"
+	If left(srDemBar)>3
+		Set imgLeft to left(srDemBar)+ (-5)      //Perspective Window
+	Else
+		Set imgLeft to 0     //Add/ModIfy/View window
+	End If
+	Set the SearchRectangle to ((imgLeft,top(srDemBar)), (RemoteScreenSize().x, bottom(srDemBar)+45))
+	If ImageFound(text:strLabel1,EnableAggressiveTextExtraction:On, ValidCharacters:"*",WaitFor:3)
+		Set srTL to (ImageRectangle(text:strLabel1,EnableAggressiveTextExtraction:On, ValidCharacters:"*").topLeft)+(-10,-5)
+		If strLabel2 is empty
+			Set srBR to (ImageRectangle(text:strLabel1,ValidCharacters:"*", EnableAggressiveTextExtraction:On).bottomRight)+(RemoteScreenSize().x,10)
+		Else
+			Set srBR to (ImageRectangle(text:strLabel2,ValidCharacters:"*", EnableAggressiveTextExtraction:On).bottomLeft)+(-3,5)
+		End If
+		Set strValue to ReadText((srTL,srBR),dpi:200)
+		Log <<">>&strValue&<<">>&&"found in Demographics Bar."
+		Set the SearchRectangle to ()
+		Return strValue
+	Else If ImageFound("RCRegGeneral/Icon_DemographicsBarShowMore")
+		Click FoundImageLocation()
+		Set srShowMore to ImageRectangle("RCRegGeneral/Icon_DemographicsBarShowMore")
+		Set the SearchRectangle to srShowMore + (-200, 20, 10, 150)
+		Set srLabel1 to ImageRectangle(text:strLabel1,EnableAggressiveTextExtraction:On, ValidCharacters:"*")
+		Set strValue to ReadText((srLabel1.topLeft+(-10,-5)),(srLabel1.bottomRight+((- item 3 of srLabel1)+(item 3 of srShowMore),10)),DPI:200)
+		Log <<">>&strValue&<<">>&&"found in Demographics Bar."
+		Set the SearchRectangle to ()
+		Return strValue
+	Else
+		Log "Value for"&&<<">>&strLabel1&<<">>&&"is NOT found in Demographics Bar."
+		Set the SearchRectangle to ()
+	End If
+end retrieveValueFromDemographicsBar
+
+
+//Handler: RCRegGeneral.browseAndOpenAFile "FilePath", "FileType"
+//Description: Browse a file from local path with extension and addng the same to appication.
+--> strFilePath: Enter the path from where the file has to be imported
+--> strFileType: Enter the type of file from the drop down values (File Extension) 
+to browseAndOpenAFile strFilePath,strFileType
+	If ImageFound(5, "RCRegGeneral/Label_Windows_Browse")
+		Set the SearchRectangle to ImageRectangle("RCRegGeneral/Label_FileName")+(-20,-20,RemoteScreenSize().x,80)
+		TypeText strFilePath & tabKey
+		typetext downArrow
+		set firstCharOfImgType to first character of strFileType
+		typetext homeKey
+		typetext firstCharOfImgType
+		wait 1
+		click (Text:strFileType,EnableAggressiveTextExtraction:on,validCharacters:strFileType)
+		typetext tabkey & returnkey
+	end if
+	set the searchRectangle to ()
+end browseAndOpenAFile
+
+
+//Handler: RCRegGeneral.performMenuActions "Menu Option", "Main Option", "Sub Option1", "Sub Option2"
+//Description: To Perform Menu Actions for upto 3 branches. This Handler sets SR dynamically such that, if a menu/sub option is added/removed through code, this would set SR accordingly.
+--> strMenuOption: Enter the Menu value [File/View/Help]
+--> strMainOption: Enter the Main Option [First branch] 
+--> strSubOption1: Enter the Sub Option [Second Branch]
+--> strSubOption2: Enter next Sub Option [Third Branch]
+to performMenuActions strMenuOption,strMainOption,strSubOption1,strSubOption2
+	Click (Text:strMenuOption,searchRectangle:(0,17,183,45)) 
+	typetext downArrow //for the cursor to enter the menu items
+	typetext upArrow // to fetch the last option
+	set endOfMenu to ImageRectangle("ConvoSRs/BR_MenuWithFocus") 
+	Click ImageLocation(Text:strMainOption,enableAggressiveTextExtraction:on,ValidCharacters:strMainOption,IgnoreSpaces:On,SearchRectangle:((MouseLocation()+(-65,-12)),(endOfMenu.BottomRight+(5,5))))
+	if strSubOption1 is not equal to empty 
+		MoveTo (item 3 of endOfMenu+(10),item 2 of MouseLocation())
+		typetext upArrow
+		set endOfSubMenu to ImageRectangle("ConvoSRs/BR_MenuWithFocus")
+		Click (Text:strSubOption1,enableAggressiveTextExtraction:on,IgnoreSpaces:On,SearchRectangle:((item 3 of endOfMenu+5,item 2 of MouseLocation() - 12),(endOfSubMenu.bottomRight+(5,5))))
+	end if
+	if strSubOption2 is not equal to empty
+		MoveTo (item 1 of endOfSubMenu+(10),item 2 of MouseLocation())
+		TypeText upArrow
+		Set endOfSubMenu2 to ImageRectangle("ConvoSRs/BR_MenuWithFocus")
+		log endOfSubMenu2
+		Click (Text:strSubOption2,enableAggressiveTextExtraction:on,IgnoreSpaces:On,SearchRectangle:((item 1 of endOfSubMenu+5,item 2 of MouseLocation() - 12),(endOfSubMenu2.bottomRight+(5,5))))
+	end if
+end performMenuActions
+
+
+//Handler: RCRegGeneral.setTimeZone "TimeZoneID"
+//Description: Sets the current time zone using the specified time zone ID from a command line.
+-->strTimeZoneID: Enter the specific time Zone to set for(eg"Central Standard Time","India Standard Time" etc.,)
+to setTimeZone strTimeZoneID
+	TypeText windowsKey & "r"
+	TypeText controlKey & "a" & deleteKey
+	TypeText "CMD" & returnKey
+	Typetext "tzutil"&&"/s"&&"" && <<">>&strTimeZoneID&<<">> & returnKey
+	TypeText "exit" & returnKey
+end setTimeZone
+
+
+//Handler: Set Variable to RCRegGeneral.retrievePopUpMessageByImg("Title", "Yes(optional)")
+//Description: To handle/validate pop up window , using return we can validate the message and the window title
+--> imgWindowTitle: image of window title
+--> bolGetMessageText: "Yes" to Return the content, leave blank to skip
+to retrievePopUpMessageByImg imgWindowTitle,bolGetMessageText	
+	If  ImageFound(10,imgWindowTitle)
+		If bolGetMessageText is not empty
+			Set strContent to readtext((ImageRectangle(imgWindowTitle).topleft + (0,-5)),(Imagerectangle( "ConvoSRs/BR_WarningWindow").bottomRight+(-5,-5)),enableAggressiveTextExtraction:on)
+			Return strContent
+		Else  
+			Return 1 // warning popup window  found
+		End If
+	Else
+		Return 0 // // warning popup window not found
+	End If
+end retrievePopUpMessageByImg
+
+
+//To close the notifications
+to handleNotifications 
+	if ImageFound(10, "ConvoLabels/Label_Notifications")
+		set the SearchRectangle to ImageRectangle("ConvoLabels/Label_Notifications")+(-5,-5,115,60)
+		click "ConvoIcons/Icon_NotificationExit"
+		set the SearchRectangle to empty
+	end if
+end handleNotifications
+
+
+//Handler: RCRegGeneral.selectPrintMenuOption "Option"
+//Description: Selects a Print View level menu option 
+--> strOption: Print View Menu Option (Ex: Print Face Sheet, Reprint Documents etc.).
+to selectPrintMenuOption strOption
+	Click (image:"RCRegGeneral/Icon_PrintView", WaitFor:10)
+	WaitFor 5,(Text:strOption, WaitFor:5, EnableAggressiveTextExtraction:On, SearchRectangle:(ImageRectangle("RCRegGeneral/Icon_PrintView") + (-250,5,RemoteScreenSize().x,300)))
+	Click FoundImageLocation()
+end selectPrintMenuOption
+

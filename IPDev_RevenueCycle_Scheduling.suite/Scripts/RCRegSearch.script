@@ -1,0 +1,328 @@
+﻿///////SEARCH //////
+
+
+//Handler: RCRegSearch.selectOptionSearchBy "Option"
+//Description: Select SearchByIcon and select preferred option from drop down on RevCycle Main Page
+--> strOption: enter options to select from drop down eg:MRN,Name,Encounter etc
+to selectOptionSearchBy strOption
+	//expand the searchby drop down
+	Click ImageLocation(Image:"ConvoIcons/Icon_SearchByIcon")
+	Click (text:strOption, WaitFor:5,EnableAggressiveTextExtraction:On,SearchRectangle:ImageRectangle("ConvoIcons/Icon_SearchByIcon")+(-160,20,5,350))
+	Log "Search By"&&strOption && "- option selected."
+	Set the searchRectangle to empty
+end selectOptionSearchBy
+
+
+//Handler: RCRegSearch.searchPersonByValue "Value"
+//Description: Locates Search By Name/MRN etc. field below menu bar and enters the value and clicks enter to open Person Search window
+--> strByValue: Enter the value to be entered in Search By Name/MRN etc. field below menu bar. 
+to searchPersonByValue strByValue
+	//locate the SearchBy text box
+	Click ImageLocation(Image:"ConvoIcons/Icon_SearchByIcon")+(-100,0)
+	//Clear the text box field by ctrl+a and del
+	TypeText controlKey & "a", deleteKey
+	//type patient name and type enter
+	TypeText strByValue
+	TypeText returnKey
+	WaitFor 30, "ConvoLabels/Label_PersonGuarantorSearch"
+end searchPersonByValue
+
+
+//Handler: RCRegSearch.selectPersonSearchTab "Tab"
+//Description: handler is used to select the tab in person search window (eg:person or guarantor)
+--> strTabOption: enter tab name in person search window
+to selectPersonSearchTab strTabOption
+	//select the preferred provided tab
+	Click ImageLocation(Text:strTabOption,ValidCharacters:"*",EnabelAggresiveTextExtraction:On,SearchRectangle:(ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch")+(-20,15,90,40)))
+	Set the searchRectangle to empty
+end selectPersonSearchTab
+
+
+//Handler: RCRegSearch.enterOrModifyFieldInPersonSearch "Field", "Value"
+//Description: To enter values to Person Search filters.  
+--> strFilterName:  Enter the Name of the search filter to be selected. Eg. Name, MRN etc.
+--> strFilterValue: Enter value to be entered in search filter 
+to enterOrModifyFieldInPersonSearch strField,strValue
+	Click (ImageLocation(text:strField, SearchRectangle:(ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch") +(0,15,100,750)),EnableAggressiveTextExtraction:On,IgnoreSpaces:On,ValidCharacters:strField)+(0,25))
+	TypeText controlKey & "a", deleteKey
+	TypeText strValue
+end enterOrModifyFieldInPersonSearch
+
+
+//Handler: RCRegSearch.enterOrModifyFieldInPersonSearchByImg "imgField", "Value"
+//Description: To enter values to Person Search filters.  
+--> imgFieldLabel: Enter the image name of the filter to be selected. Eg. Name, MRN etc.
+--> strValue: Enter value to be entered in search filter 
+to enterOrModifyFieldInPersonSearchByImg imgFieldLabel,strValue
+	Set the searchRectangle to (ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch") +(0,60,100,750))
+	Click ImageLocation(Image:imgFieldLabel)+(0,25)
+	TypeText controlKey & "a" & deleteKey
+	TypeText strValue
+	Set the searchRectangle to empty
+end enterOrModifyFieldInPersonSearchByImg
+
+
+//Handler: RCRegSearch.selectPatientAndEncounterInPersonSearch "Patient", "Encounter"
+//Description: To highlight specific person and encounter row in results in Person Search window. 
+--> strPatient: enter row value in person table to select(eg: Name,MRN, Date of Birth, Age etc)
+--> strEncounter: enter row value in encounter table to select (eg:Encounter, Facility, Encounter Type etc)
+--> strColumnName1: enter person grid/table column name eg:"Name, MRN, CMRN, Age etc.." (Optional)
+--> strColumnName2: enter encounter grid/table column name eg:"Encounter, Facility, Encounter Type etc.." (Optional)
+//Note: If strEncounter variable is left blank then handler will select only person
+//Note: Maximize person search window before calling this Handler
+to selectPatientAndEncounterInPersonSearch strPatient,strEncounter,strColumnName1,strColumnName2
+	set the searchRectangle to (ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch") +(200,110,RemoteScreenSize().x,500))
+	if strColumnName1 is not empty
+		Set srColumn1 to ImageRectangle(text:strColumnName1,EnableAggresiveTextExtraction:on,IgnoreSpaces:on,ValidCharacters:strColumnName1)
+		Set the SearchRectangle to srColumn1 + (-2,-5,RemoteScreenSize().x,RemoteScreenSize().y)
+		Set the SearchRectangle to (srColumn1.bottomleft+(-5,10),item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0,380))
+	end if
+	Click (text:strPatient, EnableAggressiveTextExtraction:On,ValidCharacters:strPatient,IgnoreSpaces:On)
+	set the searchRectangle to ()
+	//Highlight Encounter in Encouncter section
+	If strEncounter is not empty then
+		set the searchRectangle to (ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch") +(200,550,RemoteScreenSize().x,990))
+		if strColumnName2 is not empty
+			Set srColumn1 to ImageRectangle(text:strColumnName2,EnableAggresiveTextExtraction:on,IgnoreSpaces:on,ValidCharacters:strColumnName2)
+			Set the SearchRectangle to srColumn1 + (-2,-5,RemoteScreenSize().x,RemoteScreenSize().y)
+			Set the SearchRectangle to (srColumn1.bottomleft+(-5,10),item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0,450))
+		end if
+		Click (text:strEncounter, EnableAggressiveTextExtraction:On,ValidCharacters:strEncounter,IgnoreSpaces:On,DPI:150)
+	End If
+	Set the searchRectangle to empty
+end selectPatientAndEncounterInPersonSearch
+
+
+//Handler: RCRegSearch.highlightOrSelectFacilityInFacilitySearch "Facility", "Highlight OR Select"
+//Description: If open then Selects a Facility in FacilitySearch
+--> strFacility: Facility Name
+--> strAction: Enter "Highlight" or "Select".  Highlight the facility within the Facility Search Window or Select the facility for the facility Field.
+//Note: Use one of the "EnterOrModifyFieldValue" handlers from "RCRegConvoGeneral" Script to locate and enter the Facility prompt
+to highlightOrSelectFacilityInFacilitySearch strFacility, strAction
+	If ImageFound(10, "ConvoLabels/Label_FacilitySearch")
+		TypeText tabKey		
+		Set the SearchRectangle to (ImageRectangle(image:"ConvoLabels/Label_FacilitySearch") + (-5,200,390,580))
+		If strAction = "Highlight"
+			Click (text:strFacility,EnableAggressiveTextExtraction:On,IgnoreSpaces:On,ValidCharacters:strFacility,WaitFor:5)
+		Else If strAction = "Select"
+			DoubleClick (text:strFacility,EnableAggressiveTextExtraction:On,IgnoreSpaces:On,ValidCharacters:strFacility,WaitFor:5)	
+		End If
+	End If 
+	Set the searchRectangle to empty
+end highlightOrSelectFacilityInFacilitySearch
+
+
+//Handler: RCRegSearch.highlightOrSelectProviderInPersonnelSearch "Personnel", "Highlight OR Select"
+//Description: Validates for the personnel Search window and If window is open then selects the specified personnel.
+--> strPersonnelName: enter personnel name to select
+--> strAction: Enter "Highlight" or "Select".  Highlight the provider within the Personnel Search Window or Select the provider for the Provider Field.
+//Note: Use one of the "EnterOrModifyFieldValue" handlers from "RCRegConvoGeneral" Script to locate and enter value into provider prompt (eg:Primary care physician, Resource etc)
+to highlightOrSelectProviderInPersonnelSearch strPersonnelName, strAction
+	//check that Personnel Search window exists 
+	If ImageFound(3, "ConvoLabels/Label_PersonnelSearch")
+		Run RCRegSearch.maximizePersonnelSearchWindow
+		TypeText tabKey
+		Set srColumn1 to ImageRectangle(text:"Name",EnableAggresiveTextExtraction:On,ValidCharacters:"Name",IgnoreSpaces:On, SearchRectangle:ImageRectangle("ConvoLabels/ColumnLabel_Aliases")+(-RemoteScreenSize().x,-15,RemoteScreenSize().x, RemoteScreenSize().y))
+		//Select required Personnel from available lists
+		If strAction = "Highlight"
+			Click (text:strPersonnelName,EnableAggressiveTextExtraction:On,ValidCharacters:strPersonnelName, IgnoreSpaces:On,  SearchRectangle:(srColumn1.bottomleft+(-5,7),item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0,RemoteScreenSize().y+(-350))))
+		Else If strAction = "Select"
+			DoubleClick (text:strPersonnelName,EnableAggressiveTextExtraction:On,ValidCharacters:strPersonnelName,IgnoreSpaces:On, SearchRectangle:(srColumn1.bottomleft+(-5,7),item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0,RemoteScreenSize().y+(-350))))
+		End If
+	End If 
+end highlightOrSelectProviderInPersonnelSearch
+
+
+//Handler: RCRegSearch.maximizePersonnelSearchWindow	
+//Description: Maximize personnel search window by Dragging and dropping the corners.	
+to maximizePersonnelSearchWindow	
+	Drag ImageRectangle("ConvoLabels/Label_PersonnelSearch").topLeft +(40,5)	
+	Drop (60,10)	
+	Drag ImageLocation("ConvoSRs/BR_Window")	
+	Drop (1910,1030)	
+end maximizePersonnelSearchWindow
+
+
+//Handler: Set Variable to RCRegSearch.retrieveProviderSearchGridColumnValues("ColumnName")
+//Description: retrieves the provided column cell values in provider search window
+--> strColumnName1: enter column name to retrieve cell values
+to retrieveProviderSearchGridColumnValues strColumnName1
+	set the searchRectangle to (15,item 2 of ImageRectangle("ConvoLabels/ColumnLabel_Aliases")+(-8),RemoteScreenSize().x+(-20),RemoteScreenSize().y+(-100))
+	wait 2
+	Set srColumn1 to ImageRectangle(text:strColumnName1,EnableAggresiveTextExtraction:On,ValidCharacters:strColumnName1,IgnoreSpaces:On)
+	Set the SearchRectangle to srColumn1 + (-2,-5,RemoteScreenSize().x,RemoteScreenSize().y)
+	Set readColumnData to readText((srColumn1.bottomleft+(-5,7),item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0,RemoteScreenSize().y+(-350))),EnableAggressivetextExtraction:On)
+	set the searchRectangle to empty
+	return readColumnData
+end retrieveProviderSearchGridColumnValues
+
+
+//Handler: RCRegSearch.enterOrModifyFieldInPersonnelSearch "Field", "Value"
+//Description: locate and enter/modify field value in personnel Search window.
+--> strFieldLabel: enter field name in personnel search window (eg:Last Name , First Name, Alias etc)
+--> strFieldValue: enter value to be entered into the provided field
+//Note: Maximize personnel search window before calling this Handler
+to enterOrModifyFieldInPersonnelSearch strFieldLabel,strFieldValue
+	//Locate and enter field value
+	Click ImageLocation(text:strFieldLabel,EnableAggressiveTextExtraction:On,SearchRectangle:(ImageRectangle("ConvoLabels/Label_PersonnelSearch"))+(-15,75,RemoteScreenSize().x,800))+(5,25)
+	TypeText controlKey & "a"
+	TypeText deleteKey	
+	TypeText strFieldValue
+	Set the searchRectangle to empty
+end enterOrModifyFieldInPersonnelSearch
+
+
+//Handler: RCRegSearch.highlightOrSelectPlaceOfServiceSearch "POS Facility", "Highlight OR Select"
+//Description: Validates Place of Service window is open then Selects a POSFacility in PlaceOfService
+--> strPOSFacility: POS facility name or alias 
+--> strAction: Enter "Highlight" or "Select".  Highlight the facility within the POS Search Window or Select the facility for the Service Facility Field.
+//Note: "EnterOrModifyFieldValue" handler form "ConvoGeneral" Script can be used to locate and enter the POS prompt
+to highlightOrSelectPlaceOfServiceSearch strPOSFacility, strAction
+	//check that POS Search window exists 
+	If ImageFound(3,"ConvoLabels/Label_PlaceOfServiceSearch")
+		TypeText tabkey
+		Set the SearchRectangle to (ImageRectangle("ConvoLabels/Label_PlaceOfServiceSearch")+(-30,20,370,640))
+		//Select required POS Facility from available lists
+		If strAction = "Highlight"
+			Click (text:strPOSFacility,EnableAggressiveTextExtraction:On,ValidCharacters:strPOSFacility)
+		Else If strAction = "Select"
+			DoubleClick (text:strPOSFacility,EnableAggressiveTextExtraction:On,ValidCharacters:strPOSFacility)
+		End If
+	End If 
+	Set the searchRectangle to empty
+end highlightOrSelectPlaceOfServiceSearch
+
+
+//Handler: Set Variable to RCRegSearch.retrieveSearchGridValues("GridLabel", "AdjacentColumn", "AdjacentCellValue", "ColumnToSearch")
+//Description: used to retrieve required ColumnName2 cell value against the provided ColumnName1 cell value
+--> gridLabel : enter label name of the grid
+--> strColumnName1 : enter columnName to search for cellValue provided
+--> strColumnName2 : enter the columnName2 name from where cell value to be retrieved adjacent to ColumnName1 cell value
+--> strCellValue : enter the cell value under strColumnName1 
+//Note: Maximize person search window before calling this Handler
+to retrieveSearchGridValues gridLabel,strColumnName1,strCellValue,strColumnName2
+	If gridLabel = "Person"
+		Set srPerson to ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch") + (200,125,RemoteScreenSize().x,145)
+		Set the searchRectangle to srPerson	
+	Else If gridLabel = "Encounter"
+		Set srEncounter to ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch") + (200,550,RemoteScreenSize().x,570)
+		Set the searchRectangle to srEncounter
+	Else If gridLabel = "Guarantor"
+		Set srGuarantor to ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch") + (200,125,RemoteScreenSize().x,145)
+		Set the searchRectangle to srGuarantor
+	End If
+	//Locate Column1
+	Set srColumn1 to ImageRectangle(text:strColumnName1,EnableAggresiveTextExtraction:On,ValidCharacters:strColumnName1,IgnoreSpaces:On)
+	Set the searchRectangle to srColumn1 + (-2,-15,RemoteScreenSize().x,RemoteScreenSize().y)
+	Set the searchRectangle to (srColumn1.bottomLeft +(-5,5), item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator") + (0,RemoteScreenSize().y))
+	//Locate Cell Value
+	Set srCell to ImageRectangle(Text:strCellValue,EnableAggresiveTextExtraction:On,ValidCharacters:strCellValue,IgnoreSpaces:On)
+	If gridLabel = "Person"
+		Set the searchRectangle to srPerson
+	Else If gridLabel = "Encounter"
+		Set the searchRectangle to srEncounter
+	Else If gridLabel = "Guarantor" 
+		Set the searchRectangle to srGuarantor 
+	End If
+	//Locate Column2
+	Set srColumn2 to ImageRectangle(text:strColumnName2,EnableAggresiveTextExtraction:On,ValidCharacters:strColumnName2,ignoreSpaces:On)
+	Set the SearchRectangle to srColumn2 + (-2,-20,RemoteScreenSize().x,RemoteScreenSize().y)
+	//Retrieve Actual Cell Value
+	Set strActualCellValue to ReadText((srColumn2.Left+(-3),srCell.top+(-5),item 1 of item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator"),srCell.bottom+(7)),dpi:200,EnableAggresiveTextExtraction:On)
+	Log <<">>&strActualCellValue&<<">>&&"value retrieved."
+	Set the searchRectangle to empty
+	Return strActualCellValue
+end retrieveSearchGridValues
+
+
+//Handler: Set Variable to RCRegSearch.retrieveSeachGridColumnCellValueCount("gridLabel","strColumnName1","strCellValue")
+//Description: used to retrieve ColumnName1 cell value count (number of times provided cell values appears in provided column)
+--> gridLabel : enter the gridLabel Name Eg: Person/Encounter/Guarantor
+--> strColumnName1 : enter column Name to search for cellValue provided
+--> strCellValue : enter column Name1 cell value (to get number of count of provided cell values)
+//Note: For example to retrieve count of "Inpatient" cell value under encounter type column
+to retrieveSeachGridColumnCellValueCount gridLabel,strColumnName1,strCellValue
+	//set search rectangle to  grid/table
+	If gridLabel = "Person"
+		Set srPerson to ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch")+(180,115,RemoteScreenSize().x,500)
+		Set the searchRectangle to srPerson	
+	Else if gridLabel = "Encounter"
+		Set srEncounter to ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch") + (180,550,RemoteScreenSize().x,950)
+		Set the searchRectangle to srEncounter
+	Else if gridLabel = "Guarantor"
+		Set srGuarantor to ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch")+(180,115,RemoteScreenSize().x,500)
+		Set the searchRectangle to srGuarantor
+	End If
+	Set srColumn1 to ImageRectangle(text:strColumnName1,EnableAggresiveTextExtraction:On,ValidCharacters:strColumnName1,IgnoreSpaces:On)
+	Set the SearchRectangle to srColumn1 + (-2,-5,RemoteScreenSize().x,RemoteScreenSize().y)
+	Set the SearchRectangle to (srColumn1.bottomleft+(-5,5),item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0,RemoteScreenSize().y))
+	Set counter to EveryImageLocation(Text:strCellValue,EnableAggresiveTextExtraction:On,ValidCharacters:strCellValue,IgnoreSpaces:On)
+	set uniqueCellValueCount to number of items of counter
+	set the searchRectangle to empty
+	Log  <<">>&strCellValue&<<">>&&"appears in Column"&&<<">>&strColumnName1&<<">>&&uniqueCellValueCount&&"time(s)."
+	return uniqueCellValueCount
+end retrieveSeachGridColumnCellValueCount
+
+
+//Handler: RCRegSearch.selectPrimaryCareOrgInPrimaryCareOrgSearch "Org Name", "Physician"
+//Description: Validates for the PrimaryCareOrg window and If window is open then selects the specified primary org and physician.
+--> strOrgName: enter Org Name to select
+--> strPhysician: enter physician Name to select
+//Note: Use one of the "EnterOrModifyFieldValue" handlers from "RCRegConvoGeneral" Script to locate and enter value into Primary care Organization prompt
+to selectPrimaryCareOrgInPrimaryCareOrgSearch strOrgName, strPhysician
+	//check that primaryCareOrganizationSearch window exists 
+	If ImageFound(5, "ConvoLabels/Label_primaryCareOrganizationSearch")
+		Run RCRegGeneral.MaximizeWindowDragAndDrop "ConvoLabels/Label_primaryCareOrganizationSearch"
+		TypeText tabKey
+		set the SearchRectangle to ImageRectangle("ConvoLabels/Label_primaryCareOrganizationSearch")+(-10,150,RemoteScreenSize().x,RemoteScreenSize().y)
+		set colStart to EveryImageRectangle("ConvoLabels/ColumnLabel_Name")
+		set primaryCareOrgGrid to item 1 of colStart
+		set PhysicianGrid to item 2 of colStart
+		//select Primary Care Org
+		Click (text:strOrgName,EnableAggressiveTextExtraction:On, IgnoreSpaces:On,  SearchRectangle:(item 1 of primaryCareOrgGrid+(-3), item 2 of primaryCareOrgGrid+(-10),item 1 of item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0),item 2 of primaryCareOrgGrid+(160)))
+		wait 3//wait for physician to load
+		//select physician
+		Click (text:strPhysician,EnableAggressiveTextExtraction:On, IgnoreSpaces:On,  SearchRectangle:(item 1 of PhysicianGrid+(-3), item 2 of PhysicianGrid+(-10),item 1 of item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0),item 2 of PhysicianGrid+(160)))
+		wait 2
+	End if
+	Click Image:"RCRegGeneral/Button_Select"
+	set the SearchRectangle to ()
+end selectPrimaryCareOrgInPrimaryCareOrgSearch
+
+
+//Handler: Set Variable to RCRegSearch.nomenclatureSearch("search option","Code Or Name","diagnosis name or code","gird column name")
+//Description: used to search for diagnosis in nomenclature window using Diagnosis code or name
+--> strSearchOption : enter the search option (eg:Exact Match, Contains or Starts With)
+--> strCodeOrName : enter "Radio button option as "Code or Name"
+--> strDiagnosisCodeOrName : enter diagnosis Code or Name to search accordingly
+--> strColumnName : enter "SourceString if Searching with Name" or "Code if search with code"
+//Note: strColumnName images are found in "ConvoLabels/ColumnLabel_"&strColumnName path
+to nomenclatureSearch strSearchOption,strCodeOrName,strDiagnosisCodeOrName,strColumnName
+	//move nomenclature window to top
+	Drag ImageRectangle("ConvoLabels/Label_NomenclatureSearch").topLeft+(30,8)
+	Drop (50,12)
+	set strSearchboxLoc to imagerectangle("ConvoGroupLabels/GrpLabel_SearchBy").bottomRight
+	Run RCRegGeneral.selectRadioButtonOption strCodeOrName
+	//select search option
+	Click (Image:"ConvoIcons/Icon_DropDownArrow",Searchrectangle:ImageRectangle("ConvoGroupLabels/GrpLabel_SearchBy")+(0,50,100,100))
+	Click (Text:strSearchOption,EnableAggressiveTextExtraction:On,IgnoreSpaces:On,Searchrectangle:(item 1 of MouseLocation()+(-120),item 2 of MouseLocation()-(10),item 1 of MouseLocation()+(5),item 2 of MouseLocation()+(100)))
+	//select search text box
+	click strSearchboxLoc+(100,68)
+	TypeText controlKey& "a" & deleteKey
+	typetext strDiagnosisCodeOrName
+	click Image:"RCRegGeneral/Button_Search"
+	wait 5
+	waitfor 30,"RCRegGeneral/Button_Select"
+	wait 5
+	TypeText tabkey
+	//select row in diagnosis grid
+	Set srRectangle to (ImageRectangle("ConvoLabels/ColumnLabel_"&strColumnName).BottomLeft)
+	Set the SearchRectangle to (item 1 of srRectangle+(-2),item 2 of srRectangle+(-20),item 1 of srRectangle+(700),item 2 of srRectangle+(350))
+	//Locate Column 1
+	Set the SearchRectangle to (srRectangle+(-2,2),item 1 of EveryImageLocation("RCRegGeneral/Grid_Seperator")+(0,350))
+	//Click on Value
+	Click(Text:strDiagnosisCodeOrName,EnableAggresiveTextExtraction:On,IgnoreSpaces:On)
+	Set the searchRectangle to empty
+	Click Image:"RCRegGeneral/Button_Select"
+end nomenclatureSearch
+

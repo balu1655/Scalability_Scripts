@@ -1,0 +1,8 @@
+﻿2020-08-19 16:58:35.863 +0530	START		Running RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:58:36.491 +0530	Log		(Location1:"FirstLoc", Location2:"SecondLoc")	5	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:58:36.521 +0530	Log		1	6	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:58:36.578 +0530	Log		1	9	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:58:37.122 +0530	Log		hi i am location	13	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:58:37.301 +0530	Log		1	20	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-19 16:58:37.848 +0530	EndTestCase		(Duration:"1.913", Errors:"0", Exceptions:"0", StartTime:"2020-08-19 16:58:35 +0530", Successes:"1", TestCase:"RCA_Sched_Scalability_DataCreation.script", Warnings:"0")
+2020-08-19 16:58:38.116 +0530	SUCCESS		Execution Time 0:00:01 RCA_Sched_Scalability_DataCreation.script

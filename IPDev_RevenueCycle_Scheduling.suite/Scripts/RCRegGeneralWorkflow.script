@@ -1,0 +1,326 @@
+﻿////////////WorkFlow //////////////
+
+
+//Handler: RCRegGeneralWorkflow.searchAndSelectPatient "PatientName"
+//Description: Searches for and Selects a Patient in Revenue Cycle Person Search
+--> strPatient: enter patient name to load (Usually formatted as "Lastname, Firstname")
+to searchAndSelectPatient strPatient
+	Wait 2
+	DoubleClick ImageLocation(image:"ConvoIcons/Icon_SearchByIcon",WaitFor:15) + (-140, 0)
+	TypeText strPatient
+	Click "ConvoIcons/Icon_Search"
+	//DoubleClick Image: "ConvoLabels/Label_PersonGuarantorSearch", WaitFor: 60
+	//DoubleClick Image: "Scalability-Captures/RegPatientSearch", WaitFor: 60
+	DoubleClick ImageLocation("Scalability_Captures/RegPatientSearch") +(30,-10)
+	wait 1
+	RCRegGeneral.maximizeWindow
+	TypeText tabKey
+	WaitFor 10, image: "Scalability_Captures/RegPatientSearch", SearchRectangle: (RemoteScreenSize()*0,(180,50))
+	DoubleClick(text:strPatient, WaitFor:5,ValidCharacters:strPatient,textDifference:1,IgnoreSpaces:On,EnhanceLocalContrast:On,IgnoreLines:On,EnableAggressiveTextExtraction:On,InvertImage:On,SearchRectangle:ImageRectangle(FoundImageInfo()) +(180,120,RemoteScreenSize().x,500))
+	WaitFor 30, (text:strPatient, EnhanceLocalContrast:On, textDifference:1,ValidCharacters:strPatient, IgnoreSpaces:On,  EnableAgressiveTextExtraction:On, SearchRectangle:(ImageRectangle(image:"RCRegGeneral/Button_File",WaitFor:30)+(190,10,1400,45)))
+	Wait 2
+	Log <<">>&strPatient&<<">>&&"is open."
+end searchAndSelectPatient
+
+
+
+//Handler: RCRegGeneralWorkflow.searchAndSelectFacility "Facility"
+//Description: Searches for and Selects a Facility in Revenue Cycle Conversations.
+--> strFacility: enter Facility name to select
+to searchAndSelectFacility strFacility
+	RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_Facility", strFacility,"ConvoGroupLabels/GrpLabel_SelectedFacility"
+	TypeText returnKey
+	RCRegSearch.highlightOrSelectFacilityInFacilitySearch strFacility, "Select"
+	Log <<">>&strFacility&<<">>&&"is selected."
+end searchAndSelectFacility
+
+
+//Handler: RCRegGeneralWorkflow.searchAndSelectProvider "imgProviderType", "strProviderName"
+//Description: Searches for and Selects a provider in Revenue Cycle Personnel Search. Provider Type = Resource, Referring Physician, etc.
+--> imgProviderType: add prompt label image
+--> strProviderName: enter provider name to add/select
+to searchAndSelectProvider imgProviderType, strProviderName
+	DoubleClick ImageLocation(Image:imgProviderType)+(0,20)
+	TypeText controlKey &"a"
+	TypeText strProviderName, returnKey
+	If ImageFound(3, "ConvoLabels/Label_PersonnelSearch")
+		Set srTL to FoundImageLocation() + (-50,230)
+		Set srBR to FoundImageLocation() + (1300,750)
+		DoubleClick (text:strProviderName,ValidCharacters:"*",EnableAggressiveTextExtraction:On,SearchRectangle:(srTL,srBR))
+	End if
+	Set strField to trimstart("ConvoFields/Field_") of imgProviderType
+	Log <<">>&strProviderName&<<">>&&"entered into"&&<<">>&strField&<<">>&&"field."
+end searchAndSelectProvider
+
+
+//Handler: RCRegGeneralWorkflow.searchAndSelectPatientWithinConvo "PatientName"
+//Description: Searches for and selects a patient in the Person Search that opens through a conversation.
+--> strPatient: enter patient name to load
+to searchAndSelectPatientWithinConvo strPatient
+	Wait 1
+	WaitFor 10, "ConvoIcons/Icon_Search"
+	Click FoundImageLocation() + (-140, 0)
+	TypeText strPatient, tabKey, returnkey
+	WaitFor 30, "ConvoLabels/Label_PersonGuarantorSearch"
+	DoubleClick(text:strPatient, WaitFor:5,EnableAggressiveTextExtraction:On,EnhanceLocalContrast:On,ValidCharacters:"*",SearchRectangle:ImageRectangle("ConvoLabels/Label_PersonGuarantorSearch")+(180,100,800,400))
+	Log <<">>&strPatient&<<">>&&"is selected."
+end searchAndSelectPatientWithinConvo
+
+
+//Handler: RCRegGeneralWorkflow.addPatientWithBasicInfo "PatientName", "FacilityNameOptional", "GenderOptional", "DOBOptional"
+//Description: workflow to search for patient and add basic information like Facility,Gender,DOB
+--> strPatientName: enter patient name to create
+--> strFacilityName: enter facility name to type in facility prompt (Optional)
+--> strGender: enter gender to select from Sex drop down (Optional)
+--> strDOB: enter date to type in Date of birth prompt (Optional)
+to addPatientWithBasicInfo strPatientName,strFacilityName,strGender,strDOB
+	WaitFor 120, "RCRegGeneral/Label_RevenueCycle"
+	Run RCRegSearch.searchPersonByValue strPatientName
+	WaitFor 30, "ConvoLabels/Label_PersonGuarantorSearch"
+	//Click on Add Person Icon 
+	Click Image:"ConvoIcons/Icon_Add"
+	//maximize the Add Patient Window
+	WaitFor 20,"ConvoLabels/Label_AddPatient"
+	Wait 5 //wait till control loads
+	DoubleClick FoundImageLocation()
+	Wait 5 //wait till control loads
+	//enter facility if specified
+	If strFacilityName is not empty
+		Run RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_Facility",strFacilityName,"ConvoGroupLabels/GrpLabel_SelectedFacility"
+		TypeText returnKey
+		Run RCRegSearch.highlightOrSelectFacilityInFacilitySearch strFacilityName,"Select"
+	End If
+	//enter gender if specified
+	If strGender is not empty
+		Run RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_Sex",strGender,"ConvoGroupLabels/GrpLabel_Demographics"
+	End If
+	//enter date of birth if specified
+	If strDOB is not empty
+		Run RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_DateofBirth",strDOB
+	End If
+	Log "Started adding patient: " & strPatientName
+end addPatientWithBasicInfo
+
+
+//Handler: RCRegGeneralWorkflow.addEncounterWithBasicInfo "FacilityName", "EncounterTypeOptional", "BeginDateOptional", "ResourceOptional", "MRNOptional"
+//Description: workflow to load encounter perspective and then add new encounter with basic enc information like facilty, encounter type, begin date
+--> strFacilityName: enter facility name to type in facility prompt
+--> strEncounterType: enter encounter type value to select from encounter type drop down (Optional)
+--> strBeginDate: enter date to type in begin date prompt (Optional)
+--> strResource: enter provider to type in Resource prompt (Optional)
+--> strMRN: enter a MRN if the alias is not system assigned. (Optional)
+to addEncounterWithBasicInfo strFacilityName,strEncounterType,strBeginDate, strResource, strMRN
+	//load encounter perspective
+	RCRegGeneral.selectPatientPerspectiveAndView "Encounters","Encounters"
+	Waitfor 20,"ConvoIcons/Icon_Add"
+	Click (Image:"ConvoIcons/Icon_Add",WaitFor: 10, searchRectangle:(ImageLocation("ConvoSRs/TL_ViewTabs"),ImageLocation("ConvoSRs/BR_ViewTabs")))
+	//maximize add encounter window
+	WaitFor 30, "ConvoLabels/Label_AddEncounter"
+	RCRegGeneral.MaximizeWindowDragAndDrop "ConvoLabels/Label_AddEncounter"
+	//enter facility
+	WaitFor 10, "ConvoFields/Field_Facility"
+	RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_Facility",strFacilityName,"ConvoGroupLabels/GrpLabel_SelectedFacility"
+	TypeText returnKey
+	RCRegSearch.highlightOrSelectFacilityInFacilitySearch strFacilityName,"Select"
+	//enter MRN if add Add MRN dialog appears
+	If ImageFound(2,"ConvoLabels/Label_AddMRN")
+		If strMRN is not empty
+			RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_MRN",strMRN
+		Else 
+			Set numRandom to random(136845, 999999999)
+			RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_MRN",numRandom
+			TypeText returnKey
+		End If
+	End If
+	//enter encounter type if specified
+	If strEncounterType is not empty
+		Run RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_EncounterType",strEncounterType
+	End If 
+	//enter begin date if specified
+	If strBeginDate is not empty
+		Run RCRegConvoGeneral.enterOrModifyFieldByImg "ConvoFields/Field_BeginDate",strBeginDate
+	End If
+	//enter resource if specified
+	If strResource is not empty
+		Run RCRegGeneralWorkflow.searchAndSelectProvider "ConvoFields/Field_Resource", strResource
+	End If
+	Log "Started adding" && strEncounterType && "encounter."
+end addEncounterWithBasicInfo
+
+
+//Handler: RCRegGeneralWorkflow.importImage "strImageType" "strImageName"
+//Description: workflow to import an image in Add or Modify Image window. If user wants to import an image in Add Image window, strImageType and strImageName has to be defined. If user wants to perform Import action in Modify Image window, parameters should not be defined.
+--> strImageType: Enter image type from the drop down values
+--> strImageName: Enter image name
+//NOTE: Before calling this handler , user must make sure to either Add image or Modify Image is called.
+to importImage strImageType,strImageName
+	Run RCRegGeneral.maximizeWindow
+	Set the SearchRectangle to ImageRectangle((text:"Image Title",EnableAggressiveTextExtraction:on))+(-20,-10,180,RemoteScreenSize().y)
+	Wait 1
+	If strImageName is not empty
+		TypeText strImageName & tabKey 
+		//select Image type
+		Click ImageLocation(Text:"Image Type",EnableAggressiveTextExtraction:on)+(0,25)
+		Set firstCharOfstrImageType to first character of strImageType 
+		TypeText homeKey & firstCharOfstrImageType
+		Wait 1
+		Click (Text:strImageType,EnableAggressiveTextExtraction:on,validCharacters:strImageType)
+		TypeText tabKey 
+	End If
+	Click "RCRegGeneral/Button_Import"
+	Set the SearchRectangle to () 
+end importImage
+
+
+//Handler: RCRegGeneralWorkflow.selectDefaultConversation "ConvoType", "ConvoName"
+//Description: Selects and saves the Default Conversation for a Conversation Type in RevCycle Preferences. Assumes that the Preferences dialog is already open to  Conversations and maximized (Can use RCRegGeneral.selectPreferences handler to do this).
+--> strConvoType: Enter the conversation type you want to select the default conversation for. Ex: "Add Patient", "Add Encounter", "Modify Patient", or "Modify Encounter"
+--> strConvoName: Name of the Conversation you want to select for default. Ex: "RegAuto Add Patient", etc.
+to selectDefaultConversation strConvoType, strConvoName
+	Click ImageLocation("RCRegGeneral/Field_ConversationType") + (0,20)
+	Click (text:strConvoType, EnableAggressiveTextExtraction:On,ValidCharacters:strConvoType, SearchRectangle: ImageRectangle("RCRegGeneral/Field_ConversationType")+(0,20,85,118))
+	TypeText tabKey, tabKey,tabKey, tabKey, tabKey,tabKey
+	RCRegGeneral.selectOrUnselectCheckBoxOption "Enable Preference", "Check"
+	MoveTo ImageLocation("RCRegGeneral/Field_ConversationType")+(200,150)
+	Set srAvailList to ImageRectangle("RCRegGeneral/Field_ConversationType")+(0,100,730,240)
+	If ImageFound(Text: strConvoName,EnableAggressiveTextExtraction:On,EnhanceLocalContrast:On,IgnoreSpaces:On,WaitFor:1, SearchRectangle: srAvailList)
+		DoubleClick FoundImageLocation()	
+	Else If ImageFound(image:"RCRegGeneral/Scrollbar_Down", SearchRectangle:srAvailList)
+		Repeat until ImageFound(image:"RCRegGeneral/Scrollbar_EndOfScroll", WaitFor:1, SearchRectangle: srAvailList)
+			ScrollWheelDown 4
+			If ImageFound(text:strConvoName,EnableAggressiveTextExtraction:On,EnhanceLocalContrast:On,IgnoreSpaces:Yes,WaitFor:1, SearchRectangle: srAvailList)
+				DoubleClick FoundImageLocation()	
+				Exit Repeat
+			End If
+		End Repeat 
+	End If
+	
+	MoveTo ImageLocation("RCRegGeneral/Field_ConversationType")+(1100,150)
+	Set srSelectedList to ImageRectangle("RCRegGeneral/Field_ConversationType")+(880,100,1600,270)
+	If ImageFound(text:strConvoName,EnableAggressiveTextExtraction:On,EnhanceLocalContrast:On,IgnoreSpaces:Yes,WaitFor:1, SearchRectangle: srSelectedList)
+		Click FoundImageLocation()	
+	Else If ImageFound(image:"RCRegGeneral/Scrollbar_Down", SearchRectangle:srSelectedList)
+		Repeat until ImageFound(image:"RCRegGeneral/Scrollbar_EndOfScroll", WaitFor:1, SearchRectangle:srSelectedList)
+			ScrollWheelDown 4
+			If ImageFound(text:strConvoName,EnableAggressiveTextExtraction:On,EnhanceLocalContrast:On,IgnoreSpaces:Yes,WaitFor:1, SearchRectangle: srSelectedList)
+				Click FoundImageLocation()	
+				Exit Repeat
+			End If
+		End Repeat 
+	Else
+		Log "Conversation not found."
+		Exit handler
+	End If
+	Repeat until Imagefound(Image:"ConvoIcons/Icon_UpArrow", WaitFor:1,SearchRectangle:srSelectedList+(330,150,-330,0)) = False
+		DoubleClick (Image:"ConvoIcons/Icon_UpArrow", SearchRectangle:srSelectedList+(330,150,-330,0))
+		Wait 1
+	End Repeat
+	Click "RCRegGeneral/Button_Apply"
+end selectDefaultConversation
+
+
+//Handler: RCRegGeneralWorkflow.closeAllApps
+//Description: Uses Command Prompt to close out of all open applications to help get SUT back to a Zero State.
+//Description of Old way: Opens the Task Manager and closes every open application to help get SUT back to a Zero State. Assumes Operating System in Windows 10.
+to closeAllApps
+	Log "Closing Applications..."
+	Set the ScriptLogging to Minimal
+	Set the RemoteClipboard to empty
+	Typetext windowsKey,"d"
+	Set CloseAllBatchCode to <<taskkill /f /im RevenueCycle.exe
+taskkill /im RevenueCycleMaintenance.exe /t /f 
+for /f %i in ('TASKLIST /FI "USERNAME eq %userdomain%\%username%" /FI "STATUS eq running"') do (
+if not "%i"=="svchost.exe" (
+if not "%i"=="explorer.exe" (
+if not "%i"=="tasklist.exe" (
+if not "%i"=="taskmgr.exe" (
+if not "%i"=="wscntfy.exe" (
+if not "%i"=="java.exe" (
+if not "%i"=="jp2launcher.exe" (
+if not "%i"=="VMwareTray.exe" (
+if not "%i"=="VMwareUser.exe" (
+if not "%i"=="tcrea.exe" (
+if not "%i"=="jusched.exe" (
+if not "%i"=="WinVNC.exe" (
+if not "%i"=="nc.exe" (
+if not "%i"=="cmd.exe" (
+if not "%i"=="conhost.exe" (
+if not "%i"=="rdpclip.exe" (
+taskkill /f /im "%i" )))))))))))))))))
+exit
+>> 
+	Wait 2
+	typetext WindowsKey,"r"
+	typetext "cmd"
+	TypeText controlKey & shiftKey & returnKey
+	WaitFor 60,"Scalability_Captures/Cmd_Img"
+	TypeText "CD C:\Windows\System32", returnKey
+	Set the Remoteclipboard to CloseAllBatchCode
+	Repeat until the RemoteClipboard is not equal to empty or repeatindex()=100
+		Wait 0.2
+	End Repeat
+	TypeText controlKey,"v"
+	Repeat until not ImageFound(ImageName:"Scalability_Captures/Cmd_Img",WaitFor:2) or RepeatIndex()=100
+		Wait 1
+	End Repeat	
+	Wait 2
+	Click RemoteScreenSize()/2
+	Wait 3
+	Set the scriptLogging to On
+	Log "All Applications are closed."
+	//Old Front End Way, Keeping just in case.
+	(*taskkill /f /im apstrackingstations.exe
+	taskkill /f /im apscytologyresultentry.exe
+	taskkill /f /im desktoplauncher.exe
+	taskkill /f /im javaw.exe
+	taskkill /f /im RevenueCycle.exe
+	taskkill /f /im RevenueCycleMaintenance.exe*)
+	(*TypeText windowsKey & "d"
+	MoveTo RemoteScreenSize()/2
+	TypeText controlKey & shiftKey & escapeKey
+	If ImageFound(image:"RCRegGeneral/Label_MoreDetails")
+		Click FoundImageLocation()
+	End If
+	DoubleClick (image:"RCRegGeneral/Label_TaskManager", WaitFor:10)
+	Wait 5
+	If ImageFound(image:"RCRegGeneral/Label_Apps",WaitFor:20) = False
+		Click (text:"Name", ValidCharacters:"Name", EnhanceLocalContrast:On, EnableAggressiveTextExtraction:On, SearchRectangle: (RemoteScreenSize()*0, RemoteScreenSize()*.5))
+	End If
+	Repeat Until ImageFound(image:"RCRegGeneral/Label_Apps",WaitFor:1) = False or RepeatIndex() = 20
+		If ReadText(ImageLocation("RCRegGeneral/Label_Apps") + (20,30), WaitFor:.5) contains "Task Manager" and ReadText(ImageLocation("RCRegGeneral/Label_Apps") + (20,70), WaitFor:.5) does not contain "Background processes"
+			If ReadText(ImageLocation("RCRegGeneral/Label_Apps") + (20,70), WaitFor:.5) contains "Windows Explorer"
+				Click FoundImageLocation() + (20,60)
+				TypeText rightArrow, rightArrow, rightArrow, rightArrow
+			Else If ReadText(ImageLocation("RCRegGeneral/Label_Apps") + (20,30), WaitFor:.5) contains "Windows Explorer"
+				Click FoundImageLocation()+(20,30)
+				TypeText rightArrow, rightArrow, rightArrow, rightArrow
+			Else
+				Click FoundImageLocation() + (20,60)
+			End If
+		Else
+			Click FoundImageLocation() + (20,30)
+		End If
+		TypeText altKey & "e"
+		Wait 1
+		ScrollWheelUp 10
+	End Repeat*)
+end closeAllApps
+
+
+//Handler: RCRegGeneralWorkflow.removeCurrentUserLocks
+//Description: Removes all Registration Locks for the current user. Helps to get SUT back to Zero State.
+to removeCurrentUserLocks
+	RCRegGeneral.performMenuActions "Task", "Locks", "", ""
+	WaitFor 20, "ConvoLabels/Label_LocksManager"
+	If ImageFound("RCRegGeneral/Button_RemoveAll")
+		Click FoundImageLocation()
+	End If
+	If ImageFound(text:"PDS", EnhanceLocalContrast:On, EnableAggressiveTextExtraction:On, SearchRectangle: ImageRectangle("ConvoLabels/Label_LocksManager")+ (0,200,200,210))
+		Click FoundImageLocation()
+		If ImageFound("RCRegGeneral/Button_RemoveAll")
+			Click FoundImageLocation()
+		End If
+	End If	
+	Click "ConvoButtons/Button_Close"
+end removeCurrentUserLocks
+

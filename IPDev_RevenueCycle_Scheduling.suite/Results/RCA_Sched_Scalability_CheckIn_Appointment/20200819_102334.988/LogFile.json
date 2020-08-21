@@ -1,0 +1,455 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 10:23:35.001 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 10:23:36.340 +0530",
+				"message": "Using local data",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 10:23:36.402 +0530",
+				"message": "((domain:\"ablgmprep\", password:\"system\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle\\\\RevenueCycle.exe\", userName:\"system\"))",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 8,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_checkin_appointment",
+				"timestamp": "2020-08-19 10:23:36.559 +0530",
+				"message": "((domain:\"ablgmprep\", password:\"system\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle\\\\RevenueCycle.exe\", userName:\"system\"))",
+				"scriptName": "RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"handlerLine": 10,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_checkin_appointment",
+				"timestamp": "2020-08-19 10:23:36.605 +0530",
+				"message": "((appointmentName:\"scaleappt\", comment:\"Test Comment\", confirmedDate:\"00:00.0\", confirmedTime:\"\", location:\"RCA Reporting\", locationGroup:\"RegAuto Locations\", patientName:\"Test, Person\", rescheduleReason:\"Patient Requested\", resource:\"Resource Group\", resourceGroup:\"Recur_Resource_Group1\", testDate:\"\", timeFrame:\"All Day\"))",
+				"scriptName": "RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"handlerLine": 11,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_subrulesoftheroad",
+				"timestamp": "2020-08-19 10:23:49.004 +0530",
+				"scriptName": "OpenApplication.script",
+				"message": "Unable to Find Image (TEXT:\"Rules of the road\") within 10.00 seconds. Text might be too low contrast to detect.",
+				"image": "(TEXT:\"Rules of the road\")",
+				"handlerLine": 2,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_subrulesoftheroad",
+				"timestamp": "2020-08-19 10:23:49.104 +0530",
+				"message": "Rules of the road not found",
+				"scriptName": "OpenApplication.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 10:23:49.324 +0530",
+				"message": "[windowsKey]r",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 2,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 10:23:50.386 +0530",
+				"message": "[controlKey]a",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 3,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 10:23:51.441 +0530",
+				"message": "[deleteKey]",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 4,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 10:23:53.167 +0530",
+				"message": "C:\\Program Files\\Cerner\\RevenueCycle\\RevenueCycle.exe",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 5,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_openapplication",
+				"timestamp": "2020-08-19 10:23:54.228 +0530",
+				"message": "[returnKey]",
+				"scriptName": "Run_Window.script",
+				"handlerLine": 6,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_checkin_appointment",
+				"timestamp": "2020-08-19 10:24:05.525 +0530",
+				"scriptName": "RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"message": "found at (959, 398)",
+				"image": "RCRegGeneral/Label_LoginScreenRevenueCycle",
+				"handlerLine": 33,
+				"identifier": "waitfor"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:08.136 +0530",
+				"scriptName": "Millennium_Login_window.script",
+				"message": "found at (891, 465)",
+				"image": "Millennium_Login_window/Textbox_Username",
+				"handlerLine": 3,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:08.393 +0530",
+				"message": "at (891, 485)",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 5,
+				"identifier": "click"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:09.418 +0530",
+				"message": "[controlKey]a",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 13,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:10.537 +0530",
+				"message": "system",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 14,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:12.314 +0530",
+				"scriptName": "Millennium_Login_window.script",
+				"message": "found at (889, 512)",
+				"image": "Millennium_Login_window/Textbox_Password",
+				"handlerLine": 18,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:12.587 +0530",
+				"message": "at (889, 532)",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 20,
+				"identifier": "click"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:13.611 +0530",
+				"message": "[controlKey]a",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 27,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:14.825 +0530",
+				"message": "system",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 28,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:16.205 +0530",
+				"scriptName": "Millennium_Login_window.script",
+				"message": "found at (879, 559)",
+				"image": "Millennium_Login_window/Textbox_Domain_revCycleApp",
+				"handlerLine": 32,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:16.488 +0530",
+				"scriptName": "Millennium_Login_window.script",
+				"message": "at (863,552,910,565)",
+				"image": "Millennium_Login_window/Textbox_Domain_revCycleApp",
+				"handlerLine": 34,
+				"identifier": "imagerectangle"
+			},
+		{
+				"message": "(866,572,980,595)",
+				"identifier": "readtext",
+				"timestamp": "2020-08-19 10:24:16.733 +0530"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:17.123 +0530",
+				"message": "iblgmprep",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 35,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:17.616 +0530",
+				"message": "at (884, 584)",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 39,
+				"identifier": "click"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:18.641 +0530",
+				"message": "[controlKey]a",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 40,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:19.773 +0530",
+				"message": "ablgmprep",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 41,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:22.010 +0530",
+				"scriptName": "Millennium_Login_window.script",
+				"message": "found at (908, 634)",
+				"image": "Millennium_Login_window/Button_OK",
+				"handlerLine": 47,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:22.317 +0530",
+				"message": "at (908, 634)",
+				"scriptName": "Millennium_Login_window.script",
+				"handlerLine": 49,
+				"identifier": "doubleclick"
+			},
+		{
+				"handlerName": "on_logintorevenucycleapps",
+				"timestamp": "2020-08-19 10:24:32.874 +0530",
+				"scriptName": "Millennium_Login_window.script",
+				"message": "Unable to Find Image Millennium_Login_window/Button_Acknowledge",
+				"image": "Millennium_Login_window/Button_Acknowledge",
+				"handlerLine": 57,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_checkin_appointment",
+				"timestamp": "2020-08-19 10:24:38.913 +0530",
+				"scriptName": "RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"message": "found at (212, 54)",
+				"image": "ConvoIcons/Icon_Search",
+				"handlerLine": 36,
+				"identifier": "waitfor"
+			},
+		{
+				"handlerName": "on_selectoptionsearchby",
+				"timestamp": "2020-08-19 10:24:39.777 +0530",
+				"scriptName": "RCRegSearch.script",
+				"message": "at (188, 53)",
+				"image": "ConvoIcons/Icon_SearchByIcon",
+				"handlerLine": 3,
+				"identifier": "imagelocation"
+			},
+		{
+				"handlerName": "on_selectoptionsearchby",
+				"timestamp": "2020-08-19 10:24:39.874 +0530",
+				"message": "at (188, 53)",
+				"scriptName": "RCRegSearch.script",
+				"handlerLine": 3,
+				"identifier": "click"
+			},
+		{
+				"handlerName": "on_selectoptionsearchby",
+				"timestamp": "2020-08-19 10:24:41.046 +0530",
+				"scriptName": "RCRegSearch.script",
+				"message": "at (180,44,222,64)",
+				"image": "ConvoIcons/Icon_SearchByIcon",
+				"handlerLine": 4,
+				"identifier": "imagerectangle"
+			},
+		{
+				"handlerName": "on_selectoptionsearchby",
+				"timestamp": "2020-08-19 10:24:41.557 +0530",
+				"scriptName": "RCRegSearch.script",
+				"message": "at (91, 306)",
+				"image": "(TEXT:\"Appointments\")",
+				"handlerLine": 4,
+				"identifier": "click"
+			},
+		{
+				"handlerName": "on_selectoptionsearchby",
+				"timestamp": "2020-08-19 10:24:41.586 +0530",
+				"message": "Search By Appointments - option selected.",
+				"scriptName": "RCRegSearch.script",
+				"handlerLine": 5,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_selectoptionsearchby",
+				"timestamp": "2020-08-19 10:24:41.620 +0530",
+				"message": "SEARCHRECTANGLE = ",
+				"scriptName": "RCRegSearch.script",
+				"handlerLine": 6,
+				"identifier": "set"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:44.773 +0530",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"message": "at (188, 53)",
+				"image": "ConvoIcons/Icon_SearchByIcon",
+				"handlerLine": 3,
+				"identifier": "imagelocation"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:44.904 +0530",
+				"message": "at (48, 53)",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"handlerLine": 3,
+				"identifier": "doubleclick"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:46.064 +0530",
+				"message": "Test, Person",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"handlerLine": 4,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:47.174 +0530",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"message": "at (212, 54)",
+				"image": "ConvoIcons/Icon_Search",
+				"handlerLine": 5,
+				"identifier": "click"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:48.979 +0530",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"message": "at (535, 32)",
+				"image": "Scalability_Captures/RegPatientSearch",
+				"handlerLine": 8,
+				"identifier": "imagelocation"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:49.151 +0530",
+				"message": "at (565, 22)",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"handlerLine": 8,
+				"identifier": "doubleclick"
+			},
+		{
+				"handlerName": "on_maximizewindow",
+				"timestamp": "2020-08-19 10:24:57.287 +0530",
+				"scriptName": "RCRegGeneral.script",
+				"message": "Unable to Find Image RCRegGeneral/Button_Maximize within 5.00 seconds",
+				"image": "RCRegGeneral/Button_Maximize",
+				"handlerLine": 3,
+				"identifier": "imagefound"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:57.418 +0530",
+				"message": "[tab]",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"handlerLine": 11,
+				"identifier": "typetext"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:57.455 +0530",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"message": "found at (25, 28)",
+				"image": "Scalability_Captures/RegPatientSearch",
+				"handlerLine": 12,
+				"identifier": "waitfor"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:58.442 +0530",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"message": "at (2,3,18,19)",
+				"image": "Scalability_Captures/RegPatientSearch",
+				"handlerLine": 13,
+				"identifier": "imagerectangle"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:24:59.988 +0530",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"message": "at (264, 164)",
+				"image": "(TEXT:\"Test, Person\")",
+				"handlerLine": 13,
+				"identifier": "doubleclick"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:25:00.994 +0530",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"message": "at (6,26,29,38)",
+				"image": "RCRegGeneral/Button_File",
+				"handlerLine": 14,
+				"identifier": "imagerectangle"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:25:01.460 +0530",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"message": "found at (345, 59)",
+				"image": "(TEXT:\"Test, Person\")",
+				"handlerLine": 14,
+				"identifier": "waitfor"
+			},
+		{
+				"handlerName": "on_searchandselectpatient",
+				"timestamp": "2020-08-19 10:25:03.682 +0530",
+				"message": "\"Test, Person\" is open.",
+				"scriptName": "RCRegGeneralWorkflow.script",
+				"handlerLine": 16,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_checkin_appointment",
+				"timestamp": "2020-08-19 10:25:24.620 +0530",
+				"scriptName": "RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"message": "No Image Found On Screen: \"RevenueCycleCore/icon_PatientTracking\"",
+				"image": "RevenueCycleCore/icon_PatientTracking",
+				"handlerLine": 43,
+				"identifier": "Exception"
+			},
+		{
+				"message": "(Duration:\"111.271\", Errors:\"1\", Exceptions:\"1\", StartTime:\"2020-08-19 10:23:35 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_CheckIn_Appointment.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 10:25:26.289 +0530"
+			},
+		{
+				"message": "Execution Time 0:01:51 RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"identifier": "ABORTED",
+				"timestamp": "2020-08-19 10:25:26.325 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 10:23:35.014 +0530"
+}

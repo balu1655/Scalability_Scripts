@@ -1,0 +1,269 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//PatientTracking Perspective   
+//PatientTracking - Perpspective will load after selecting patient tracking tab
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
+//subfunction to set up filters in Patient Tracking
+//This handler is to interact with the Patient Tracking filter dialog and enter values to all the text boxes and list except  checkbox
+//Example use in your script: "PatientTracking/PatientTracking".SetPTFilter "JB Loc Group", "MK res","Resource Group", "RCA Reporting","All Day"
+//strLocGrp: String variable containing the desired location group 
+//strResource: String variable containing the desired resource (Optional)
+//strResType : String variable containing the desired resource type (Resource Group / Resource)(Optional only if no resource or resource group given)
+//strLocation: String variable containing the desired location (Optional)
+//strTimeframe: String variable containing the desired time frame filter (All day/ Next 2 hours)
+//Note: Handler does not click apply.
+//////////////////////////////////////////////////////////////////////////////
+to subSetPTFilter strLocGrp, strResource, strRestype,strLocation, strTimeframe
+	log "Call handler: subSetPTFilter", 
+	
+	//To Load Patient Tracking Filters Dialog
+	WaitFor 30, imagename:"PatientTracking/label_TimeFrameDefault"
+	if ImageFound(ImageName:("Scalability_Captures/Patient_Tracking_Maximize"),waitfor:10,SearchRectangle:(ImageLocation(text:"Preferences")+(10,-20),ImageLocation(Text:"Preferences")+(RemoteScreenSize().x,30))) then
+		Click (ImageName:"Scalability_Captures/Patient_Tracking_Maximize",SearchRectangle:(ImageLocation(text:"Preferences")+(10,-20),ImageLocation(Text:"Preferences")+(RemoteScreenSize().x,30)))
+	end if
+	wait 2.0//Required for the Application to Load
+	Click imagename:"PatientTracking/button_RestoreDefaults", waitFor:20, SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")
+	wait 2.0//Required for the Application to Load
+	
+	// To enter Location group	
+	Click ImageLocation(image:"PatientTracking/label_LocationGroup")+(790,20)
+	moveto  Item 3 of EveryImageLocation(image:"PatientTracking/label_LocationGroup")
+	waitfor 10,"Scalability_Captures/Icon_LocationGroup"
+	set the searchrectangle to FoundImageInfo()'s imagerectangle()+(-10,20,200,100)
+	wait 2.0//Required for the Application to Load
+	Click ImageLocation(image:"PatientTracking/label_LocationGroup")+(10,20)
+	Typetext strLocGrp
+	wait 2.0//Required for the Application to Load
+	Click imagename:"PatientTracking/button_Search"
+	
+	//Click ImageLocation(Text:"Search",EnableAggresivetextextraction:on)
+	set the searchRectangle to ()
+	
+	set the searchRectangle to Imagerectangle(Text:"Location Group Results",EnableAggresivetextextraction:on)+(-10,5,300,400)
+	//Click ImageLocation(Text:strLocGrp,TextDifference:1,EnableAggresivetextextraction:on)
+	Click "RevenueCycleCore/button_Select"
+	set the searchrectangle to ()		
+	// To enter Resource Group
+	if strResource is not empty
+		Click ImageLocation(image:"PatientTracking/label_Resource")+(785,20)
+		if strResType = "Resource Group"
+			Typetext downArrow
+			Typetext downArrow
+			TypeText ReturnKey
+		else 
+			Typetext downArrow
+			TypeText ReturnKey
+		end if	
+		Click ImageLocation(image:"PatientTracking/label_Resource")+(810,20)
+		waitfor 50,"Scalability_Captures/Icon_ResourceGroupResourceSelection"
+		Click ImageLocation(Text:"Search by",EnableAggresivetextextraction:on,IgnoreSpaces:on,ValidWords:"*")+(0,70)
+		TypeText strResource
+		wait 2.0//Required for the Application to Load
+		set the searchrectangle to imagerectangle("Scalability_Captures/Icon_ResourceGroupResourceSelection")+(-20,70,600,160)
+		Click imagename:"PatientTracking/button_Search"
+		wait 2.0//Required for the Application to Load
+		set the SearchRectangle to empty
+		(*set the searchRectangle to Imagerectangle((Text:strRestype,EnableAggresivetextextraction:on),(Text:strRestype,textDifference:2))+(-10,5,780,650)*)
+		set the searchRectangle to ImageRectangle((text:"Resource Results",EnableAggresivetextextraction:on),(Text:"Resource Results",textDifference:2))+(-10,-10,690,550)
+		(*Click ImageLocation(Text:strResource, TextDifference:2, EnableLocalContrast:on,EnableAggresivetextextraction:on,ValidWords:"*")*)
+		Click "RevenueCycleCore/button_Select"
+		set the searchrectangle to ()				
+	end if
+	//To Enter Location	
+	Click ImageLocation(image:"PatientTracking/Label_LocationGroup")+(10,70)
+	TypeText controlKey&homeKey&shiftKey&endKey
+	TypeText deleteKey
+	TypeText  strLocation		
+	// to enter time frame
+	Click ImageLocation("PatientTracking/Label_TimeFrameDefault")+(1000,20)		
+	TypeText strTimeframe
+	Typetext returnkey		
+	
+	log "End handler: subSetPTFilter"
+end subSetPTFilter
+
+----existing----------------
+
+(*to subSetPTFilter strLocGrp, strResource, strRestype,strLocation, strTimeframe
+	log "Call handler: subSetPTFilter"
+	
+	//To Load Patient Tracking Filters Dialog
+	WaitFor 30, imagename:"PatientTracking/label_TimeFrameDefault"
+	if ImageFound(ImageName:("RevenueCycleCore/icon_Maximize"),waitfor:10,SearchRectangle:(ImageLocation(text:"Preferences")+(10,-10),ImageLocation(Text:"Preferences")+(RemoteScreenSize().x,30))) then
+		Click (ImageName:"RevenueCycleCore/icon_Maximize",SearchRectangle:(ImageLocation(text:"Preferences")+(10,-10),ImageLocation(Text:"Preferences")+(RemoteScreenSize().x,30)))
+	end if
+	wait 2.0//Required for the Application to Load
+	Click imagename:"PatientTracking/button_RestoreDefaults", waitFor:20, SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")
+	wait 2.0//Required for the Application to Load
+	
+	// To enter Location group	
+	Click ImageLocation(image:"PatientTracking/label_LocationGroup")+(790,20)
+	moveto  Item 3 of EveryImageLocation(image:"PatientTracking/label_LocationGroup")
+	waitfor 10,"PatientTracking/icon_LocationGroup"
+	set the searchrectangle to FoundImageInfo()'s imagerectangle()+(-10,20,300,100)
+	wait 2.0//Required for the Application to Load
+	Click ImageLocation(image:"PatientTracking/label_LocationGroup")+(10,20)
+	Typetext strLocGrp
+	wait 2.0//Required for the Application to Load
+	Click imagename:"PatientTracking/button_Search"
+	
+	//Click ImageLocation(Text:"Search",EnableAggresivetextextraction:on)
+	set the searchRectangle to ()
+	
+	set the searchRectangle to Imagerectangle(Text:"Location Group Results",EnableAggresivetextextraction:on)+(-10,5,300,400)
+	Click ImageLocation(Text:strLocGrp,TextDifference:1,EnableAggresivetextextraction:on)
+	Click "RevenueCycleCore/button_Select"
+	set the searchrectangle to ()		
+	// To enter Resource Group
+	if strResource is not empty
+		Click ImageLocation(image:"PatientTracking/label_Resource")+(785,20)
+		if strResType = "Resource Group"
+			Typetext downArrow
+			Typetext downArrow
+			TypeText ReturnKey
+		else 
+			Typetext downArrow
+			TypeText ReturnKey
+		end if	
+		Click ImageLocation(image:"PatientTracking/label_Resource")+(810,20)
+		waitfor 20,"PatientTracking/label_ResourceGroupResourceSelection"
+		Click ImageLocation(Text:"Search by",EnableAggresivetextextraction:on,IgnoreSpaces:on,ValidWords:"*")+(0,70)
+		TypeText strResource
+		wait 2.0//Required for the Application to Load
+		set the searchrectangle to imagerectangle("PatientTracking/label_ResourceGroupResourceSelection")+(-20,70,600,160)
+		Click imagename:"PatientTracking/button_Search"
+		wait 2.0//Required for the Application to Load
+		set the SearchRectangle to empty
+		set the searchRectangle to ImageRectangle((text:"Resource Group Results",EnableAggresivetextextraction:on),(Text:"Resource Group Results",textDifference:2))+(-10,-10,690,550)
+		//set the searchRectangle to Imagerectangle((Text:"Resource Group Results",EnableAggresivetextextraction:on))+(-10,5,780,550)
+		//Click ImageLocation(Text:strResource, TextDifference:2, EnableAggresivetextextraction:on,ValidWords:"*")
+		Click "RevenueCycleCore/button_Select"
+		set the searchrectangle to ()				
+	end if
+	//To Enter Location	
+	Click ImageLocation(image:"PatientTracking/Label_LocationGroup")+(10,70)
+	TypeText controlKey&homeKey&shiftKey&endKey
+	TypeText deleteKey
+	TypeText strLocation		
+	// to enter time frame
+	Click ImageLocation("PatientTracking/Label_TimeFrameDefault")+(1000,20)		
+	TypeText strTimeframe
+	Typetext returnkey		
+	
+	log "End handler: subSetPTFilter"
+end subSetPTFilter*)
+
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to navigate to desired date in Patient Tracking
+//
+//Date format: mm/dd/yyyy
+//This handler is to interact with the Patient Tracking date navigation
+//////////////////////////////////////////////////////////////////////////////
+
+to subPTFindDate datCurrentDate, datApptDate
+	//datCurrentDate: Date variable containing the current date selected. For Patient Tracking, this will always be the true current date (REQUIRED)
+	//datApptDate: Date variable containing the date of the appointment (or lack of appointments) you wish to find (REQUIRED)
+	//numModDiff: Number variable containing the difference of months between two dates, mod 12
+	//numClicks: Number variable containing the number of clicks the handler must perform to navigate to target month
+	
+	log "Call handler: subPTFindDate"
+	
+	//Validate required parameters have contents
+	"HandlerHelpers".subValidateRequiredParameters datCurrentDate, datApptDate, "t"
+	
+	//Determine distance from current month to target month
+	put (month(datCurrentDate) - month(datApptDate)) mod 12 into numModDiff
+	
+	//Determine number of clicks needed to navigate to target month
+	if date(datApptDate) = datCurrentDate then
+		exit script
+	else if month(datApptDate) > month(datCurrentDate) then
+		put numModDiff + 12 * (year(datCurrentDate) - year(datApptDate) - 1) into numModDiff
+	else
+		put numModDiff + 12 * (year(datCurrentDate) - year(datApptDate)) into numModDiff
+	end if
+	
+	put abs(numModDiff) into numClicks
+	
+	//Perform date search
+	if imagefound(image:"PatientTracking/icon_Today",waitfor:10)
+		
+		//Remove 0 in single-digit dates
+		if asnumber(day(datApptDate)) < 10 then
+			delete characters 4 to 4 of datApptDate
+		end if
+		
+		//Ensure PT date is reset to current date
+		click image:"PatientTracking/icon_Today",waitfor:60
+		
+		wait 5
+		click image:"PTDateDropDown",waitfor:15
+		
+		//Repeat to navigate to target month
+		repeat numClicks times
+			if numModDiff < 0 then
+				click image:"PTMonthForward",waitfor:5
+			else
+				click image:"PTMonthBackward",waitfor:5
+			end if
+		end repeat
+		
+		put imagelocation("PatientTracking/icon_Today") + (40, 70) into TLvar
+		put TLvar + (210, 200) into BRvar
+		
+		//Click target day within target month
+		put day(datApptDate) into dateToSelect
+		set the searchRectangle to (TLvar,BRvar)
+		click ((text:dateToSelect, contrast:on, contrastcolor:white, contrasttolerance:20,language:"French"),(text:dateToSelect))
+		set the SearchRectangle to empty
+	else
+		logerror "Cannot find Patient Tracking controls. Please verify you have called this handler at an appropriate point in your script."
+	end if
+	log "End handler: subPTFindDate"
+end subPTFindDate
+
+//////////////////////////////////////////////////////////////////////////////
+//fucntion to return the specified row of search rectangle coordinates based on Apppointmenttime and Patient Name/AppointmentType.It wont work if its more than 10 results.It needs enhancement in futurebased on need
+//Varaiables:strApptTime,strPatientorAppt,firstRec,SecRec
+//strApptTime :Enter the Appointmnet confirmed time E.g"04:00 AM"
+//strPatientorAppt:Enter Patient Name/Appointmenttype  E.g "Admitted, pateint","dpappt01"
+//firstRec-Return the x1,y1 coordinates for search rectangle
+//SecRec-Return the x2,y2 coordinates for search rectangle
+//Note: Select Resource also in preference's patient tracking
+///////////////////////////////////////////////////////////////////////////-vr043596
+to funreturnAppointmentDetailsLocation strApptTime,strPatientorAppt
+	Log "Call Handler: funreturnAppointmentDetailsLocation"
+	//click "RevenueCycleCore/label_RevenueCycle" //to make "today" tooltip disappear
+	Repeat 10 times
+		put ReadText(ImageRectangle("Scalability_Prep_Captures/PatientTracking_ablgm")+(5,850,-10,900)) into readTextA
+		Set the SearchRectangle to (ImageRectangle("Scalability_Prep_Captures/PatientTracking_ablgm")+(5,95,-5,920))
+		if strApptTime is among  the items of ("2:00 AM","2:00 PM") then
+			if ImageFound(text:"12:00") then
+				ScrollWheelDown 1
+				set the searchRectangle to (ImageRectangle(text:"12:00")+(-20,20,50,RemoteScreenSize().y))
+			end if
+		end if
+		if ImageFound((text:strApptTime),(text:strApptTime,DPI:131))
+			put (ImageRectangle((text:strApptTime),(text:strApptTime,DPI:131))+(-22,-18,1750,40)) into ptloc
+			Set the SearchRectangle to ptloc
+			if ImageFound((text:strPatientorAppt,EnableAggresivetextextraction:on,EnhanceLocalContrast:On,ignoreSpaces:yes,DPI:131,validCharacters:strPatientorAppt),(text:strPatientorAppt,DPI:200))
+				set the SearchRectangle to ()
+				return ptloc
+			else
+				ScrollWheelDown 4
+		end if
+		else
+		ScrollWheelDown 4
+	end if
+	set the SearchRectangle to ()
+	put ReadText(ImageRectangle("Scalability_Prep_Captures/PatientTracking_ablgm")+(5,850,-10,900)) into readTextB
+	if readTextA is readTextB
+		set the SearchRectangle to ()
+		return False
+	end if
+	End Repeat
+	log "End handler: funreturnAppointmentDetailsLocation"
+end funreturnAppointmentDetailsLocation

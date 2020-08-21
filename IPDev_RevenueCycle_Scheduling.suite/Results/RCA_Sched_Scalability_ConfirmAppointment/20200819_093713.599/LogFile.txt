@@ -1,0 +1,113 @@
+﻿2020-08-19 09:37:13.616 +0530	START		Running RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:37:14.572 +0530	Log		Using local data	6	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 09:37:14.649 +0530	Log		((domain:"ablgmprep", password:"system", rcaPath:@"C:\\Program Files\\Cerner\\RevenueCycle\\RevenueCycle.exe", userName:"system"))	8	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 09:37:15.856 +0530	Log		(domain:"ablgmprep", password:"system", rcaPath:@"C:\\Program Files\\Cerner\\RevenueCycle\\RevenueCycle.exe", userName:"system")	20	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:37:15.908 +0530	Log		(appointmentName:"scaleappt", comment:"Test Comment", confirmedDate:"00:00.0", confirmedTime:"", location:"RCA Reporting", locationGroup:"RegAuto Locations", patientName:"Test, Person", rescheduleReason:"Patient Requested", resource:"Resource Group", resourceGroup:"Recur_Resource_Group1", testDate:"", timeFrame:"All Day")	21	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:37:27.912 +0530	imagefound	(TEXT:"Rules of the road")	Unable to Find Image (TEXT:"Rules of the road") within 10.00 seconds. Text might be too low contrast to detect.	2	on_subrulesoftheroad	OpenApplication.script
+2020-08-19 09:37:28.089 +0530	Log		Rules of the road not found	6	on_subrulesoftheroad	OpenApplication.script
+2020-08-19 09:38:15.333 +0530	typetext		[windowsKey]r	2	on_openapplication	Run_Window.script
+2020-08-19 09:38:16.383 +0530	typetext		[controlKey]a	3	on_openapplication	Run_Window.script
+2020-08-19 09:38:17.414 +0530	typetext		[deleteKey]	4	on_openapplication	Run_Window.script
+2020-08-19 09:38:19.139 +0530	typetext		C:\Program Files\Cerner\RevenueCycle\RevenueCycle.exe	5	on_openapplication	Run_Window.script
+2020-08-19 09:38:20.172 +0530	typetext		[returnKey]	6	on_openapplication	Run_Window.script
+2020-08-19 09:38:30.843 +0530	waitfor	RCRegGeneral/Label_LoginScreenRevenueCycle	found at (959, 398)	32	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:38:33.266 +0530	imagefound	Millennium_Login_window/Textbox_Username	found at (891, 465)	3	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:33.524 +0530	click		at (891, 485)	5	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:34.550 +0530	typetext		[controlKey]a	13	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:35.646 +0530	typetext		system	14	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:37.955 +0530	imagefound	Millennium_Login_window/Textbox_Password	found at (889, 512)	18	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:38.310 +0530	click		at (889, 532)	20	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:39.334 +0530	typetext		[controlKey]a	27	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:40.427 +0530	typetext		system	28	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:41.547 +0530	imagefound	Millennium_Login_window/Textbox_Domain_revCycleApp	found at (879, 559)	32	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:42.243 +0530	imagerectangle	Millennium_Login_window/Textbox_Domain_revCycleApp	at (863,552,910,565)	34	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:42.465 +0530	readtext		(866,572,980,595)
+2020-08-19 09:38:42.595 +0530	Log		iblgmprep	35	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:43.319 +0530	click		at (884, 584)	39	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:44.343 +0530	typetext		[controlKey]a	40	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:45.475 +0530	typetext		ablgmprep	41	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:47.422 +0530	imagefound	Millennium_Login_window/Button_OK	found at (908, 634)	47	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:47.721 +0530	doubleclick		at (908, 634)	49	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:58.415 +0530	imagefound	Millennium_Login_window/Button_Acknowledge	Unable to Find Image Millennium_Login_window/Button_Acknowledge	57	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 09:38:59.275 +0530	Log		Call Handler: SubSelectUserExperience	3	on_subselectuserexperience	RevenueCycleCore.script
+2020-08-19 09:40:00.389 +0530	imagefound	RevenueCycleCore/label_Available_Experiences	Unable to Find Image RevenueCycleCore/label_Available_Experiences	4	on_subselectuserexperience	RevenueCycleCore.script
+2020-08-19 09:40:00.415 +0530	Log		Experience Diaglog did not display	14	on_subselectuserexperience	RevenueCycleCore.script
+2020-08-19 09:40:00.439 +0530	Log		End handler: SubSelectUserExperience	16	on_subselectuserexperience	RevenueCycleCore.script
+2020-08-19 09:40:00.638 +0530	waitfor	ConvoIcons/Icon_Search	found at (212, 54)	35	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:01.617 +0530	imagelocation	ConvoIcons/Icon_SearchByIcon	at (188, 53)	3	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 09:40:01.804 +0530	click		at (188, 53)	3	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 09:40:02.920 +0530	imagerectangle	ConvoIcons/Icon_SearchByIcon	at (180,44,222,64)	4	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 09:40:03.435 +0530	click	(TEXT:"Appointments")	at (91, 306)	4	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 09:40:03.486 +0530	Log		Search By Appointments - option selected.	5	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 09:40:03.527 +0530	set		SEARCHRECTANGLE = 	6	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 09:40:07.450 +0530	imagelocation	ConvoIcons/Icon_SearchByIcon	at (188, 53)	3	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:07.691 +0530	doubleclick		at (48, 53)	3	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:09.124 +0530	typetext		Test, Person	4	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:10.260 +0530	click	ConvoIcons/Icon_Search	at (212, 54)	5	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:12.580 +0530	imagelocation	Scalability_Captures/RegPatientSearch	at (535, 32)	8	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:12.713 +0530	doubleclick		at (565, 22)	8	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:22.108 +0530	imagefound	RCRegGeneral/Button_Maximize	Unable to Find Image RCRegGeneral/Button_Maximize within 5.00 seconds	3	on_maximizewindow	RCRegGeneral.script
+2020-08-19 09:40:22.329 +0530	typetext		[tab]	11	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:22.367 +0530	waitfor	Scalability_Captures/RegPatientSearch	found at (25, 28)	12	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:23.349 +0530	imagerectangle	Scalability_Captures/RegPatientSearch	at (2,3,18,19)	13	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:24.891 +0530	doubleclick	(TEXT:"Test, Person")	at (264, 164)	13	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:25.965 +0530	imagerectangle	RCRegGeneral/Button_File	at (6,26,29,38)	14	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:26.475 +0530	waitfor	(TEXT:"Test, Person")	found at (345, 59)	14	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:29.132 +0530	Log		"Test, Person" is open.	16	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 09:40:30.257 +0530	click	(TEXT:"Add Appointment Plus")	at (296, 514)	39	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:33.348 +0530	imagefound	AAP_EnterInformation/dropdown_AppointmentType	found at (149, 581)	40	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:33.524 +0530	Log		Step : Select Appt type 1 and Next. Click on First Available	43	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:34.662 +0530	Log		Call Handler: SubApptSelect	2	on_subapptselect	AAP_EnterInformation.script
+2020-08-19 09:40:35.188 +0530	imagefound	AAP_EnterInformation/label_EnterInformation	found at (114, 544)	18	on_subapptselect	AAP_EnterInformation.script
+2020-08-19 09:40:35.945 +0530	everyimagelocation	(TEXT:"Appointment Type")	found 2 images	19	on_subapptselect	AAP_EnterInformation.script
+2020-08-19 09:40:36.534 +0530	click		at (128, 650)	24	on_subapptselect	AAP_EnterInformation.script
+2020-08-19 09:40:37.803 +0530	typetext		scaleappt[returnKey]	26	on_subapptselect	AAP_EnterInformation.script
+2020-08-19 09:40:38.158 +0530	Log		End Handler: SubApptSelect	32	on_subapptselect	AAP_EnterInformation.script
+2020-08-19 09:40:39.288 +0530	click	(TEXT:"scaleappt")	at (100, 646)	45	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:41.014 +0530	click	(TEXT:"Next")	at (1348, 983)	46	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:46.592 +0530	waitfor	(TEXT:"Locations")	found at (103, 239)	47	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:47.774 +0530	click	AAP_EnterInformation/button_FirstAvailableEnabled	at (1565, 985)	48	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:49.218 +0530	waitfor	Scalability_Prep_Captures/FirstAvailableTimes	found at (960, 15)	50	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:49.663 +0530	imagerectangle	Scalability_Prep_Captures/FirstAvailableTimes	at (888,4,1033,27)	53	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:51.335 +0530	imagefound	(TEXT:"scaleappt")	found at (395, 135)	53	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:53.521 +0530	click	(TEXT:"Appointments")	at (1028, 123)	54	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:54.710 +0530	click	Scalability_Captures/Button_Enabled_Select	at (1472, 977)	55	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:59.003 +0530	waitfor	(TEXT:"Pending Confirmation")	found at (139, 202)	56	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:59.115 +0530	Log		Confirm the appointment to the date and time selected 	58	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:40:59.505 +0530	Log		Call handler: funReadPendingConfirmationDetails	2	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:00.396 +0530	set		SEARCHRECTANGLE = ((0,0),(960,1080))	3	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:02.955 +0530	imagefound	AAP_EnterInformation/label_Orders	Unable to Find Image AAP_EnterInformation/label_Orders	4	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:03.480 +0530	imagerectangle	AAP_PendingConfirmation/label_PendingConfirmation	at (76,196,203,211)	8	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:03.495 +0530	set		SEARCHRECTANGLE = (66,211,1903,391)	8	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:03.836 +0530	imagerectangle	(TEXT:"scaleappt")	at (89,238,152,251)	9	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:03.850 +0530	set		SEARCHRECTANGLE = (74,253,1852,391)	9	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:04.679 +0530	imagerectangle	(TEXT:"Date")	at (88,281,119,292)	11	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:05.505 +0530	readtext		(86,296,359,320)
+2020-08-19 09:41:06.038 +0530	set		SEARCHRECTANGLE = 	24	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:06.517 +0530	Log		Wed Aug 19, 2020	60	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:41:06.718 +0530	Log		Call handler: funReadPendingConfirmationDetails	2	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:06.987 +0530	set		SEARCHRECTANGLE = ((0,0),(960,1080))	3	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:09.342 +0530	imagefound	AAP_EnterInformation/label_Orders	Unable to Find Image AAP_EnterInformation/label_Orders	4	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:09.740 +0530	imagerectangle	AAP_PendingConfirmation/label_PendingConfirmation	at (76,196,203,211)	8	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:09.768 +0530	set		SEARCHRECTANGLE = (66,211,1903,391)	8	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:10.281 +0530	imagerectangle	(TEXT:"scaleappt")	at (89,238,152,251)	9	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:10.303 +0530	set		SEARCHRECTANGLE = (74,253,1852,391)	9	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:10.792 +0530	imagerectangle	(TEXT:"Patient Arrival Time:")	at (690,281,826,292)	11	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:11.460 +0530	readtext		(688,296,1066,320)
+2020-08-19 09:41:11.965 +0530	set		SEARCHRECTANGLE = 	24	function_funreadpendingconfirmationdetails	AAP_PendingConfirmation.script
+2020-08-19 09:41:12.442 +0530	Log		8:00 AM	62	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:41:33.304 +0530	imagefound	(TEXT:"Encounter Type")	Unable to Find Image (TEXT:"Encounter Type"). Text might be too low contrast to detect.	63	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:41:33.361 +0530	Log		No Enconter selection is required	66	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:41:33.972 +0530	click	(TEXT:"Confirm")	at (1795, 982)	68	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:41:51.782 +0530	waitfor	(TEXT:"Past Cancellations by Patient")	found at (157, 179)	69	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:41:52.363 +0530	Log		Call handler: subExit_RevenueCycle	2	on_subexit_revenuecycle	RevenueCycleCore.script
+2020-08-19 09:41:53.179 +0530	imagefound	(TEXT:"File")	found at (15, 31)	3	on_subexit_revenuecycle	RevenueCycleCore.script
+2020-08-19 09:41:53.547 +0530	click		at (15, 31)	4	on_subexit_revenuecycle	RevenueCycleCore.script
+2020-08-19 09:41:53.718 +0530	set		SEARCHRECTANGLE = ((5,-9),(175,241))	6	on_subexit_revenuecycle	RevenueCycleCore.script
+2020-08-19 09:41:56.470 +0530	imagefound	(TEXT:"Exit")	found at (43, 185)	8	on_subexit_revenuecycle	RevenueCycleCore.script
+2020-08-19 09:41:57.185 +0530	click		at (43, 185)	9	on_subexit_revenuecycle	RevenueCycleCore.script
+2020-08-19 09:41:57.220 +0530	set		SEARCHRECTANGLE = 	10	on_subexit_revenuecycle	RevenueCycleCore.script
+2020-08-19 09:41:57.448 +0530	Log		End handler:  subExit_RevenueCycle	12	on_subexit_revenuecycle	RevenueCycleCore.script
+2020-08-19 09:41:57.595 +0530	Log		RevenueCycle is closed	71	on_rca_sched_scalability_confirmappointment	RCA_Sched_Scalability_ConfirmAppointment.script
+2020-08-19 09:41:58.848 +0530	EndTestCase		(Duration:"285.211", Errors:"0", Exceptions:"0", StartTime:"2020-08-19 09:37:13 +0530", Successes:"1", TestCase:"RCA_Sched_Scalability_ConfirmAppointment.script", Warnings:"0")
+2020-08-19 09:41:59.099 +0530	SUCCESS		Execution Time 0:04:45 RCA_Sched_Scalability_ConfirmAppointment.script

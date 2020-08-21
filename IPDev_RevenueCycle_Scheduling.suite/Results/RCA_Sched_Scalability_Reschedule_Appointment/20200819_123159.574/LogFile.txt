@@ -1,0 +1,12 @@
+﻿2020-08-19 12:31:59.589 +0530	START		Running RCA_Sched_Scalability_Reschedule_Appointment.script
+2020-08-19 12:32:00.565 +0530	Log		Using local data	6	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 12:32:00.639 +0530	Log		((domain:"ablgmprep", password:"system", rcaPath:@"C:\\Program Files\\Cerner\\RevenueCycle\\RevenueCycle.exe", userName:"system"))	8	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 12:32:13.911 +0530	imagefound	(TEXT:"Rules of the road")	Unable to Find Image (TEXT:"Rules of the road") within 10.00 seconds. Text might be too low contrast to detect.	2	on_subrulesoftheroad	OpenApplication.script
+2020-08-19 12:32:14.120 +0530	Log		Rules of the road not found	6	on_subrulesoftheroad	OpenApplication.script
+2020-08-19 12:32:14.909 +0530	typetext		[windowsKey]r	2	on_openapplication	Run_Window.script
+2020-08-19 12:32:15.984 +0530	typetext		[controlKey]a	3	on_openapplication	Run_Window.script
+2020-08-19 12:32:17.021 +0530	typetext		[deleteKey]	4	on_openapplication	Run_Window.script
+2020-08-19 12:32:18.021 +0530	typetext			5	on_openapplication	Run_Window.script
+2020-08-19 12:32:19.049 +0530	typetext		[returnKey]	6	on_openapplication	Run_Window.script
+2020-08-19 12:32:46.610 +0530	EndTestCase		(Duration:"47.004", Errors:"1", Exceptions:"0", StartTime:"2020-08-19 12:31:59 +0530", Successes:"0", TestCase:"RCA_Sched_Scalability_Reschedule_Appointment.script", Warnings:"0")
+2020-08-19 12:32:46.651 +0530	ABORTED		Execution Time 0:00:47 RCA_Sched_Scalability_Reschedule_Appointment.script

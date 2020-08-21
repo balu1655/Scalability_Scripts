@@ -1,0 +1,18 @@
+﻿//Run Window Utilities
+
+(**
+Handler Name: Run_Window.openApplication
+
+Description: Launches a program by entering the application path in Run dialog. 
+
+Input: strAppPath = Application Path of application to be opened. Ex: C:\Program Files\Cerner\hnauser.exe
+
+Expected Result: Application specified is opened.
+**)
+to openApplication strAppPath
+	TypeText windowsKey & "r"
+	TypeText controlKey & "a"
+	TypeText deleteKey
+	TypeText strAppPath
+	Typetext returnKey
+end openApplication

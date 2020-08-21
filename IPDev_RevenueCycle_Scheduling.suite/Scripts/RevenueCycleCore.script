@@ -1,0 +1,723 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//RevenueCycle Core related Handlers which are not falling under any perspective
+//These handlers may be used throughout Revenue Cycle
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////
+//The following subfunction will open any non-patient perspective and any view within that perspective
+/////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+(*
+subfunction to select the perspective to open in RevenueCycle.exe.
+
+Variables:
+OpenPerspectiveOrView: Perspective or View are the only valid values.  [REQURIED]
+strMenuItem: Is the string of the perspective or view to be selected [REQUIRED]
+     Example: 
+           Patient Tracking
+           Resource View
+           Queues
+           Add Appointment Plus
+           Appointment Requests
+           Future Appointments
+
+Navigation: View menu > Perspective or View > strMenuItem
+*)
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+to navigateToOpenPerspective strPerspectiveOrView,strMenuItem
+	log "Call handler: navigateToOpenPerspective"
+	
+	if imagefound(text:"View",searchrectangle:((0,15,163,44))) then
+		set ViewInfo to foundimageinfo()
+		click ViewInfo.imagelocation
+		if strPerspectiveOrView="Perspective" then
+			typetext downArrow,rightArrow	,upArrow		
+			repeat until imagefound(text:strMenuItem,searchrectangle:(ViewInfo.Imagerectangle+(176,18,380,30)))
+				if imagefound(ImageName:"RevenueCycleCore/text_EndofList",searchrectangle:(ViewInfo.Imagerectangle+(176,18,380,30)))then
+					throw "Menu Item Not Found", strMenuItem&" was not found"
+				else 
+					set ViewInfo.Imagerectangle to ViewInfo.Imagerectangle+(0,22,0,22)
+				end if
+			end repeat
+			click foundimagelocation()
+		else if strPerspectiveOrView="View"
+			typetext downArrow,downArrow,rightArrow,upArrow
+			repeat until imagefound(text:strMenuItem,searchrectangle:(ViewInfo.Imagerectangle+(177,37,381,52))) 
+				if imagefound(ImageName:"RevenueCycleCore/text_EndofList",searchrectangle:(ViewInfo.Imagerectangle+(177,37,381,52)))then
+					throw "Menu Item Not Found", strMenuItem&" was not found"
+				else 
+					set ViewInfo.Imagerectangle to ViewInfo.Imagerectangle+(0,22,0,22)
+				end if
+			end repeat
+			click foundimagelocation()
+		else
+			LogError "Invalid View Option"
+		end if
+	end if
+	log "End handler: navigateToOpenPerspective"
+	
+end navigateToOpenPerspective
+
+////////////////////////////////
+//The following subfunction will open any non-patient perspective and any view within that perspective
+/////////////////////////////////
+to subRCOpenNonPatientPerspectiveView numPerspectiveMenuPosition, numViewMenuPosition
+	// ***** THIS HANDLER IS BEING DEPRECIATED MAY 8, 2019 **********
+	// **USE REGISTRATION HANDLERS FOR OPEN VIEW OPTIONS
+	//Use the navigateToOpenPerspective for other navigation
+	//This does not rely on menu positioning
+	
+	
+	//numPerspectiveMenuPosition: Number variable containing the target perspective position on the dropdown menu (View > Open Perspective) (REQUIRED, PASS IN 0 IF NOT NEEDED)
+	//numViewMenuPosition: Number variable containing the target view position on the dropdown menu (View > Open View) (REQUIRED, PASS IN 0 IF NOT NEEDED)
+	
+	log "Call handler: subRCOpenNonPatientPerspectiveView"
+	
+	//Open perspective logic
+	if numPerspectiveMenuPosition is not equal to 0
+		
+		click text:"File View",hotspot:(30,0),searchrectangle:(("MiscScreenUtilities".funTopLeftRectangle) * (1,1,0.5,0.5))
+		
+		click text:"Open Perspective",searchrectangle:(("MiscScreenUtilities".funTopLeftRectangle) * (1,1,0.5,0.5))
+		
+		repeat numPerspectiveMenuPosition times
+			typetext downArrow
+		end repeat
+		
+		typetext return
+		
+	end if
+	
+	//Open view logic
+	if numViewMenuPosition is not equal to 0
+		
+		click text:"File View",hotspot:(30,0),searchrectangle:(("MiscScreenUtilities".funTopLeftRectangle) * (1,1,0.5,0.5))
+		
+		click text:"Open View",searchrectangle:(("MiscScreenUtilities".funTopLeftRectangle) * (1,1,0.5,0.5))
+		
+		repeat numViewMenuPosition times
+			typetext downArrow
+		end repeat
+		
+		typetext return
+		
+	end if
+	
+	log "End handler: subRCOpenNonPatientPerspectiveView"
+	
+end subRCOpenNonPatientPerspectiveView
+
+////////////////////////////////////////////////////////////////////////////////
+//It will click on required patient Perspective icon based on perspective text
+//Variables: strPatientPerspective
+//strPatientPerspective:Enter the string value as displayed in application Ex:"Patient Account" Or "Appointments"
+////////////////////////////////////////////////////////////////////////////////vr043596
+to subSelectPatientPerspective strPatientPerspective
+	log "Call handler: subSelectPatientPerspective"
+	If strPatientPerspective is equal to "Patient Account" then
+		click "RevenueCycleCore/icon_PatientAccount"
+	End if
+	If strPatientPerspective is equal "Registration" then
+		click "RevenueCycleCore/icon_Registration"
+	End if
+	If strPatientPerspective is equal "Encounters" then
+		click "RevenueCycleCore/icon_Encounters"
+	End if
+	If strPatientPerspective is equal "Appointments" then
+		click "RevenueCycleCore/icon_Appointments"
+	End if
+	If strPatientPerspective is equal "Charge Entry" then
+		click "RevenueCycleCore/icon_ChargeEntry"
+	End if
+	If strPatientPerspective is equal "History" then
+		click "RevenueCycleCore/icon_History"
+	End if
+	If strPatientPerspective is equal "Summary" then
+		click "RevenueCycleCore/icon_Summary"
+	End if
+	log "end handler: subSelectPatientPerspective"
+end subSelectPatientPerspective
+////////////////////////////////////////////////////////////////////////////////
+(*Function to select a menu options*)
+////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//fun Function To Verify A Checkbox is Checked Or Unchecked in a window
+//Variables : strCheckOptionText -- Enter the exact text next to the checkbox - Eg. Activate order at check-in
+//strCheckOrUncheck :- Enter "Check" to validate for checkbox If Checked/Selected  and "Uncheck" to validate for checkbox If Unchecked/Unselected
+//strBool: Returns the Boolean Value True With Respect to the desired Operation Check or Uncheck- Eg. True
+///////////////////////////////////////////////////////////////////////////////////////////// -TB035436
+
+to funVerifyCheckBoxOption strCheckOptionText,strCheckOrUncheck
+	log "Call handler: funVerifyCheckBoxOption"
+	//Calculate the length of strCheckOptionText 
+	Set strSentenceLength to ((number of characters of strCheckOptionText)*20)+5
+	If strCheckOrUncheck equals "Check" then
+		//validate for checkbox option wheather its checked
+		Set strCheckBoxLoc to EveryImageLocation("RevenueCycleCore/checkbox_Checked")
+		Set intItemCount to the number of items of strCheckBoxLoc
+		Repeat intItemCount times
+			Set strTextTL to item repeatindex() of strCheckBoxLoc + (7,-7)
+			Set strTextBR to item repeatindex() of strCheckBoxLoc + (strSentenceLength,15)
+			Set strText to readtext(strTextTL,strTextBR)
+			//If found verIfy preferred checkbox option as checked  
+			If strText contains strCheckOptionText then
+				Return True
+				Exit repeat
+			End If
+		End repeat
+		
+	Else If strCheckOrUncheck equal "Uncheck" then
+		//validate for checkbox option wheather its Unchecked
+		Set strCheckBoxLoc to EveryImageLocation("RevenueCycleCore/checkbox_Unchecked")
+		Set intItemCount to the number of items of strCheckBoxLoc
+		Repeat intItemCount times
+			Set strTextTL to item repeatindex() of strCheckBoxLoc + (7,-7)
+			Set strTextBR to item repeatindex() of strCheckBoxLoc + (strSentenceLength,10)
+			Set strText to readtext(strTextTL,strTextBR)
+			if strText is empty then
+				Set strText to readtext(strTextTL,strTextBR,DPI:131)// Added bcoz in few scenarios DPI is required to readtext.
+			end if
+			//If found Verify preferred checkbox option as Unchecked 
+			If strText contains (strCheckOptionText,EnableAggressiveTextExtraction:On, IgnoreSpaces:On) then
+				Return True
+				Exit repeat
+			End If
+		End repeat
+		
+	End If
+	log "End handler: funVerifyCheckBoxOption"
+end funVerifyCheckBoxOption
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//fun Function To Verify A Radio Button is Selected Or UnSelected in a window
+//Variables : strRadioButtonText -- Enter the Exact text next to the Radio Button - Eg. WeekDay
+//strCheckOrUncheck :- Enter "Selected" if need to validate for option radio button selected  and enter "UnSelected" if need to validate for option radio button De-selected 
+//strBool: Returns the Boolean Value True With Respect to the desired Operation Selected or UnSelected- Eg. True
+///////////////////////////////////////////////////////////////////////////////////////////// -TB035436
+
+
+to funVerifyRadioButtonSelectedOrUnSelected strRadioButtonText,strSelectOrUnselect
+	log "Call handler: funVerifyRadioButtonSelectedOrUnSelected"
+	//Calculate the length of strRadioButtonText 
+	Set strSentenceLength to ((number of characters of strRadioButtonText)*180)+5
+	If strSelectOrUnSelect equals "Selected" then
+		//validate for RadioButton option is selected
+		Set strRadioButtonLoc to EveryImageLocation("RevenueCycleCore/radiobutton_Selected")
+		Set intItemCount to the number of items of strRadioButtonLoc
+		Repeat intItemCount times
+			Set strText to readtext(item repeatindex() of strRadioButtonLoc + (7,-7),item repeatindex() of strRadioButtonLoc + (strSentenceLength,10))
+			//If found Verify preferred Radio Button option as checked  
+			If strText contains ((strRadioButtonText,EnableAggressiveTextExtraction:On),(text:strCheckOptionText,DPI:131),(text:strRadioButtonText)) then
+				Return True
+				Exit repeat
+			End If
+		End repeat
+	Else If strSelectOrUnselect equal "UnSelected" then
+		
+		//validate for Radio Button option wheather its Unchecked
+		Set strRadioButtonLoc to EveryImageLocation("RevenueCycleCore/radiobutton_Unselected")
+		Set intItemCount to the number of items of strRadioButtonLoc
+		Repeat intItemCount times
+			Set strText to readtext(item repeatindex() of strRadioButtonLoc + (7,-7),item repeatindex() of strRadioButtonLoc + (strSentenceLength,10))
+			//If found verIfy preferred Radio Button option as Unchecked 
+			If strText contains ((strRadioButtonText,EnableAggressiveTextExtraction:On),(text:strCheckOptionText,DPI:131),(text:strRadioButtonText)) then
+				Return True
+				Exit repeat
+			End If
+		End repeat
+	End If
+	log "End handler: funVerifyRadioButtonSelectedOrUnSelected"
+end funVerifyRadioButtonSelectedOrUnSelected
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//sub Function To select Or Unselect CheckBox Option in a window
+//Variables : strCheckOptionText -- Enter the exact text next to the checkbox - Eg. Activate order at check-in
+//strCheckOrUncheck :- Enter "Check" to select the checkbox and "Uncheck" to Unselect CheckBox
+///////////////////////////////////////////////////////////////////////////////////////////// -TB035436
+
+to subSelectOrUnselectCheckBoxOption strCheckOptionText,strCheckOrUncheck
+	log "Call handler: subSelectOrUnselectCheckBoxOption"
+	//Calculate the length of strCheckOptionText 
+	Set strSentenceLength to ((number of characters of strCheckOptionText)*20)+5
+	If strCheckOrUncheck equals "Check" then
+		// to select the check box option
+		Set strCheckBoxLoc to EveryImageLocation("RevenueCycleCore/checkbox_Unchecked")
+		Set intItemCount to the number of items of strCheckBoxLoc
+		//repeat for limited number of time 
+		Repeat intItemCount times
+			set the SearchRectangle to(item repeatindex() of strCheckBoxLoc + (7,-7),item repeatindex() of strCheckBoxLoc + (strSentenceLength,15))
+			//If found select checkbox option
+			If imagefound((text:strCheckOptionText),(text:strCheckOptionText,DPI:131)) then
+				put item repeatindex() of strCheckBoxLoc into clickLoc
+				click (clickLoc+(9,2))
+				Exit repeat
+			End If
+		End repeat		
+	Else If strCheckOrUncheck equal "Uncheck" then
+		//to Unselect the checkbox option
+		Set strCheckBoxLoc to EveryImageLocation("RevenueCycleCore/checkbox_Checked")
+		Set intItemCount to the number of items of strCheckBoxLoc
+		//repeat for limited number of time 
+		Repeat intItemCount times
+			set the SearchRectangle to(item repeatindex() of strCheckBoxLoc + (7,-7),item repeatindex() of strCheckBoxLoc + (strSentenceLength,15))
+			//If found Unselect checkbox option
+			If imagefound((text:strCheckOptionText),(text:strCheckOptionText,DPI:131)) then
+				put item repeatindex() of strCheckBoxLoc into clickLoc
+				click (clickLoc+(9,2))
+				Exit repeat
+			End If
+		End repeat
+	End If
+	set the SearchRectangle to empty
+	log "End handler: subSelectOrUnselectCheckBoxOption"
+end subSelectOrUnselectCheckBoxOption
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//Function for Navigation to a specific preference on the File->'Preferences' window
+//Note: this does not validate any of the preferences just navigation to that particular preference section
+//Variables: strMainSection,strSubSection
+//strMainSection: Head section in File -> Preferences Ex: Scheduling
+//strSubSection: sub section in File -> Preferences Ex: Appointment Requests
+//Returns true if the filter selection is found else returns false
+//Initial state: Window should be maximized
+////////////////////////////////////////////////////////////////////////////////-PH060622
+to funSelectPreferencesFilter strMainSection, strSubSection
+	log "Call handler: funSelectPreferencesFilter"
+	waitfor 120, "RevenueCycleCore/label_Preferences"
+	set the SearchRectangle to ImageRectangle(imageName:"RevenueCycleCore/label_Preferences")+(-5,5,90,600)
+	if ImageFound(text:strMainSection)
+		put ImageRectangle(Text:strMainSection) into mainSectionRectangle
+		DoubleClick text:strMainSection, waitFor:10
+		wait 3.0//Required for application to response 
+		TypeText rightArrow
+		if (strSubSection is not empty)
+			set the searchRectangle to mainSectionRectangle+(0,0,100,150)
+			Click (Text:strSubSection,waitfor:20),(Text:strSubSection,validcharacters:"*",waitfor:20)
+		end if
+		set the SearchRectangle to empty
+		log "End handler: funSelectPreferencesFilter"
+		return true
+	else
+		set the SearchRectangle to empty
+		log "End handler: funSelectPreferencesFilter"
+		return false
+	end if
+end funSelectPreferencesFilter
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//To verify column names in Available/Selected column option in File -> Preferences and click on the same
+//Variables: strColumnOption,strColumnName
+//strColumnOption: Column option name either Available/Selected
+//strColumnName: column name Ex: Date, Time, Duration
+//The function returns true if the column name is present otherwise returns false
+//Initial state: Window should be maximized
+////////////////////////////////////////////////////////////////////////////////////////////-PH060622
+to funVerifyColumnNameInPreference strColumnOption,strColumnName
+	log "Call handler: funVerifyColumnNameInPreference"
+	put ImageRectangle(Text:strColumnOption,SearchRectangle:"MiscScreenUtilities".Screen_Part("TopHalf"), EnableAggressiveTextExtraction:"Yes", TextDifference:2) into columnOptionLocation
+	put columnOptionLocation.bottomLeft()+(0,3) into topLeft
+	put columnOptionLocation.bottomRight()+(780,400) into bottomRight
+	set the searchRectangle to (topLeft,bottomRight)
+	if ImageFound(waitfor:5,image:"RevenueCycleCore/ScrollBar_Up")
+		click FoundImageLocation()
+		//To search for the column name until the scroll has reached the end 
+		Repeat until ImageFound(waitfor:5, image:"RevenueCycleCore/ScrollBar_Down")
+			if ImageFound(5, (text:strColumnName, EnableAggressiveTextExtraction:"Yes", TextDifference:2))
+				Click FoundImageLocation()
+				set the SearchRectangle to empty
+				log "End handler: funVerifyColumnNameInPreference"
+				return true
+				Exit repeat
+			else
+				ScrollWheelDown 4
+				if ImageFound(5, (text:strColumnName, EnableAggressiveTextExtraction:"Yes", TextDifference:2))
+					Click FoundImageLocation()
+					set the SearchRectangle to empty
+					log "End handler: funVerifyColumnNameInPreference"
+					return true
+					Exit repeat
+				end if
+			end if
+		End repeat
+	else
+		if ImageFound(6, (text:strColumnName))
+			Click FoundImageLocation()
+			set the SearchRectangle to empty
+			log "End handler: funVerifyColumnNameInPreference"
+			return true
+		else
+			set the SearchRectangle to empty
+			log "End handler: funVerifyColumnNameInPreference"
+			return false
+		end if
+	end if
+end funVerifyColumnNameInPreference
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//sub Function To select RadioButton Option in a window
+//Variables : strRadioButtonOptionText -- Enter the exact text next to the RadioButton - Eg. Weekday
+///////////////////////////////////////////////////////////////////////////////////////////// -TB035436
+
+to subSelectRadioButtonOption strRadioButtonOptionText
+	log "Call handler: subSelectRadioButtonOption"
+	//Calculate the length of strRadioButtonOptionText 
+	Set strSentenceLength to ((number of characters of strRadioButtonOptionText)*15)+5
+	Set strRadioBoxLoc to EveryImageLocation("RevenueCycleCore/radiobutton_Unselected")
+	Set intItemCount to the number of items of strRadioBoxLoc
+	//repeat for limited number of time 
+	Repeat intItemCount times
+		Set strText to readtext(item repeatindex() of strRadioBoxLoc + (7,-7),item repeatindex() of strRadioBoxLoc + (strSentenceLength,10))
+		//If found select RadioButton
+		If strText contains (strRadioButtonOptionText,EnableAggressiveTextExtraction:On) then
+			Click item repeatindex() of strRadioBoxLoc
+			Exit repeat
+		End If
+	End repeat
+	log "End handler: subSelectRadioButtonOption"
+end subSelectRadioButtonOption
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to read the column names under Available/Selected column option in File -> Preferences
+//Returns the column names as a list
+//Variables: strCoulmnOption
+///strCoulmnOption: Column option either Available/Selected
+//Initial state: Window should be maximized
+//////////////////////////////////////////////////////////////////////////////////////-PH060622
+to funReadColumnNamesFromPreference strColumnOption
+	log "Call handler: funReadColumnNamesFromPreference"
+	put ImageRectangle(Text:strColumnOption, EnableAggressiveTextExtraction:"Yes", TextDifference:2) into columnOptionLocation
+	put columnOptionLocation.bottomLeft()+(0,3) into topLeft
+	put columnOptionLocation.bottomRight()+(750,360) into bottomRight
+	set the searchRectangle to (topLeft,bottomRight)
+	put ReadText(topLeft,bottomRight) into columnNames
+	//Convert the read text into a list
+	if columnNames is not empty
+		repeat with each line of columnNames
+			insert line repeatIndex() of columnNames into columnNamesList
+		end repeat
+		set the searchRectangle to ()
+		log "End handler: funReadColumnNamesFromPreference"
+		return columnNamesList
+	else
+		set the searchRectangle to ()
+		log "End handler: funReadColumnNamesFromPreference"
+		return columnNames
+	end if
+end funReadColumnNamesFromPreference
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to read Single Column values in any view where sorting is honored on the column
+//Function returns the column values as a list
+//Variables: strColumnName
+//strCoulmnName: Pass the column name for which the entire column is to be read Ex: Date,Time,Duration etc.
+//Initial state: Window should be maximized
+////////////////////////////////////////////////////////////////////////////////////////////////////////////-PH060622
+to funReadColumnValues strColumnName
+	log "Call handler: funReadColumnValues"
+	Click (Text:strColumnName, searchRectangle:"MiscScreenUtilities".Screen_Part("TopHalf"))
+	put ImageRectangle(Text:strColumnName,searchRectangle:"MiscScreenUtilities".Screen_Part("TopHalf")) into columnLocation
+	put columnLocation.TopLeft() into columnTopLeft
+	put columnLocation.bottomLeft() into columnBottomLeft
+	if ImageFound(10,"RevenueCycleCore/Arrow_Up_Enabled")
+		put ImageRectangle("RevenueCycleCore/Arrow_Up_Enabled") into sortingArrowLocation
+	else if ImageFound(10,"RevenueCycleCore/Arrow_Down_Enabled")
+		put ImageRectangle("RevenueCycleCore/Arrow_Down_Enabled") into sortingArrowLocation
+	end if
+	put sortingArrowLocation.bottomLeft() into arrowBottomLeft
+	put sortingArrowLocation.bottomRight() into arrowBottomRight
+	put arrowBottomLeft-columnTopLeft into difference
+	put arrowBottomRight+difference+(4,800) into bottomRight
+	put ReadText((columnBottomLeft+(-4,6),bottomRight),DPI:50) into columnValues
+	if columnValues is not empty
+		//Convert the read text into a list
+		repeat with each line of columnValues
+			insert line repeatIndex() of columnValues into columnValuesList
+		end repeat
+		log "End handler: funReadColumnValues"
+		return columnValuesList
+	else
+		log "End handler: funReadColumnValues"
+		return "No values in the column"
+	end if
+end funReadColumnValues
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to verify input list is sorted and if sorted, the order of sorting
+//Function returns if the list is sorted in Ascending, Descending, Unsorted or if list is empty
+//Variables: actualList
+//actualList: list to be checked for sorting
+//////////////////////////////////////////////////////////////////////////////////////////-PH060622
+to funVerifySortOrder actualList
+	log "Call handler: funVerifySortOrder"
+	if actualList is not empty
+		put actualList into actualListAsc
+		put actualList into actualListDesc
+		
+		sort actualListAsc in Ascending
+		sort actualListDesc in Descending
+		
+		If actualList is equal to actualListAsc then
+			log "End handler: funVerifySortOrder"
+			return "Ascending"
+		else if actualList is equal to actualListDesc then
+			log "End handler: funVerifySortOrder"
+			return "Descending"
+		else
+			log "End handler: funVerifySortOrder"
+			return "Unsorted"
+		End If
+	else
+		log "End handler: funVerifySortOrder"
+		return "Empty"
+	end if
+end funVerifySortOrder
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to generate random number series and returns the same
+//Variables: numLength, newNum
+//              numLength - Provide the length of number Ex: numLength is 5, it returns 54632
+//              newNum - Returns generated random number series
+//////////////////////////////////////////////////////////////////////////////////////////-GR043002
+
+to generateRandomNumbersSeries numLength
+	put ("1","2","4","5","6","7") into numbers
+	put random(6,6) into newNumLength -- Use the random function to randomly select a number length
+	repeat numLength times -- Repeat for each character in the new number
+		put any item of numbers after newNum -- Create a new number using random numbers
+	end repeat
+	return newNum
+end generateRandomNumbersSeries
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to read the values in Preference dialog
+//Variables: strFieldName, strValue
+//strFieldName  :Field name for which user wants to verify data (Mandatory)
+//strValue: value read from UI for selected field
+//////////////////////////////////////////////////////////////////////////////////////////
+to funReadPreferences strFieldName
+	log "Call handler: funReadPreferences"
+	put ImageRectangle(Image:"RevenueCycleCore/label_Preferences") into AandB
+	put AandB.bottomRight+(100,50) into TopLeft
+	put AandB.bottomRight+(1950,200) into BtmRight
+	set the searchRectangle to (TopLeft,BtmRight)
+	Click (Text: strFieldName, HotSpot:(55, 30))
+	TypeText controlKey,a
+	TypeText controlKey,c
+	put  remoteClipboard() into strValue
+	return strValue
+	set the searchrectangle to empty
+	log "End handler:  funReadPreferences"
+end funReadPreferences
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+(*Function to select any menu options and then sub menu options*)
+//////////////////////////////////////////////////////////////////////////////////////////////
+to subSelectMenu strMenuOption,strMenuItem
+	log "Call handler: subSelectMenu"
+	set the searchrectangle to ((0,1,448,307))
+	click (text:strMenuOption,searchRectangle:(0,17,183,45)) 
+	click (text:strMenuItem)
+	
+	log "End handler: subSelectMenu"
+end subSelectMenu
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+(*Function to remove all scheduling locks for the current user*)
+//////////////////////////////////////////////////////////////////////////////////////////////
+to subLocksManger 
+	log "Call handler: subLocksManger"
+	if imagefound(imagename:"RevenueCycleCore/label_LocksManager",SearchRectangle:"MiscScreenUtilities".Screen_Part("TopHalf")) then
+		set srLocksManager to foundimageinfo().imagerectangle+(-31,-6,727,551)
+		click (imagename:"RevenueCycleCore/label_SchedulinqLockTab",searchrectangle:(srLocksManager),waitfor:15)
+		click (imagename:"RevenueCycleCore/button_RemoveAll",searchrectangle:(srLocksManager),waitfor:15)
+		click (imagename:"RevenueCycleCore/button_Close",searchrectangle:(srLocksManager),waitfor:15)
+	else 
+		logerror "Lock Manger is not open"
+	end if
+	log "End handler: subLocksManger"
+end subLocksManger
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Close Revenue Cycle application
+////////////////////////////////////////////////////////////////////////////////////////-pp055022
+
+to subExit_RevenueCycle
+	log "Call handler: subExit_RevenueCycle"
+	If ImageFound(5, (text:"File",SearchRectangle:"MiscScreenUtilities".Screen_Part("TopLeftQuadrant"))) then
+		Click FoundImageLocation()
+		put FoundImageLocation() into XandY
+		Set the SearchRectangle to (XandY+(-10,-40), XandY+(160,210))
+		wait 2 // application takes time to load
+		wait until(ImageFound(text:"Exit", waitFor:25))
+		Click FoundImageLocation()
+		set the SearchRectangle to empty
+	end if
+	log "End handler:  subExit_RevenueCycle"
+end subExit_RevenueCycle
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to retrun second wednesday of the required month and year
+//Variables: strYear, strMonth
+//strYear  : Pass the required year
+//strMonth: Pass the required month
+//////////////////////////////////////////////////////////////////////////////////////////- NS030544
+To funFindSecondWednesday strYear, strMonth
+	log "Call handler: funFindSecondWednesday"
+	Put "1 "&item strMonth of the monthNames&&strYear into MonthStart
+	If item 7 of the long dateitems(MonthStart) <= 3
+		Put MonthStart+((7 - item 7 of the long dateitems(MonthStart))+3)day into secondWednesday
+	Else
+		Put MonthStart+((7 - item 7 of the long dateitems(MonthStart))+10)day into secondWednesday
+	End If
+	return secondWednesday
+	log "End handler:  funFindSecondWednesday"
+End funFindSecondWednesday 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to retrun third wednesday of the required month and year
+//Variables: strYear, strMonth
+//strYear  : Pass the required year
+//strMonth: Pass the required month
+//////////////////////////////////////////////////////////////////////////////////////////- NS030544
+To funFindThirdWednesday strYear, strMonth
+	log "Call handler: funFindThirdWednesday"
+	Put "1 "&item strMonth of the monthNames&&strYear into MonthStart
+	If item 7 of the long dateitems(MonthStart) <= 3
+		Put MonthStart+((7 - item 7 of the long dateitems(MonthStart))+10)day into thirdWednesday
+	Else
+		Put MonthStart+((7 - item 7 of the long dateitems(MonthStart))+17)day into thirdWednesday
+		
+	End If
+	return thirdWednesday
+	log "End handler:  funFindThirdWednesday"
+End funFindThirdWednesday 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to select the user experience
+//Handler to select a user specified experience or default Legacy/US Market experience
+//Variables: strExperience(Optional) 
+//strExperience:This value contains the experience to be selected when revenueCycle is launched.
+/////////////////////////////////////////////////////////////////////////////////////////////////////-SM071467
+To SubSelectUserExperience strExperience
+
+	Log "Call Handler: SubSelectUserExperience"
+	if imagefound(Imagename:"RevenueCycleCore/label_Available_Experiences",waitFor:60)
+		click FoundImageLocation()
+		set srExperienceDialog to FoundImageInfo().Imagerectangle+(-38,-16,238,392)
+		if imagefound(text:strExperience,SearchRectangle:srExperienceDialog,validwords:strExperience) then
+			click foundimagelocation()
+			click imagename:"RevenueCycleCore/button_Ok_Highlighted",SearchRectangle:srExperienceDialog
+		else 
+			logerror "Unable to find"&strExperience&"experience"
+		end if 
+	else 
+		log "Experience Diaglog did not display"
+	end if
+	log "End handler: SubSelectUserExperience"
+End SubSelectUserExperience
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to Validate if the experience passed by user is same as the default experience in File Preferences
+//Variables: strExperience
+//strExperience:This value contains the experience to be validated with the default experience
+/////////////////////////////////////////////////////////////////////////////////////////////////////-SM071467
+to funValidateDefaultExperience strExperience
+	Log "Call Handler: funValidateDefaultExperience"
+	Click (text:"File",SearchRectangle:("MiscScreenUtilities".Screen_Part("TopHalf")))
+	Click (text:"Preferences",SearchRectangle:("MiscScreenUtilities".Screen_Part("TopHalf")))
+	Log funSelectPreferencesFilter(MyExperience)
+	put Readtext((ImageLocation(Text:"Open",SearchRectangle:("MiscScreenUtilities".Screen_Part("TopHalf")))+(-29,15),ImageLocation(Text:"Open",SearchRectangle:("MiscScreenUtilities".Screen_Part("TopHalf")))+(98,55)),TrimBorder:On,contrastTolerance:100) into defaultExperience
+	if defaultExperience is strExperience
+		Click(Text:"Apply and Close",SearchRectangle:("MiscScreenUtilities".Screen_Part("BottomHalf")))
+		return true
+	else
+		Click(Text:"Apply and Close",SearchRectangle:("MiscScreenUtilities".Screen_Part("BottomHalf")))
+		return false
+	end if
+	log "End handler: funValidateDefaultExperience"
+end funValidateDefaultExperience
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Handler to switch the user specified experience
+//Variables: strExperience
+//strExperience:This value contains the experience to be selected when revenueCycle is launched.
+/////////////////////////////////////////////////////////////////////////////////////////////////////-SM071467
+to SubSwitchExperience strExperience
+	Log "Call Handler: SubSwitchExperience"
+	Click (text:"File",SearchRectangle:("MiscScreenUtilities".Screen_Part("TopHalf")))
+	Click (text:"Switch Experience",SearchRectangle:("MiscScreenUtilities".Screen_Part("TopHalf")))
+	set the SearchRectangle to (ImageLocation(Text:"Switch Experience",SearchRectangle:("MiscScreenUtilities".Screen_Part("TopHalf")))+(120,-12),ImageLocation(Text:"Switch Experience",SearchRectangle:("MiscScreenUtilities".Screen_Part("TopHalf")))+(380,450))
+	put ReadText((the SearchRectangle),contrast:on,contrastTolerance:100) into availableExperienceList
+	Put availableExperienceList into TempList
+	split TempList by return
+	put the item number of strExperience in TempList into hitCount
+	Delete item hitCount of strExperience
+	repeat with each line of availableExperienceList
+		put item 1 of line repeatIndex() of availableExperienceList into requiredValue
+		if requiredValue is strExperience
+			TypeText downArrow
+			repeat (repeatIndex()-1)times
+				TypeText downArrow
+				wait 2
+			end repeat
+			Exit repeat
+		end if
+	end repeat
+	TypeText returnKey		
+	set the SearchRectangle to ()
+	log "End handler: SubSwitchExperience"
+end SubSwitchExperience 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Handler to select and switch the user specified experience
+//Variables: strExperience
+//strExperience:This value contains the experience to be selected when revenueCycle is launched.
+/////////////////////////////////////////////////////////////////////////////////////////////////////-SM071467
+to SubSwitchAndSelectExperience strExperience
+	Log "Call Handler: SubSwitchAndSelectExperience"
+	if imagefound(Image: "RevenueCycleCore/label_Available_Experiences",SearchRectangle:("MiscScreenUtilities".Screen_Part("VerticalMiddle")),waitFor:90)
+		SubSelectUserExperience(strExperience)
+	else
+		put funValidateDefaultExperience(strExperience) into strDefaultExperience
+		if strDefaultExperience is false
+			SubSwitchExperience(strExperience)
+		end if
+	end if
+	wait 2 //application takes time to respond
+	WaitFor 120,(Image:"Queues/Icon_Search" , SearchRectangle:(("MiscScreenUtilities").Screen_Part("TopHalf")))
+	log "End handler: SubSwitchAndSelectExperience"
+end SubSwitchAndSelectExperience
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//Handler to select the required scheduling-path option .
+//Variables:strSchPath
+//strSchPath:This value contains the required scheduling path that is to be selected.
+
+To subDefaultSchedulingPathSelection strSchPath
+	Log "Call Handler: subPathSelection"
+	
+	If ImageFound(20,(text:"Scheduling Path", searchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf")))
+	then
+		//setting a search rectangle around the drop down
+		set locEnterInfo to FoundImageLocation()
+		//Checks to see if the path sent in is selected if not then it will select it
+		if imagefound(text:strSchPath,SearchRectangle:(locEnterInfo+(-65,-1),locEnterInfo+(850, 63))) is false
+		then
+			click locEnterInfo+(80,40)
+			click (text:strschPath,SearchRectangle:(locEnterInfo+(-59,23),locEnterInfo+(129,158)))
+		end if
+	end if
+	set the searchRectangle to empty
+	Log "End Handler: subPathSelection"
+End subDefaultSchedulingPathSelection
+

@@ -1,0 +1,91 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//RevenueCycle Core related workflows can be listed down
+//These workflows will be used throughout Revenue Cycle 
+//Generic Workflows :
+//             A)Search & select  Patient and confirm appointment using first available and return confirmed appointment date and time.
+//             B)Search & select  Patient and confirm appointment using schedule and return confirmed appointment date and time.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
+//fucntion to confirm the appointments through first available fucntionality and it will return Appointment confirmed date and time
+//Varaiables:strPersonName,strEncounterType,strAppointment,dteApptDate,tmeApptTime
+//strPersonName-Enter patient name
+//strEncounterType-Enter Encounter Type[Optional] [Ex:Inpatient]
+//strAppointment-Enter Appointment Type
+//dteApptDate-It will store Confirmed  Appointment Date
+//tmeApptTime-It will store Confirmed Appointment Time
+///////////////////////////////////////////////////////////////////////////-vr043596
+
+to funConfirmApptthroughFirstAvailable strPersonName,strEncounterType,strAppointment
+	log "Call handler: funConfirmApptthroughFirstAvailable"
+	//Search for the Patient  
+	Run RCRegSearch.searchPersonByValue strPersonName 
+	wait 3.0//wait for application to respond
+	//Maximize the Person Search 
+	Run RCRegGeneral.maximizeWindow 
+	//Load Patient 
+	Run RCRegSearch.selectPatientAndEncounterInPersonSearch strPersonName,strEncounterType 
+	TypeText returnKey
+	Run "RevenueCycleCore/RevenueCycleCore".subSelectPatientPerspective("RevenueCycleCore/icon_Appointments")
+	WaitFor 180, (text:"Past Cancellations by Patient",EnableAggresivetextextraction:on,EnhanceLocalContrast:On,searchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant"))
+	wait 5.0// Wait for the application to response
+	//To load the Add Appointment Plus window
+	Click ((Item 2 of EveryImageLocation(Text:"Add Appointment",waitFor:40,SearchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"))))
+	wait 3.0// Required for Add Appointment Plus Perspective to Load
+	Click ((Item 1 of EveryImageLocation(Text:"Add Appointment",waitFor:40,SearchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"))))
+	wait 5.0// Required for Add Appointment  Perspective to Load
+	Click ((Item 2 of EveryImageLocation(Text:"Add Appointment",waitFor:40,SearchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"))))
+	wait 5.0// Required for Add Appointment Plus Perspective to Load
+	if ImageFound(imageName:"RevenueCycleCore/icon_Maximize", waitFor:25,SearchRectangle:("MiscScreenUtilities").Screen_Part("HorizontalMiddle")) then
+		Click (imageName:"RevenueCycleCore/icon_Maximize", waitFor:25,SearchRectangle:("MiscScreenUtilities").Screen_Part("HorizontalMiddle"))
+	end if
+	//To wait until the Enter Information text is visible
+WaitFor 180, (text:"Enter Information",EnableAggresivetextextraction:on,ignoreSpaces:yes,validCharacters:"*",EnhanceLocalContrast:On,textDifference:1,SearchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant"))
+	//Enter the Appointment Information
+	Run "Appointments/AAP_EnterInformation".SubApptSelect strAppointment
+	click ImageLocation(Text:"Create",EnableAggresivetextextraction:on,EnhanceLocalContrast:On,SearchRectangle:("MiscScreenUtilities").Screen_Part("RightHalf"))//To click on the create button
+	Click imageName:"AAP_EnterInformation/button_FirstAvailableEnabled", waitFor:180,searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")
+	//To select the first available slot
+	Run "Appointments/AAP_FirstAvailableTimes".funSelectFirstAvailableSuggestion
+	Click text:"Select",searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")
+	
+	waitFor 180, (text:"Return to Details",EnableAggresivetextextraction:on,ignoreSpaces:yes,searchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"))
+	//Read the confirm screen details
+	
+	set dteApptDate to "Appointments/AAP_PendingConfirmation".funReadPendingConfirmationDetails("Date",strAppointment)
+	Log "sheduled Appointmented Date:"&dteApptDate
+	set tmeApptTime to "Appointments/AAP_PendingConfirmation".funReadPendingConfirmationDetails("Appointment Time",strAppointment)
+	Log "scheduled Appointment Time:"&tmeApptTime &"[Format:HH:MM]"
+	//Confirm the Appointment
+	
+	//To select the encounter
+	if ImageFound(text:"Confirm") is False
+		set the SearchRectangle to "MiscScreenUtilities".Screen_Part("TopLeftQuadrant")
+		Click (ImageLocation(text:strAppointment)+[0,195]) 
+		set the SearchRectangle to empty
+	end if 
+	WaitFor 180, (text:"Confirm",validCharacters:"*",searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"))
+	click ImageLocation(Text:"Confirm",validCharacters:"*",searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"))//To click on the Confirm button
+	WaitFor 180, text:"Future Appointments",EnableAggresivetextextraction:on,ignoreSpaces:yes,searchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant")//To wait for Future Appointments Text after confirming the Appointment
+	return (dteApptDate,tmeApptTime)
+	log "End handler:funConfirmApptthroughFirstAvailable"
+end funConfirmApptthroughFirstAvailable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

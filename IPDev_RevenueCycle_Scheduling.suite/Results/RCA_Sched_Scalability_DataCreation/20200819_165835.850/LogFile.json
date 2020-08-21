@@ -1,0 +1,60 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 16:58:35.863 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-19 16:58:36.491 +0530",
+				"message": "(Location1:\"FirstLoc\", Location2:\"SecondLoc\")",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 5,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-19 16:58:36.521 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-19 16:58:36.578 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 9,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-19 16:58:37.122 +0530",
+				"message": "hi i am location",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 13,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-19 16:58:37.301 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 20,
+				"identifier": "Log"
+			},
+		{
+				"message": "(Duration:\"1.913\", Errors:\"0\", Exceptions:\"0\", StartTime:\"2020-08-19 16:58:35 +0530\", Successes:\"1\", TestCase:\"RCA_Sched_Scalability_DataCreation.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 16:58:37.848 +0530"
+			},
+		{
+				"message": "Execution Time 0:00:01 RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "SUCCESS",
+				"timestamp": "2020-08-19 16:58:38.116 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 16:58:35.919 +0530"
+}

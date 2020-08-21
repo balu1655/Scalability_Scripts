@@ -1,0 +1,116 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "START",
+				"timestamp": "2020-08-20 09:22:20.547 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.205 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 5,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.254 +0530",
+				"message": "(Locations:(Location1:\"FirstLoc\", Location2:\"SecondLoc\"), ResourceList1:(ResourceName1:\"FirstResource\", ResourceName2:\"SecondResource\", ResourceName3:\"ThirdResource\", ResourceName4:\"FourthResource\"), ResourceList2:(ResourceName1:\"FifthResource\", ResourceName2:\"SixResource\", ResourceName3:\"sevenResource\", ResourceName4:\"eightResource\"))",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.284 +0530",
+				"message": "2",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 9,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.317 +0530",
+				"message": "4",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 10,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.332 +0530",
+				"message": "(Location1:\"FirstLoc\", Location2:\"SecondLoc\")",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 12,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.363 +0530",
+				"message": "locations ++++++++++++++++++",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 13,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.409 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 14,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.457 +0530",
+				"message": "(ResourceName1:\"FirstResource\", ResourceName2:\"SecondResource\", ResourceName3:\"ThirdResource\", ResourceName4:\"FourthResource\")",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 15,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.488 +0530",
+				"message": "reslist+++++++++++++++++++++++++",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 16,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.519 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 17,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:21.566 +0530",
+				"message": "(Locations:(Location1:\"FirstLoc\", Location2:\"SecondLoc\"), ResourceList1:(ResourceName1:\"FirstResource\", ResourceName2:\"SecondResource\", ResourceName3:\"ThirdResource\", ResourceName4:\"FourthResource\"), ResourceList2:(ResourceName1:\"FifthResource\", ResourceName2:\"SixResource\", ResourceName3:\"sevenResource\", ResourceName4:\"eightResource\"))",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 20,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-20 09:22:22.144 +0530",
+				"message": "FirstLoc",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 25,
+				"identifier": "Log"
+			},
+		{
+				"message": "(Duration:\"2.361\", Errors:\"1\", Exceptions:\"0\", StartTime:\"2020-08-20 09:22:20 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_DataCreation.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-20 09:22:22.924 +0530"
+			},
+		{
+				"message": "SRUN_InvalidValueExpr Unable to take value of expression 'RL.ResourceName1' (reason: (null)) -- Execution Time 0:00:02 RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "FAILURE",
+				"timestamp": "2020-08-20 09:22:23.126 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-20 09:22:20.562 +0530"
+}

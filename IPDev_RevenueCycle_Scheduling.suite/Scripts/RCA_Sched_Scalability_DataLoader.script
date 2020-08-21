@@ -1,0 +1,42 @@
+﻿global performance_data
+global credentials, patientData, pauseDuration, iterationNumber
+// hack until I get iteration couting working
+
+if the number of keys in performance_data is 0
+	log "Using local data"
+	set credentials to CSVValue(file ResourcePath("Scalability_Scripts/LoginData.csv"))
+	Log credentials
+	set patientData to CSVValue(file ResourcePath("Scalability_Scripts/AppointmentInfo.csv"))
+else
+	log "Using ePP-provided data"
+	// populate Millennium login credentials
+	set item 1 of credentials to performance_data.UserName
+	set item 2 of credentials to performance_data.Password
+	set item 3 of credentials to performance_data.domain
+	set item 4 of credentials to performance_data.rcaPath
+	(*set item 1 of credentials to performance_data.username
+	set item 2 of credentials to performance_data.password*)
+	log credentials
+	//log performance_data.username
+	// populate patient information
+	set item 1 of patientData to performance_data.patientName
+	set item 2 of patientData to performance_data.appointmentName
+	set item 3 of patientData to performance_data.rescheduleReason
+	set item 4 of patientData to performance_data.cancelReason
+	set item 5 of patientData to performance_data.firstPatient
+	set item 6 of patientData to performance_data.secondPatient
+	set item 7 of patientData to performance_data.groupAppointmentName
+	set item 8 of patientData to performance_data.organization
+	set item 9 of patientData to performance_data.nurseUnit
+	set item 10 of patientData to performance_data.selectNurseUnit
+	set item 11 of patientData to performance_data.nsAppointmentName
+	set item 12 of patientData to performance_data.locationGroup
+	set item 13 of patientData to performance_data.resource
+	set item 14 of patientData to performance_data.location
+	set item 15 of patientData to performance_data.timeFrame
+	set item 16 of patientData to performance_data.comment
+	//set item 9 of patientData to performance_data.PERSONID
+	log "person_id",performance_data.patientName
+	set pauseDuration to performance_data.pauseDuration
+end if
+

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0"?>
+<testsuites>
+ <testsuite name="RCA_Sched_Scalability_DataLoader_script" package="IPDev_RevenueCycle_Scheduling.suite" timestamp="2020-08-19 12:34:59 +0530"
+ tests="1"  failures="0" errors="0" time="2.142000">
+  <properties>
+   <property name="RunDate" value="2020-08-19 12:34:59 +0530"/>
+   <property name="Status" value="Success"/>
+  </properties>
+  <testcase name="RCA_Sched_Scalability_DataLoader.script" assertions="1" status="success"  time="2.107">
+  </testcase>
+ </testsuite>
+</testsuites>

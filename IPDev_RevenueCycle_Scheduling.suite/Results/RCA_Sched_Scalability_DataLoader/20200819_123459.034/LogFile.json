@@ -1,0 +1,36 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_DataLoader.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 12:34:59.050 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 12:35:00.024 +0530",
+				"message": "Using local data",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 12:35:00.089 +0530",
+				"message": "((domain:\"ablgmprep\", password:\"system\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle\\\\RevenueCycle.exe\", userName:\"system\"))",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 8,
+				"identifier": "Log"
+			},
+		{
+				"message": "(Duration:\"2.107\", Errors:\"0\", Exceptions:\"0\", StartTime:\"2020-08-19 12:34:59 +0530\", Successes:\"1\", TestCase:\"RCA_Sched_Scalability_DataLoader.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 12:35:01.178 +0530"
+			},
+		{
+				"message": "Execution Time 0:00:02 RCA_Sched_Scalability_DataLoader.script",
+				"identifier": "SUCCESS",
+				"timestamp": "2020-08-19 12:35:01.499 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 12:34:59.067 +0530"
+}

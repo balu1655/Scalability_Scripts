@@ -1,0 +1,61 @@
+﻿(**************************************
+Script Name: RCA_Sched_Scalabilit_CheckIn_Appointment
+Description: This script verifies the functionality to check in single appointment from Patient Tracking. 
+Author: BS075655
+Date of creation: 19-AUG-2020
+***************************************)
+
+global credentials,patientData
+Run "RCA_Sched_Scalability_DataLoader"
+Log credentials
+Log patientData
+
+put item 1 of credentials.userName into userName
+put item 1 of credentials.password into password
+put item 1 of credentials.domain into domain
+put item 1 of credentials.rcaPath into rcaPath
+
+put  patientData.patientName into patientName
+put item 1 of patientData.appointmentName into appointmentType
+
+put patientData.confirmedTime into confirmedTime
+//Adding filter details
+
+put patientData.locationGroup into locationGroup
+put patientData.resourceGroup into resource
+put patientData.resource into restype
+put patientData.location into location
+put patientData.timeframe into timeframe
+Try
+	//Rules of the Road 
+	Run "OpenApplication".subRulesoftheRoad
+	Run "Run_Window".openApplication rcaPath
+	waitfor 500, "RCRegGeneral/Label_LoginScreenRevenueCycle"
+	Run "Millennium_Login_window".LogIntoRevenuCycleApps userName,password,domain
+	//Run "RevenueCycleCore".SubSelectUserExperience "Acute Ambulatory"
+	waitfor 500, "ConvoIcons/Icon_Search"
+	Run "RCRegSearch".selectOptionSearchBy "Appointments"
+	Run "RCRegGeneralWorkflow".searchAndSelectPatient patientName
+	
+	
+	#Check In Appointment
+	------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Click "RevenueCycleCore/icon_PatientTracking"
+	WaitFor 50,ImageName:"Scalability_Prep_Captures/PatientTracking_ablgm"
+	Click Image:"PTFilter"
+	
+	Run  "PatientTracking".subSetPTFilter "scaletest","ScaleTestRes","Resource","AF_Amer Fork","All Day"
+	//Run "PatientTracking".subSetPTFilter  locationGroup,resource, restype,location, timeFrame
+	Click ImageName:"Scalability_Captures/Patient_Tracking_Confirmed_Check_Box"
+	Click ImageName:"Scalability_Captures/ApplyandClose",SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"), WaitFor:70
+	put "PatientTracking".funreturnAppointmentDetailsLocation("08:00 AM","Test, Person") into returnValue
+	//put "PatientTracking".funreturnAppointmentDetailsLocation(confirmedTime,patientName) into returnValue
+	Click (text:"Confirmed",SearchRectangle:returnValue)
+	Click (text:"Check In",SearchRectangle:returnValue - (0,0,1665,-35))
+	Run "RevenueCycleCore".subExit_RevenueCycle
+catch Exception
+	
+	RCRegGeneralWorkflow.closeAllApps
+	LogError Exception
+	
+End Try

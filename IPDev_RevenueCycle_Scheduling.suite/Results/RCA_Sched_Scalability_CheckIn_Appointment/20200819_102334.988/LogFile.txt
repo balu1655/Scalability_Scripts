@@ -1,0 +1,55 @@
+﻿2020-08-19 10:23:35.001 +0530	START		Running RCA_Sched_Scalability_CheckIn_Appointment.script
+2020-08-19 10:23:36.340 +0530	Log		Using local data	6	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 10:23:36.402 +0530	Log		((domain:"ablgmprep", password:"system", rcaPath:@"C:\\Program Files\\Cerner\\RevenueCycle\\RevenueCycle.exe", userName:"system"))	8	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 10:23:36.559 +0530	Log		((domain:"ablgmprep", password:"system", rcaPath:@"C:\\Program Files\\Cerner\\RevenueCycle\\RevenueCycle.exe", userName:"system"))	10	on_rca_sched_scalability_checkin_appointment	RCA_Sched_Scalability_CheckIn_Appointment.script
+2020-08-19 10:23:36.605 +0530	Log		((appointmentName:"scaleappt", comment:"Test Comment", confirmedDate:"00:00.0", confirmedTime:"", location:"RCA Reporting", locationGroup:"RegAuto Locations", patientName:"Test, Person", rescheduleReason:"Patient Requested", resource:"Resource Group", resourceGroup:"Recur_Resource_Group1", testDate:"", timeFrame:"All Day"))	11	on_rca_sched_scalability_checkin_appointment	RCA_Sched_Scalability_CheckIn_Appointment.script
+2020-08-19 10:23:49.004 +0530	imagefound	(TEXT:"Rules of the road")	Unable to Find Image (TEXT:"Rules of the road") within 10.00 seconds. Text might be too low contrast to detect.	2	on_subrulesoftheroad	OpenApplication.script
+2020-08-19 10:23:49.104 +0530	Log		Rules of the road not found	6	on_subrulesoftheroad	OpenApplication.script
+2020-08-19 10:23:49.324 +0530	typetext		[windowsKey]r	2	on_openapplication	Run_Window.script
+2020-08-19 10:23:50.386 +0530	typetext		[controlKey]a	3	on_openapplication	Run_Window.script
+2020-08-19 10:23:51.441 +0530	typetext		[deleteKey]	4	on_openapplication	Run_Window.script
+2020-08-19 10:23:53.167 +0530	typetext		C:\Program Files\Cerner\RevenueCycle\RevenueCycle.exe	5	on_openapplication	Run_Window.script
+2020-08-19 10:23:54.228 +0530	typetext		[returnKey]	6	on_openapplication	Run_Window.script
+2020-08-19 10:24:05.525 +0530	waitfor	RCRegGeneral/Label_LoginScreenRevenueCycle	found at (959, 398)	33	on_rca_sched_scalability_checkin_appointment	RCA_Sched_Scalability_CheckIn_Appointment.script
+2020-08-19 10:24:08.136 +0530	imagefound	Millennium_Login_window/Textbox_Username	found at (891, 465)	3	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:08.393 +0530	click		at (891, 485)	5	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:09.418 +0530	typetext		[controlKey]a	13	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:10.537 +0530	typetext		system	14	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:12.314 +0530	imagefound	Millennium_Login_window/Textbox_Password	found at (889, 512)	18	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:12.587 +0530	click		at (889, 532)	20	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:13.611 +0530	typetext		[controlKey]a	27	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:14.825 +0530	typetext		system	28	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:16.205 +0530	imagefound	Millennium_Login_window/Textbox_Domain_revCycleApp	found at (879, 559)	32	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:16.488 +0530	imagerectangle	Millennium_Login_window/Textbox_Domain_revCycleApp	at (863,552,910,565)	34	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:16.733 +0530	readtext		(866,572,980,595)
+2020-08-19 10:24:17.123 +0530	Log		iblgmprep	35	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:17.616 +0530	click		at (884, 584)	39	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:18.641 +0530	typetext		[controlKey]a	40	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:19.773 +0530	typetext		ablgmprep	41	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:22.010 +0530	imagefound	Millennium_Login_window/Button_OK	found at (908, 634)	47	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:22.317 +0530	doubleclick		at (908, 634)	49	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:32.874 +0530	imagefound	Millennium_Login_window/Button_Acknowledge	Unable to Find Image Millennium_Login_window/Button_Acknowledge	57	on_logintorevenucycleapps	Millennium_Login_window.script
+2020-08-19 10:24:38.913 +0530	waitfor	ConvoIcons/Icon_Search	found at (212, 54)	36	on_rca_sched_scalability_checkin_appointment	RCA_Sched_Scalability_CheckIn_Appointment.script
+2020-08-19 10:24:39.777 +0530	imagelocation	ConvoIcons/Icon_SearchByIcon	at (188, 53)	3	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 10:24:39.874 +0530	click		at (188, 53)	3	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 10:24:41.046 +0530	imagerectangle	ConvoIcons/Icon_SearchByIcon	at (180,44,222,64)	4	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 10:24:41.557 +0530	click	(TEXT:"Appointments")	at (91, 306)	4	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 10:24:41.586 +0530	Log		Search By Appointments - option selected.	5	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 10:24:41.620 +0530	set		SEARCHRECTANGLE = 	6	on_selectoptionsearchby	RCRegSearch.script
+2020-08-19 10:24:44.773 +0530	imagelocation	ConvoIcons/Icon_SearchByIcon	at (188, 53)	3	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:44.904 +0530	doubleclick		at (48, 53)	3	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:46.064 +0530	typetext		Test, Person	4	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:47.174 +0530	click	ConvoIcons/Icon_Search	at (212, 54)	5	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:48.979 +0530	imagelocation	Scalability_Captures/RegPatientSearch	at (535, 32)	8	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:49.151 +0530	doubleclick		at (565, 22)	8	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:57.287 +0530	imagefound	RCRegGeneral/Button_Maximize	Unable to Find Image RCRegGeneral/Button_Maximize within 5.00 seconds	3	on_maximizewindow	RCRegGeneral.script
+2020-08-19 10:24:57.418 +0530	typetext		[tab]	11	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:57.455 +0530	waitfor	Scalability_Captures/RegPatientSearch	found at (25, 28)	12	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:58.442 +0530	imagerectangle	Scalability_Captures/RegPatientSearch	at (2,3,18,19)	13	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:24:59.988 +0530	doubleclick	(TEXT:"Test, Person")	at (264, 164)	13	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:25:00.994 +0530	imagerectangle	RCRegGeneral/Button_File	at (6,26,29,38)	14	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:25:01.460 +0530	waitfor	(TEXT:"Test, Person")	found at (345, 59)	14	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:25:03.682 +0530	Log		"Test, Person" is open.	16	on_searchandselectpatient	RCRegGeneralWorkflow.script
+2020-08-19 10:25:24.620 +0530	Exception	RevenueCycleCore/icon_PatientTracking	No Image Found On Screen: "RevenueCycleCore/icon_PatientTracking"	43	on_rca_sched_scalability_checkin_appointment	RCA_Sched_Scalability_CheckIn_Appointment.script
+2020-08-19 10:25:26.289 +0530	EndTestCase		(Duration:"111.271", Errors:"1", Exceptions:"1", StartTime:"2020-08-19 10:23:35 +0530", Successes:"0", TestCase:"RCA_Sched_Scalability_CheckIn_Appointment.script", Warnings:"0")
+2020-08-19 10:25:26.325 +0530	ABORTED		Execution Time 0:01:51 RCA_Sched_Scalability_CheckIn_Appointment.script

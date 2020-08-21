@@ -1,0 +1,335 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Appointments Perspective   
+//Add Appointment Plus tab - Enter PendingConfirmation section
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+(* Function to read and store the appointment details (appointment type, date, time, resource, etc...) from the Pending Confirmation section.
+
+Variables:
+appointmentType: The appointment type used to set the searchRectangle [REQUIRED]
+dateValue: The date label. [Hard Coded]
+location: The location label. [Hard Coded]
+patientArrivalTime The Patient Arrival Time label. [Hard Coded]
+appointmentTime: The Appointment Time label. [Hard Coded]
+patientDuration: The Patient Duration label. [Hard Coded]
+primaryResrouce: The Primary Resource label. [Hard Coded]
+
+Notes:
+This handler calls the following handlers:
+MiscScreenUtilities:
+     getValueForLabel
+     getSearchRectangleForValueOfLabel
+*)
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+to readPendingConfirmApptDetails appointmentType
+	log "Call local handler: readPendingConfirmApptDetails"
+	
+	//Sets the SearchRectangles
+	Set locPendingConfirmation to imagelocation(ImageName:"AAP_PendingConfirmation/label_PendingConfirmation", searchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf"),waitfor:25)
+	waitfor 60,"AAP_EnterDetails_ACFandOEF/button_ReturntoDetails"
+	Set appointmentTypeSearchRectangle to (locPendingConfirmation+(-85, -10),locPendingConfirmation+(1700,200))
+	Set appointmentTypeImageRectangle to ImageRectangle(text:appointmentTYpe, textdifference:1, ignoreSpaces: True,waitfor:25)
+	
+	// Expand our search area to get all of the field information after finding the appointment type under pending confirmation
+	Set appointmentDetailsSearchRectangle to appointmentTypeImageRectangle + (-20, 25, 1580, 130)
+	
+	// Find all of the attributes of the appointment type based on the labels
+	Set dateValue to ("MiscScreenUtilities").getValueForLabel("Date", appointmentDetailsSearchRectangle)
+	Set location to ("MiscScreenUtilities").getValueForLabel("Location", appointmentDetailsSearchRectangle)
+	Set patientArrivalTime to ("MiscScreenUtilities").getValueForLabel("Patient Arrival Time", appointmentDetailsSearchRectangle)
+	Set appointmentTime to ("MiscScreenUtilities").getValueForLabel("Appointment Time", appointmentDetailsSearchRectangle)
+	Set patientDuration to ("MiscScreenUtilities").getValueForLabel("Patient Duration", appointmentDetailsSearchRectangle)
+	Set primaryResource to ("MiscScreenUtilities").getValueForLabel("Primary Resource", appointmentDetailsSearchRectangle)
+	
+	return (date: dateValue, location: location, patientArrivalTime: patientArrivalTime, time: appointmentTime, patientDuration: patientDuration, primaryResource: primaryResource)
+	
+	log "End handler: readPendingConfirmApptDetails"	
+end readPendingConfirmApptDetails
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to read the details in Pending Confirmation 
+//Variables: strRequiredField, strAppointment, fieldResult
+//strRequiredField: Enter the field to get the details.Mention only String, eg: Appointment Time, Date, Primary Resource
+//strAppointment: Enter the appointment type.
+//fieldResult: It will return the Appointment information like Date, Appointment Time etc(Eg: Mon Aug 03, 2018, 10:00 AM)
+/////////////////////////////////////////////////////////////////////////////////////////////////////-MC043487
+to funReadPendingConfirmationDetails strRequiredField,strAppointment
+	log "Call handler: funReadPendingConfirmationDetails"
+	Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("LeftHalf")
+	if(imagefound("AAP_EnterInformation/label_Orders")) then
+		set the SearchRectangle to (ImageRectangle("AAP_PendingConfirmation/label_PendingConfirmation")+(-10,15,1700,250))
+		set the SearchRectangle to(ImageRectangle((text:strAppointment,ignoreSpaces:yes),(text:strAppointment,validCharacters:strAppointment))+(-15,15,1700,205))
+	else
+		set the SearchRectangle to (ImageRectangle("AAP_PendingConfirmation/label_PendingConfirmation")+(-10,15,1700,180))
+		set the SearchRectangle to(ImageRectangle((text:strAppointment,ignoreSpaces:yes),(text:strAppointment,validCharacters:strAppointment))+(-15,15,1700,140))
+	end if
+	set fieldArea to imagerectangle((text:strRequiredField,EnableAggresivetextextraction:on,EnhanceLocalContrast:On,dpi:50,ignoreSpaces:On),(text:strRequiredField),(text:strRequiredField,DPI:250),(text:strRequiredField,textDifference:1))
+	insert (fieldArea+(-2,15,240,28)) into SRect
+	put readText(SRect) into fieldResult
+	if strRequiredField is equal to "Date"
+		replace "." with comma in fieldResult
+		replace ":" with comma in fieldResult
+		put the year into currentYear
+		if fieldResult contains ","&currentYear
+			replace ","&currentYear with ", "&currentYear in fieldResult
+		end if			
+	end if
+	put trim(fieldResult) into fieldResult
+	replace first comma in fieldResult with empty
+	set the SearchRectangle to empty
+	if strRequiredField is "Appointment Time" then
+		put fieldResult into tmpfieldResult
+		split tmpfieldResult by ":"
+		put item 1 of tmpfieldResult into fieldResultA
+		if fieldResultA <10 then
+			set time to first character of fieldResult
+			log fieldResult
+			if time is not equal to "0"   				     
+				set fieldResult to "0"&fieldResult				
+			end if
+		end if
+	end if
+	put trim(fieldResult) into fieldResult
+	return fieldResult
+	log "End handler: funReadPendingConfirmationDetails"	
+end funReadPendingConfirmationDetails
+
+///////////////////////////////////////////////////////////
+(*Function to ensure that the create new encounter is selected and then clicks the action button.
+Variables: 
+strAction: is a string variable that is used to click the correct button in the pending confirmation.  i.e 'Confirm and Next' or 'Confirm' or 'Cancel'
+Note: 
+Handler assumes the processing option 'Launch the add encounter at confirm for new encounter' is off  (Processing option is available in schtools but not RevCycleMaint)
+*)
+
+////////////////////////////////////////////////////// 
+to subPendingConfirmNewEncounter strAction
+	Log "Call handler: SubPendingConfirmNewEncounter"	
+	
+	if imagefound(40,text:"Pending Confirmation",searchrectangle:(("MiscScreenUtilities").Screen_Part("TopLeftQuadrant"))) then
+		set srPendingConfirm to foundimageinfo().ImageRectangle
+		set srButton to imagerectangle(text:"Cancel",searchrectangle:(("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")))+(-308,-13,26,28)
+		
+		if imagefound(imagename:"AAP_PendingConfirmation/label_NewEncounter",searchrectangle:(srPendingConfirm+(-10,195,210,358))) then
+			click (text:strAction,searchrectangle:(srButton))
+		else if imagefound(10,text:"Date",searchrectangle:(srPendingConfirm+(-10,195,210,358))) then
+			click imagename:"AAP_PendingConfirmation/label_NewEncounterExisting",searchrectangle:(srPendingConfirm+(-10,195,210,358))
+			click (text:strAction,searchrectangle:(srButton))
+		else if imagefound(imagename:"AAP_PendingConfirmation/label_NewEncounterExisting",searchrectangle:(("MiscScreenUtilities").Screen_Part("lefthalf"))) then
+			click foundimagelocation()
+			click (text:strAction,searchrectangle:(srButton))
+		else
+			Logerror "Issue with selecting a new encounter"
+		end if
+	end if
+	
+	Log "End handler: SubPendingConfirmNewEncounter"
+end SubPendingConfirmNewEncounter
+
+///////////////////////////////////////////////////////////
+//Function to click an existing encounter on the Pending Confirmation section then click the 'Confirm' button
+//Variables: 
+//strAppointmentType: is a string variable containing the name of the Appointment Type (REQUIRED)
+//numEncounterID: is the number for the encounter id to be selected in the Pending Confirmation section. (REQUIRED)
+//strConfirmAction: is the string variable to click "Confirm" or "Confirm and Next" (REQUIRED)
+//bolBadData: is the boolen set to False and if true will exit the test script (INTERNAL)
+//
+//Note: 
+//Launch the add encounter at confirm for new encounter is off (schtools)
+//This is for when a single appointment type is used
+//////////////////////////////////////////////////////
+//Validate the Pending Confirmation section displays
+to subPendingConfirmExistingEncounter strAppointmentType, numEncounterID, strConfirmAction
+	Log "Call handler: SubPendingConfirmExistingEncounter"
+	
+	//Setting the variables
+	Put False into bolBadData
+	
+	//Look for the 'Pending Confirmation' section header
+	If ImageFound(2, (text:"Pending Confirmation", validwords:"Pending Confirmation", searchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant")))
+	then
+		//Using the strFieldName create a search rectangle
+		//Look for the variable strEncounterType
+		Set the searchRectangle to (imagelocation(text:strAppointmentType)+(-175,-15),imagelocation(text:strAppointmentType)+(369,345))
+		repeat until imagefound(6,text:(numEncounterID)) 
+			moveto (544, 470)
+			ScrollWheelDown 4
+			//If the variable strEncounterType is not found flip the bolBadData to true to exit the repeat
+			if is not imageFound(6, ((text: numEncounterID))) then
+				LogWarning numEncounterID & " does not display."
+				Set bolBadData to True
+				Exit repeat
+			end if
+		end repeat
+		click (text:numEncounterID)
+		If bolBadData = True
+			LogWarning numEncounterID & " does not display. - Check Build"
+			//Returning False bolBadData meaning that functionality failed. Set in test script to log Error
+			Return Not bolBadData 
+		End if
+		//Click the 'Confirm' button
+		Click (text:strConfirmAction,SearchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"))
+	else
+		//If the 'Pending Confirmation' section header is not found log message
+		Log "Pending Confirmation section does not display."
+	End If
+	Log "End handler: SubPendingConfirmExistingEncounter"
+end SubPendingConfirmExistingEncounter
+
+///////////////////////////////////////////////////////////
+//Function to verify that the 'Confirmation Failure' pop up displays and that the user is able to click on the 'Return to Pending Confirmation' or "Skip" buttons
+//Variables: 
+//strConfirmFailAction: is the string variable to click "Return to Pending Confirmation" or "Skip" (REQUIRED)
+//
+//Note:
+//The "Skip" option is available when confirming multiple appointments and the user is not on the last appointment
+//////////////////////////////////////////////////////
+to subConfirmFailure strConfirmFailAction
+	log "Call handler: SubConfirmFailure"
+	If imagefound(90,imagename:"AAP_PendingConfirmation/label_ConfirmationFailure",searchRectangle:("MiscScreenUtilities").Screen_Part("TopHalf")) then
+		set srConfirmFail to foundimageinfo().imagerectangle+(432,-12,559,194)
+		if strConfirmFailAction is not equal to "" then
+			click (text:strConfirmFailAction,searchrectangle:(srConfirmFail))
+		else 
+			log "No option is selected for the Confirmation Failure dialog."
+		end if
+	else
+		logerror "The Confirmation Failure dialog did not display"
+	end if
+	set the SearchRectangle to empty
+	Log "End handler: SubConfirmFailure"
+end SubConfirmFailure
+
+///////////////////////////////////////////////////////////
+//Function to click the Clear button in order to clear the Add Appointment Plus View
+//Variables: 
+//strButtonChoice - the string text of the action button that you want to do once clicking on the "Clear" button (i.e. Yes or No buttons) [REQUIRED]
+//
+//Note: 
+//Launch the add encounter at confirm for new encounter is off (schtools)
+//////////////////////////////////////////////////////
+to subClearAAPView strButtonChoice
+	//Looks for the "Cancel" button in the bottom right of the AAP views
+	If ImageFound(20, (text:"Cancel", validwords:"Cancel", searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")))
+	Then
+		click foundimagelocation()
+		//If the 'Yes' button is found it will click the desired action of Yes or No
+		if imagefound (text: strButtonChoice,searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant")) then
+			//Clicked the desired button
+			click imagelocation(text:strButtonChoice, searchRectangle:("MiscScreenUtilities").Screen_Part("BottomRightQuadrant"), waitfor:2)
+		Else
+			log "Unable to find " & strButtonChoice
+		End if
+	Else
+		log "The Cancel button does not display."
+	End if
+	
+end SubClearAAPView
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to read all protocol appointment rows in the Pending Confirmation view
+//Variables:
+//strProtocolAppt - String variable for the protocol Appointment (Required)
+//numChildAppts - Number of child appopintments in the Protocol Appointment (Required)
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+to funReadAllProtocolApptDetails strProtocolAppt,numChildAppts
+	log "Call handler: funReadAllProtocolApptDetails"
+	
+	if imagefound(25,ImageName: "AAP_PendingConfirmation/label_PendingConfirmation", validwords: "*", searchRectangle:("MiscScreenUtilities").Screen_Part("LeftHalf")) then
+		set srPendingConfirm to imagerectangle(text:strProtocolAppt,searchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant"))+(-20,27,1500,36)
+	end if
+	
+	//Setting the Search Rectable for each column to read
+	set srdate to imagerectangle(text:"Date",SearchRectangle:srPendingConfirm)+(-10,22,162,37)
+	set srTime to everyimagerectangle(text:"Time",SearchRectangle:srPendingConfirm)
+	set srTime to Item 1 of srTime+(-4,22,165,37)
+	set srPrimeRes to imagerectangle(text:"Primary Resource",SearchRectangle:srPendingConfirm)
+	set srAppt to imagerectangle(text:"Appointment Type",SearchRectangle:srPendingConfirm)+(-10,22,0,37)
+	put item 1 of srPrimeRes into item 3 of srAppt
+	set lstAppts to ()
+	//Will take the number passed to assume the number of rows to read
+	repeat numChildAppts times
+		Set Date to ReadText(srdate)
+		Set Time to ReadText(srTime)
+		Set Appt to ReadText(srAppt)
+		Set tempAppt to (Appt,Date,Time)
+		Insert tempAppt nested after lstAppts
+		log lstAppts
+		set srdate to srdate+(0,25,0,25)
+		set srTime to srTime+(0,25,0,25)
+		set srAppt to srAppt+(0,25,0,25)
+	end repeat
+	
+	//Returns the Appointment Type, Date, and Time for each row
+	Return lstAppts
+	
+	log "End handler: funReadAllProtocolApptDetails"
+end funReadAllProtocolApptDetails
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function to read the details in Pending Confirmation for protocol appointment with two components
+//Variables: strRequiredField, strAppointment, fieldResult
+//strRequiredField: Enter the field to get the details.Mention only String, eg: Appointment Time, Date, Primary Resource
+//strAppointment: Enter the appointment type.
+//fieldResult: It will return the Appointment information like Date, Appointment Time for two components etc(Eg: Mon Aug 03, 2018, 10:00 AM)
+/////////////////////////////////////////////////////////////////////////////////////////////////////-GR043002
+to funReadProtocolPendingConfirmationDetails strRequiredField,strAppointment
+	log "Call handler: funReadProtocolPendingConfirmationDetails"
+	Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("LeftHalf")
+	set the SearchRectangle to (ImageRectangle("AAP_PendingConfirmation/label_PendingConfirmation")+(-10,15,1700,250))
+	set the SearchRectangle to(ImageRectangle((text:strAppointment,ignoreSpaces:yes),(text:strAppointment,validCharacters:strAppointment))+(-15,15,1700,205))
+	set fieldArea to imagerectangle((text:strRequiredField,EnableAggresivetextextraction:on,EnhanceLocalContrast:On,dpi:50,ignoreSpaces:On),(text:strRequiredField),(text:strRequiredField,DPI:250))
+	if strRequiredField is "Orders" then
+		insert (fieldArea+(-3,20,RemoteScreenSize().x,35)) into SRect
+	else
+		insert (fieldArea+(-3,20,100,35)) into SRect
+	end if 
+	put readText(SRect) into fieldResultA
+	if strRequiredField is equal to "Date"
+		replace "." with comma in fieldResultA
+		replace ":" with comma in fieldResultA
+	end if
+	if strRequiredField is among the items of  {"Date", "Orders"}
+		replace "." with comma in fieldResultA
+		replace ":" with comma in fieldResultA
+	end if
+	put trim(fieldResultA) into fieldResultA
+	replace first comma in fieldResultA with empty
+	set the SearchRectangle to empty
+	
+	Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("LeftHalf")
+	set the SearchRectangle to (ImageRectangle("AAP_PendingConfirmation/label_PendingConfirmation")+(-10,15,1700,250))
+	set the SearchRectangle to(ImageRectangle((text:strAppointment,ignoreSpaces:yes),(text:strAppointment,validCharacters:strAppointment))+(-15,15,1700,205))
+	set fieldArea to imagerectangle((text:strRequiredField,EnableAggresivetextextraction:on,EnhanceLocalContrast:On,dpi:50,ignoreSpaces:On),(text:strRequiredField),(text:strRequiredField,DPI:250))
+	if strRequiredField is "Orders" then
+		insert (fieldArea+(-3,50,RemoteScreenSize().x,60)) into SRectB
+	else
+		insert (fieldArea+(-3,50,100,60)) into SRectB
+	end if 
+	put readText(SRectB) into fieldResultB
+	if strRequiredField is among the items of  {"Date", "Orders"}
+		replace "." with comma in fieldResultB
+		replace ":" with comma in fieldResultB
+	end if
+	put trim(fieldResultB) into fieldResultB
+	replace first comma in fieldResultB with empty
+	set the SearchRectangle to empty
+	
+	if strRequiredField is "Appointment Time" then
+		if fieldResultA is not among the items of{ "12:00 AM","12:00 PM","11:00 AM","11:00 PM","10:00 AM","10:00 PM"}
+			set time to first character of fieldResultA
+			if time is not equal to "0"   				     
+				set fieldResultA to "0"&fieldResultA				
+			end if
+		end if
+		if fieldResultB is not among the items of{ "12:00 AM","12:00 PM","11:00 AM","11:00 PM","10:00 AM","10:00 PM"}
+			set time to first character of fieldResultB
+			if time is not equal to "0"   				     
+				set fieldResultB to "0"&fieldResultB				
+			end if
+		end if
+	end if		
+	return (fieldResultA, fieldResultB)
+	log "End handler: funReadProtocolPendingConfirmationDetails"	
+end funReadProtocolPendingConfirmationDetails

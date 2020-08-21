@@ -1,0 +1,73 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Preferences - Patient View
+//Note:Kindly maximize your view before consuming below handler
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Subfunction to Select and Associate Nurse Unit
+//Variables : strAvalOrg :- Available Organizations  -  Eg. RCR AUTOMATION ORG
+//strAvalNrseUnt :- Available Nurse Unit - Eg. RCR Auto NU22
+//strSeltdNrseUnt :- Selected Nurse Unit - Eg. RCR AUTOMATION ORG - RCR Auto NU22
+//strDefNrseUnt :- Default Nurse Unit - Eg. RCR AUTOMATION ORG - RCR Auto NU22
+///////////////////////////////////////////////////////////////////////////////////////////// -TB035436
+
+to subSelectNurseUnit strAvalOrg, strAvalNrseUnt, strSeltdNrseUnt, strDefNrseUnt
+	log "Call handler: subSelectNurseUnit"
+	set strAvailableOrganizationsLoc to ImageLocation("RevenueCycleCore/label_AvailableOrganizations") //Available Organizations is a Label 
+	Set the SearchRectangle to ((strAvailableOrganizationsLoc+(-60,15)),(strAvailableOrganizationsLoc+(590,240)))
+	if(imagefound(text:strAvalOrg)) then
+		Click text:strAvalOrg, waitFor:100
+	else	
+		click(strAvailableOrganizationsLoc+(0,20))
+		put first character of strAvalOrg into firstcharacterofAvalOrg
+		typetext firstcharacterofAvalOrg
+		Repeat until ImageFound(text:strAvalOrg)
+			repeat 5 times
+				typetext downArrow
+			end repeat 
+		End Repeat
+		Click text:strAvalOrg,waitFor:100
+	end if
+	Set The SearchRectangle  to ()
+	set strAvailableNurseUnits to ImageLocation(image:"PatientView/label_AvailableNurseUnits")  //Available Nurse Units is a Label 
+	Set the SearchRectangle to ((strAvailableNurseUnits+(-60,15)),(strAvailableNurseUnits+(590,240)))
+	Click (text:strAvalNrseUnt, EnableAggressiveTextExtraction:On, DPI:131,waitFor:100)
+	Set The SearchRectangle  to ()
+	Set the SearchRectangle to ("MiscScreenUtilities").Screen_Part("RightHalf")
+	Click "PatientView/button_SelectNurseUnit" ////Select Nurse Units is a Label 
+	Set The SearchRectangle  to empty
+	set strAvailableOrganizationsLoc to ImageLocation(image:"RevenueCycleCore/label_AvailableOrganizations") //Available Organizations is a Label 
+	Set the SearchRectangle to ((strAvailableOrganizationsLoc+(-80,15)),(strAvailableOrganizationsLoc+(590,340)))
+	set strSelectedNurseUnit to ImageLocation(text:"Selected Nurse Units")  //Selected Nurse Units is a Label 
+	Set the SearchRectangle to ((strSelectedNurseUnit+(-60,15)),(strSelectedNurseUnit+(590,240)))
+	Click text:strSeltdNrseUnt, waitFor:100,IgnoreSpaces:YES
+	Set The SearchRectangle  to ()
+	set strDefaultNurseUnitLoc to ImageLocation(image:"PatientView/label_DefaultNurseUnit")  //Default Nurse Unit is a Label
+	Click (strDefaultNurseUnitLoc)+(0,45)
+	Set the SearchRectangle to ((strDefaultNurseUnitLoc+(-50,35)),(strDefaultNurseUnitLoc+(220,280)))
+	TypeText altKey&downArrow
+	Click text:strDefNrseUnt, waitFor:100,IgnoreSpaces:YES,validCharacters:"*"
+	Set The SearchRectangle  to ()
+	log "End handler: subSelectNurseUnit"
+end subSelectNurseUnit
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Subfunction to Select Appointment Label
+//Variables : strApptLbl :- Appointment Label  -  Eg. Appointment Type or Location
+///////////////////////////////////////////////////////////////////////////////////////////// -TB035436
+
+to subSelectAppointmentLabel strApptLbl
+	log "Call handler: subSelectAppointmentLabel"
+	set strDefaultAppointmentDisplayLoc to ImageLocation(text:"Default Appointment Display") //Default Appointment Display is a Label
+	Click (strDefaultAppointmentDisplayLoc)+(0,45)
+	Set the SearchRectangle to ((strDefaultAppointmentDisplayLoc+(-80,35)),(strDefaultAppointmentDisplayLoc+(140,100)))
+	TypeText altKey&downArrow
+	Click (text:strApptLbl, waitFor:20),(text:strApptLbl,validcharacters:"*",waitfor:20),(text:strApptLbl,DPI:131,waitfor:20)
+	Set The SearchRectangle  to ()
+	log "End handler: subSelectAppointmentLabel"
+End subSelectAppointmentLabel 
+
+
+
+

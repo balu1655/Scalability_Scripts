@@ -1,0 +1,14 @@
+{
+	"Locations": {
+		"Location1": "RCA Reporting",
+		"Location2": "RCA Testing Org"
+	},
+	"ResourceList1": {
+		"ResourceName1": "Loc_test_res1",
+		"ResourceName2": "Loc_test_res2"
+	},
+	"ResourceList2": {
+		"ResourceName1": "Loc_test_res3",
+		"ResourceName2": "Loc_test_res4"
+	}
+}

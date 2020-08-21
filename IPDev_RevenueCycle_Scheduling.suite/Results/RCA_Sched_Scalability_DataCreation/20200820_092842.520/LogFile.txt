@@ -1,0 +1,16 @@
+﻿2020-08-20 09:28:42.520 +0530	START		Running RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.179 +0530	Log		1	5	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.194 +0530	Log		(Locations:(Location1:"FirstLoc", Location2:"SecondLoc"), ResourceList1:(ResourceName1:"FirstResource", ResourceName2:"SecondResource", ResourceName3:"ThirdResource", ResourceName4:"FourthResource"), ResourceList2:(ResourceName1:"FifthResource", ResourceName2:"SixResource", ResourceName3:"sevenResource", ResourceName4:"eightResource"))	6	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.237 +0530	Log		2	9	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.266 +0530	Log		4	10	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.293 +0530	Log		(Location1:"FirstLoc", Location2:"SecondLoc")	12	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.326 +0530	Log		locations ++++++++++++++++++	13	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.362 +0530	Log		1	14	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.399 +0530	Log		(ResourceName1:"FirstResource", ResourceName2:"SecondResource", ResourceName3:"ThirdResource", ResourceName4:"FourthResource")	15	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.438 +0530	Log		reslist+++++++++++++++++++++++++	16	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.474 +0530	Log		1	17	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.514 +0530	Log		(Locations:(Location1:"FirstLoc", Location2:"SecondLoc"), ResourceList1:(ResourceName1:"FirstResource", ResourceName2:"SecondResource", ResourceName3:"ThirdResource", ResourceName4:"FourthResource"), ResourceList2:(ResourceName1:"FifthResource", ResourceName2:"SixResource", ResourceName3:"sevenResource", ResourceName4:"eightResource"))	20	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.669 +0530	Log		FirstLoc	25	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:43.745 +0530	Log		Data.ResourceList1	27	on_rca_sched_scalability_datacreation	RCA_Sched_Scalability_DataCreation.script
+2020-08-20 09:28:44.335 +0530	EndTestCase		(Duration:"1.782", Errors:"1", Exceptions:"0", StartTime:"2020-08-20 09:28:42 +0530", Successes:"0", TestCase:"RCA_Sched_Scalability_DataCreation.script", Warnings:"0")
+2020-08-20 09:28:44.876 +0530	FAILURE		STUnknownMessage ERROR: No Such Function: 'resourcename' -- Execution Time 0:00:01 RCA_Sched_Scalability_DataCreation.script

@@ -1,0 +1,26 @@
+﻿//////////////////////////////////////////////////////////////////////////////////////////////
+//sub Function to write values into excel
+//filePath :- Excel workbook name 
+//sheetNum :- Excel worksheet name
+//value :- value to write into excel
+//rowNum :- row number
+//columnNum :- cloumn number
+/////////////////////////////////////////////////////////////////////////////////////////////-RB057587
+to subWriteExcel filePath, sheetNum, value, rowNum, columnNum
+	set MyExcelFile to Workbook(ResourcePath(filePath)) // Sets MyExcelFile as a reference variable for the TestCases.xlsx Excel file
+	set worksheet1 to Worksheet(MyExcelFile, sheetNum)
+	put value into Cell((rowNum, columnNum)) of  worksheet1
+end subWriteExcel
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//sub Function to read values from excel
+//filePath :- Excel workbook name 
+//sheetNum :- Excel worksheet name
+//rowNum :- row number
+//columnNum :- cloumn number
+/////////////////////////////////////////////////////////////////////////////////////////////-RB057587
+to funReadExcel filePath, sheetNum, rowNum, columnNum
+	set MyExcelFile to Workbook(ResourcePath(filePath)) // Sets MyExcelFile as a reference variable for the TestCases.xlsx Excel file
+	set worksheet1 to Worksheet(MyExcelFile, sheetNum)
+	return Cell((rowNum, columnNum)) of  worksheet1
+end funReadExcel

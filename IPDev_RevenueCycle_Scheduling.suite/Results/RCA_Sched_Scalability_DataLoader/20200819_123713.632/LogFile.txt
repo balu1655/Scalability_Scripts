@@ -1,0 +1,5 @@
+﻿2020-08-19 12:37:13.646 +0530	START		Running RCA_Sched_Scalability_DataLoader.script
+2020-08-19 12:37:14.481 +0530	Log		Using local data	6	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 12:37:14.547 +0530	Log		system	8	on_rca_sched_scalability_dataloader	RCA_Sched_Scalability_DataLoader.script
+2020-08-19 12:37:15.513 +0530	EndTestCase		(Duration:"1.843", Errors:"0", Exceptions:"0", StartTime:"2020-08-19 12:37:13 +0530", Successes:"1", TestCase:"RCA_Sched_Scalability_DataLoader.script", Warnings:"0")
+2020-08-19 12:37:15.624 +0530	SUCCESS		Execution Time 0:00:01 RCA_Sched_Scalability_DataLoader.script

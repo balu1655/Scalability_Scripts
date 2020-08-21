@@ -1,0 +1,20 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 16:42:28.953 +0530"
+			},
+		{
+				"message": "(Duration:\"0.006\", Errors:\"1\", Exceptions:\"0\", StartTime:\"2020-08-19 16:42:28 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_DataCreation.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 16:42:29.003 +0530"
+			},
+		{
+				"message": "SenseTalk Compiler Exception in rca_sched_scalability_datacreation:\\nSyntax Error at line 13: Syntax Error - can't understand [end of script] at character 1 -- Execution Time 0:00:00 RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "FAILURE",
+				"timestamp": "2020-08-19 16:42:29.235 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 16:42:28.980 +0530"
+}

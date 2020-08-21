@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<testsuites>
+ <testsuite name="RCA_Sched_Scalability_DataCreation_script" package="IPDev_RevenueCycle_Scheduling.suite" timestamp="2020-08-20 08:32:42 +0530"
+ tests="1"  failures="1" errors="0" time="1.542000">
+  <properties>
+   <property name="RunDate" value="2020-08-20 08:32:42 +0530"/>
+   <property name="Status" value="Failure"/>
+  </properties>
+  <testcase name="RCA_Sched_Scalability_DataCreation.script" assertions="1" status="failure"  time="1.483">
+    <failure type="FAILURE" message="STUnknownMessage ERROR: No Such Function: 'location' -- Execution Time 0:00:01 RCA_Sched_Scalability_DataCreation.script" />
+  </testcase>
+ </testsuite>
+</testsuites>

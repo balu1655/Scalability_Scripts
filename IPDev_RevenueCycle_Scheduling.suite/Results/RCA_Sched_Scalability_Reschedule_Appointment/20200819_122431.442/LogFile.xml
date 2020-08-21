@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<testsuites>
+ <testsuite name="RCA_Sched_Scalability_Reschedule_Appointment_script" package="IPDev_RevenueCycle_Scheduling.suite" timestamp="2020-08-19 12:24:31 +0530"
+ tests="1"  failures="0" errors="0" time="42.501000">
+  <properties>
+   <property name="RunDate" value="2020-08-19 12:24:31 +0530"/>
+   <property name="Status" value="Aborted"/>
+  </properties>
+  <testcase name="RCA_Sched_Scalability_Reschedule_Appointment.script" assertions="1" status="failure"  time="42.454">
+    <failure type="FAILURE" message="See main script" />
+  </testcase>
+ </testsuite>
+</testsuites>

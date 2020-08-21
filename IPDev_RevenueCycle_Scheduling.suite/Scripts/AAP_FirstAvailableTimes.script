@@ -1,0 +1,690 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Appointments Perspective   
+//Add Appointment Plus tab - After Click on FirstAvailable button, First Available Times window pops up
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction that validates an appointment type and the component appointment(s) display in the top left corner of the 'First Available Times' window. If there are no component appointment types then this will log no additional appointment types.
+//
+//Variable:
+//strAppointmentType: String containing the desired appointment type  [REQUIRED]
+//lstComponentAppt: String containing the desired component appointment types. There there are no subsequent appointment types then leave blank. [REQUIRED]
+//bolValidateRequirement: is the boolen set to False used in the test script for requirement validation [INTERNAL]
+//srApptInfo: Search Rectangle for where the initial appointments display (top left of the screen) [INTERNAL]
+//
+//Note: 
+//This searches off of the full appointment name. 
+//////////////////////////////////////////////////////////////////////////
+to subReadApptFA strAppointment, lstComponentAppt
+	Log "Call Handler:  subReadApptFA"
+	
+	//Initialize Variables
+	Set bolBadData to "False"
+	
+	//Based off of the protocol appointment sets the search rectangle below it
+	Set srApptInfo to imagelocation(text:strAppointmentType, validwords: strAppointmentType, searchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant"))
+	Set the SearchRectangle to (srApptInfo+(-140,-2),srApptInfo+(245,600))
+	
+	if lstComponentAppt equal "" then
+		Log "No additional appointment types are listed."
+		//Repeat will go through the list of appointments
+	else if lstComponentAppt not equal "" then
+		repeat with each item of lstComponentAppt
+			if ImageFound(2,(text:lstComponentAppt, validwords: lstComponentAppt)) then
+				Log "Appointment Type: " & strAppointmentType & "; "& "Component Appointment(s): " & lstComponentAppt
+				Set bolBadData to False
+			Else
+				LogWarning lstComponentAppt & " does not display. - Check Build"
+				Set bolBadData to True
+				Exit repeat
+			End if
+		end repeat
+	End if
+	
+	//Sets the search rectangle to empty
+	Set the SearchRectangle to empty
+	
+	Log "End Handler: subReadApptFA"
+end subReadApptFA
+
+//////////////////////////////////////////////////////////////////////////////
+//This function will return the confirmed appointment date and time. The date and time are read from the First Available TImes window.
+//Function to select the avilable slot[first slot] in first available dialog. It will click on the first appointment type in the list and slot is automaticaly selected
+//Variable returned: apptDate, apptTime
+///////////////////////////////////////////////////////////////////////////
+to funSelectFirstAvailableSuggestion
+	Log "Call Handler: funSelectFirstAvailableSuggestion"	
+	if ImageFound(20, "AAP_FirstAvailableTimes/label_FirstAvailable_Times") and imagefound(20,"AAP_FirstAvailableTimes/button_Cancel") then
+		if imagefound(20,"AAP_FirstAvailableTimes/Nosuggestedtimeswerefound") then
+			logerror "No Suggested times were found. Please either adjust the search criteria or fix your build."
+			exit handler
+		end if
+		Click ImageRectangle("AAP_FirstAvailableTimes/label_FirstAvailable_Times").bottomRight+(600,90)
+		wait 5
+		Set retrieveFASuggestionData to readtext((ImageRectangle("AAP_FirstAvailableTimes/label_FirstAvailable_Times").bottomLeft+(44,140),ImageRectangle("AAP_FirstAvailableTimes/label_FirstAvailable_Times").bottomRight + (190,170)),EnableAggressiveTextExtraction:On,EnableLocalContrast:On)
+		set apptDate to item 1 of retrieveFASuggestionData&item 2 of retrieveFASuggestionData&","&item 3 of retrieveFASuggestionData
+		set apptTimeRange to item 4 of retrieveFASuggestionData
+		set count to 1
+		repeat until Character count of apptTimeRange equal "-"
+			if character count of apptTime equal "-" then
+				log apptTime
+			else
+				insert  character count of apptTimeRange into apptTime 
+				set count to count+"1"
+			end if
+		end repeat
+		//trim brackets from time
+		set apptTime to trimAll(apptTime,",")
+		set apptTime to trimAll(apptTime,"(")
+		set apptTime to trimAll(apptTime,")")
+		set apptTime to formattedTime("%I:%M %p",apptTime) //retrieve time
+		return (apptDate,apptTime)
+	end if
+	log "End handler: funSelectFirstAvailableSuggestion"
+end funSelectFirstAvailableSuggestion
+
+//////////////////////////////////////////////////////////////////////////////
+//Function that will select the first avbailable suggestion in FA for a protocol appointment.  It will return the date and time of the suggestion.
+//Variables:
+//numChildren - Number of component appointments of the protocol appointment
+//lstAppts - Return value of all appointments suggestion selected.  Format is ((Date1,Time1),(Date2,Time2)).  
+//Date format is DDD MMM ##, YYYY
+//Time format is ##:## AA
+//////////////////////////////////////////////////////////////////////////////
+to funSelectFASuggestionProtocol numChildren
+	Log "Call Handler: funSelectFASuggestionProtocol"	
+	if ImageFound(20, "AAP_FirstAvailableTimes/label_FirstAvailable_Times") and imagefound(20,"AAP_FirstAvailableTimes/button_Cancel") then
+		if imagefound(5,"AAP_FirstAvailableTimes/Nosuggestedtimeswerefound") then
+			logerror "No Suggested times were found. Please either adjust the search criteria or fix your build."
+			exit handler
+		end if
+		Click ImageRectangle("AAP_FirstAvailableTimes/label_FirstAvailable_Times").bottomRight+(600,90)
+		wait 5
+		set srFirstAvailable to ImageRectangle( "AAP_FirstAvailableTimes/label_FirstAvailable_Times")+(364,102,1054,155)
+		repeat numChildren times
+			set tempDateTime to readtext(srFirstAvailable+(7,4,-580,-42))
+			log tempDateTime
+			replace "." with comma in tempDateTime
+			replace the last comma in tempDateTime with "&"
+			split tempDateTime by "&"
+			put formattedTime("%a %b %d, %Y",item 1 of tempDateTime) into item 1 of tempDateTime
+			put trimstart(item 2 of tempDateTime) into item 2 of tempDateTime
+			split item 2 of tempDateTime by " "
+			log item 2 of tempDateTime
+			put item 1 of item 2 of tempDateTime&&item 2 of item 2 of tempDateTime into item 2 of tempDateTime
+			put formattedTime("%I:%M %p",item 2 of tempDateTime) into item 2 of tempDateTime
+			//delete the first comma from item 1 of tempDateTime
+			set temp2 to (Date:item 1 of tempDateTime,Time:item 2 of tempDateTime)
+			Insert (temp2) nested after lstAppts
+			set srFirstAvailable to srFirstAvailable+(0,71,0,71)
+			
+		end repeat
+	else 
+		LogError "First Available dialog did not appear"
+	end if
+	return lstAppts
+	
+end funSelectFASuggestionProtocol
+
+
+//////////////////////////////////////////////////////////////////////////////
+//Subfunction to validate the Appointment Type Cards show on the First Available Times window.
+//The appointment type cards display in the upper left corner of the First Available Times window.
+//Variable: 
+//      lstAppointmentType: List of Appointment Types that display in the Appointment Type Cards [Required] 
+//      srFATitleHeader: The image location of the header's words 'First Available Times' [Internal]
+//      srAppointmentTypeCardSection: The search rectangle used to encapsulate the Appointment Type Cards [Internal]
+//     searchCriteriaForAppointmentType: Sets the search criteria for the appointment type to.. the current appointment type, textdifference of 1, search rectangle of srAppointmentTypeCardSection [Internal]
+
+//Note: this was not validated with Protocol Appointment Types [possibly future enhancement]
+//////////////////////////////////////////////////////////////////////////////
+To subValidateAppointmentCardShows lstAppointmentType
+	log "Call handler: subValidateAppointmentCardShows"
+	Set srFATitleHeader to imagelocation(text:"First Available Times", validwords: "First Available Times", searchRectangle:("MiscScreenUtilities").Screen_Part("TopHalf"))
+	if srFATitleHeader is empty then
+		throw "UnableToFindText", "Cannot find 'First Available Times' heading"
+	end if
+	
+	//Sets the Search Rectangle to the upper left for the Appointments column
+	Set srAppointmentTypeCardSection to (srFATitleHeader+(-630,-100),srFATitleHeader+(-245,375))
+	
+	//put FoundImageLocation() into AppointmentsHeader
+	Repeat with each item of lstAppointmentType
+		Set strCurrentAppointmentType to item repeatIndex() of lstAppointmentType
+		Set searchCriteriaForAppointmentType to (text: strCurrentAppointmentType, validwords: strCurrentAppointmentType, textdifference: 1, SearchRectangle: srAppointmentTypeCardSection, waitfor: 2)
+		if ImageFound(searchCriteriaForAppointmentType)  then
+			Log "The following displays. Appointment Type: " & strCurrentAppointmentType
+			next repeat
+		else
+			click (srFATitleHeader+(-559,151))
+			ScrollWheelDown 4
+			wait 1
+			if ImageFound(searchCriteriaForAppointmentType)
+				Log "Appointment Type found After Scrolling: " & strCurrentAppointmentType
+				ScrollWheelUp 4
+				wait 1
+				next repeat
+			else    
+				throw "UnableToFindText", "Unable to find appointment type in First Available Appointment Type Cards: " & strCurrentAppointmentType
+			end if
+		End if
+	End Repeat	
+	log "End handler: subValidateAppointmentCardShows"
+End subValidateAppointmentCardShows
+
+/////////////////////////////////////////////////////////////////////////////
+(*Subfunction to validate the 'Set Time Between' button label displays between two given appointment types on the Appointment Type Cards for the First Available Times window.
+This will validate the label when the label is changed.
+
+Variables:
+criteriaTimeBetweenButtonText - Container for the label text and the appointment types searching between.
+criteriaTimeBetweenButtonTextClick.timeBetweenButtonText - The text that can appear for the label on the 'Set Time Between' button for the Appointment Type Cards. (example: "5 Minutes", "3 Hours") [Required]
+criteriaTimeBetweenButtonTextClick.firstAppointmentType - The name of the appointment type that will appear first (prior to the label you are reading) [Required]
+criteriaTimeBetweenButtonTextClick.secondAppointmentType - The name of the appointment type that will appear second (after the label you are reading) [Required]
+criteriaTimeBetweenButtonTextClick.shouldClick - If set to True then this will click the Set Time Between button inbetween the desired appointment types. If set to False, a random value or empty then no action will be taken (it will just log if the message displays there). [Optional]
+*)
+/////////////////////////////////////////////////////////////////////////////
+To validateSetTimeBetweenButtonTextClick criteriaTimeBetweenButtonTextClick
+	log "Call handler: validateSetTimeBetweenButtonTextClick"
+	//Initialize Variables
+	Set strSetTimeBetweenButtonText to criteriaTimeBetweenButtonTextClick.timeBetweenButtonText
+	Set strAppointmentType1 to criteriaTimeBetweenButtonTextClick.firstAppointmentType
+	Set strAppointmentType2 to criteriaTimeBetweenButtonTextClick.secondAppointmentType
+	Set shouldClick to criteriaTimeBetweenButtonTextClick.shouldClick
+	
+	Set srFATitleHeader to imagelocation(text:"First Available Times", validwords: "First Available Times", searchRectangle:("MiscScreenUtilities").Screen_Part("TopHalf"))
+	if srFATitleHeader is empty then
+		throw "UnableToFindText", "Cannot find 'First Available Times' heading"
+	end if
+	
+	//Sets the Search Rectangle to the upper left for the Appointment Type Cards list
+	Set srAppointmentSection to (srFATitleHeader+(-630,-100),srFATitleHeader+(-245,375))
+	
+	//Repeat Find the coordinates of the first appointment type
+	Repeat One Time And Continue While not ImageFound(text:strAppointmentType1, validCharacters: strAppointmentType1, textdifference: 1, searchRectangle: srAppointmentSection)
+		click (srFATitleHeader+(-559,151))
+		ScrollWheelDown 4
+		wait 1
+		If repeatIndex() > 6 
+			LogError "Did not detect the appointment type: " & strAppointmentType1 & "  Failing script." 
+			Exit All
+		End If
+		if imagefound(4,(text:strAppointmentType1, validCharacters: strAppointmentType1,  textdifference: 1, searchRectangle: srAppointmentSection)) 
+		then 
+			put FoundImageLocation() into locAppointmentType1
+			Set currentlocAppointmentType1point1 to (locAppointmentType1+(-130,6))	
+			Exit Repeat
+		Else
+			Log "Unable to find the first Appointment Type location."
+		End If
+	End Repeat
+	click (srFATitleHeader+(-559,151))
+	ScrollWheelUp 4
+	wait 1
+	
+	//Repeat Find the coordinates of the second appointment type
+	Repeat One Time And Continue While not ImageFound(text: strAppointmentType2, validCharacters: strAppointmentType2, textdifference: 1, searchRectangle: srAppointmentSection)
+		click (srFATitleHeader+(-559,151))
+		ScrollWheelDown 4
+		wait 1
+		If repeatIndex() > 6 
+			LogError "Did not detect the appointment type: " & strAppointmentType2 & "  Failing script." 
+			Exit All
+		End If
+		if imagefound(4,(text:strAppointmentType2, validCharacters: strAppointmentType2, textdifference: 1, searchRectangle: srAppointmentSection)) 
+		then 
+			put FoundImageLocation() into locAppointmentType2
+			Set currentlocAppointmentType2point1 to (locAppointmentType2+(180,2))	
+			Exit Repeat
+		Else
+			Log "Unable to find the second Appointment Type location."
+		End If
+	End Repeat
+	
+	//Validate the message between appointment types
+	If imagefound(text:strSetTimeBetweenButtonText, validWords:"*", textdifference:2, searchRectangle:(currentlocAppointmentType1point1,currentlocAppointmentType2point1)) then
+		log "Between appointment types " & strAppointmentType1 & " & " & strAppointmentType2 & " The following message displays: " & strSetTimeBetweenButtonText
+	else
+		throw "UnableToFindText", "Unable to find message between appointment types: " & strAppointmentType1 & " & " &  strAppointmentType2
+	End If
+	
+	//Validate that ability to click on the Set Time Between button if desired
+	If shouldClick then
+		Click(text:strSetTimeBetweenButtonText, validWords:"*", textdifference:2, searchRectangle:(currentlocAppointmentType1point1,currentlocAppointmentType2point1))
+	Else
+		Log "No action taken to click on the Set Time Between button."
+	End If
+	log "End handler: validateSetTimeBetweenButtonTextClick"
+End validateSetTimeBetweenButtonTextClick
+
+/////////////////////////////////////////////////////////////////////////////
+(*
+Subfunction to validate the 'Set Time Between' Pop up displays for the Appointment Type Cards for the First Available Times window
+Validation includes: Title/Header, Label, Unit, Unit Measure, Save, Cancel
+
+Variables:
+lblTimeBetweenAppointments: The label 'Time between appointments (6 days max):'. Hard coded as a change in labeling will be a requirement change. [Required]
+numValue: The number for the number of units.  Default value is 0. (example: 6 in 6 hours, 2 in 2 days )[Required]
+validationCriteria.numValue: The container for the number of units
+srUnitLoc: Holds the location of the field for the number of units. [Internal]
+strUnitOfMeasure: The measurement for the unit. Default is Minutes. (example: Minutes, Hours, Days)[Required]
+validationCriteria.strUnitOfMeasure: The container for the strUnitOfMeasure
+srUnitMeasureLoc: Holds the location of the field for the measure of units. [Internal]
+
+srFATitleHeader: Holds the location of the 'First Available Times' text in the title bar [Internal]
+srSetTimeBetweenArea: Sets the search rectangle to the Appointment Type cards for the Set Time Between pop up [Internal]
+srSetTimeBetween: Holds the location of the 'Set Time Between' pop up title [Internal]
+srSetTimeBetweenPopUp: Sets the search rectangle to the 'Set Time Between' pop up [Internal]
+
+Note: 
+This handler only validates the Set Time Between pop up and does not populate anything.
+The user must put in the desired default values as this could change depending on the initial validation of the pop up verses validating the saved values of the pop up.
+*)
+/////////////////////////////////////////////////////////////////////////////
+To subValidateSetTimeBetweenPopUp validationCriteria
+	log "Call handler: subValidateSetTimeBetweenPopUp"
+	//Initialize Variables
+	Set numValue to validationCriteria.numValue
+	Set strUnitOfMeasure to validationCriteria.strUnitOfMeasure
+	Set lblTimeBetweenAppointments to "Time between appointments (6 days max.):"
+	
+	//Set the SearchRectangles
+	//Find the location of the First Available Times title bar
+	Set srFATitleHeader to imagelocation(text:"First Available Times", validwords: "First Available Times", searchRectangle:("MiscScreenUtilities").Screen_Part("TopHalf"))
+	
+	//The space in which the Set Time Between pop up can display
+	Set srSetTimeBetweenArea to (srFATitleHeader+(-400,90),srFATitleHeader+(-20,425))
+	
+	//Find the header "Set Time Between"
+	If  imagefound(text:"Set Time Between", validwords: "Set Time Between", searchRectangle: srSetTimeBetweenArea) then
+		Set srSetTimeBetween to imagelocation(text:"Set Time Between", validwords: "Set Time Between", searchRectangle: srSetTimeBetweenArea)
+	Else
+		throw "UnableToFindText", "Cannot find 'Set Time Between' pop up."
+	End If
+	
+	
+	//Using the Title of the pop up set the search rectangle to the whole pop up
+	Set srSetTimeBetweenPopUp to (srSetTimeBetween+(-110,8),srSetTimeBetween+(245,175))
+	
+	//Find the Label 'Time between appointments....''
+	If imagefound(2,(text: lblTimeBetweenAppointments, validwords: lblTimeBetweenAppointments, searchRectangle:srSetTimeBetweenPopUp)) then
+		//Take the location of the label to find the search rectangle
+		put imagelocation(text: lblTimeBetweenAppointments, validwords: lblTimeBetweenAppointments) into locTimeBetweenAppointments
+		
+		//Set Unit Locations
+		Set srUnitLoc to (locTimeBetweenAppointments+(-175,16),locTimeBetweenAppointments+(-40,46))
+		Set srUnitMeasureLoc to (locTimeBetweenAppointments+(-30,-6),locTimeBetweenAppointments+(145,84))
+		
+		//Validate unit value [default 0]
+		If imagefound(text:numValue, validcharacters: numValue, SearchRectangle:srUnitLoc) then
+			Log "The default value displays.  Default value: " & numValue
+		Else
+			Log "The default value does not display. Expected default value: " & numValue
+		End If
+		
+		//Validate unit of measure [default Minutes]
+		If imagefound(text:strUnitOfMeasure, validcharacters: strUnitOfMeasure, SearchRectangle:srUnitMeasureLoc) then
+			Log "The default value displays.  Default unit of measure: " & strUnitOfMeasure
+			moveTo text: strUnitOfMeasure
+			Click text: strUnitOfMeasure
+			moveTo (text:"Hours")
+			moveTo (text:"Days", caseSensitive:True, SearchRectangle:srUnitMeasureLoc)
+			moveTo (text:"Minutes")
+		Else
+			Log "The default unit of measure does not display. Expected default value: " & strUnitOfMeasure
+		End If
+		
+		Click (text:"Set Time Between", validCharacters: "Set Time Between", searchRectangle: srSetTimeBetweenArea)
+		
+		If imagefound(text:"Save", validcharacters: "Save", SearchRectangle:srSetTimeBetweenPopUp) then
+			Log "The Save button displays"
+		Else
+			Log "The Save button cannot be found."
+		End If
+		
+		If imagefound(text:"Cancel", validcharacters: "Cancel", SearchRectangle:srSetTimeBetweenPopUp) then
+			Log "The Cancel button displays"
+		Else
+			Log "The Cancel button cannot be found."
+		End If
+	else 		
+		throw "UnableToFindText", "Unable to find the description label."
+	End If
+	log "End handler: subValidateSetTimeBetweenPopUp"
+End subValidateSetTimeBetweenPopUp
+
+//////////////////////////////////////////////////////////////////////////////
+(* Subfunction to populate the Set Time Between pop up with the desired unit and unit of measure then to click either Save or Cancel.
+
+
+Variables:
+lblTimeBetweenAppointments: The label 'Time between appointments (6 days max):'. Hard coded as a change in labeling will be a requirement change. [Required]
+numValue: The number for the desired number of units.(i.e. 1, 2, 3, 4)  [Required]
+populationCriteria.numValue: The container for the number of units
+strUnitOfMeasure: The measurement for the unit. (example: Minutes, Hours, Days).  You can also use "M" for 
+Minute, "H" for Hours or "D" for Days. [Required]
+populationCriteria.strUnitOfMeasure: The container for the strUnitOfMeasure
+strAction: The desired action to take on the Set Time Between pop up (i.e. Save or Cancel) [Required]
+populationCriteria.strAction: The container for the strAction
+
+srFATitleHeader: Holds the location of the 'First Available Times' text in the title bar [Internal]
+srSetTimeBetweenArea: Sets the search rectangle to the Appointment Type cards for the Set Time Between pop up [Internal]
+srSetTimeBetween: Holds the location of the 'Set Time Between' pop up title [Internal]
+srSetTimeBetweenPopUp: Sets the search rectangle to the 'Set Time Between' pop up [Internal] 
+
+Note:
+This handler is to populate the Set Time Between pop up but does not validate the fields on it.
+*)
+//////////////////////////////////////////////////////////////////////////////
+to subPopulateSetTimeBetweenPopUp populationCriteria
+	log "Call handler: subPopulateSetTimeBetweenPopUp"
+	//Initialize Variables
+	Set numValue to populationCriteria.numValue
+	Set strUnitOfMeasure to populationCriteria.strUnitOfMeasure
+	Set strAction to populationCriteria.strAction
+	Set lblTimeBetweenAppointments to "Time between appointments"
+	
+	//Set the SearchRectangles
+	//Find the location of the First Available Times title bar
+	Set srFATitleHeader to imagelocation(text:"First Available Times", validwords: "First Available Times", searchRectangle:("MiscScreenUtilities").Screen_Part("TopHalf"))
+	
+	//The space in which the Set Time Between pop up can display
+	Set srSetTimeBetweenArea to (srFATitleHeader+(-400,90),srFATitleHeader+(-20,425))
+	
+	//Find the header "Set Time Between"
+	If  imagefound(text:"Set Time Between", validwords: "Set Time Between", searchRectangle: srSetTimeBetweenArea) then
+		Set srSetTimeBetween to imagelocation(text:"Set Time Between", validwords: "Set Time Between", searchRectangle: srSetTimeBetweenArea)
+	Else
+		throw "UnableToFindText", "Cannot find 'Set Time Between' pop up."
+	End If
+	
+	//Using the Title of the pop up set the search rectangle to the whole pop up
+	Set srSetTimeBetweenPopUp to (srSetTimeBetween+(-110,8),srSetTimeBetween+(245,175))
+	
+	//Find the Label 'Time between appointments....''
+	If imagefound(2,(text: lblTimeBetweenAppointments, validCharacters: lblTimeBetweenAppointments, searchRectangle:srSetTimeBetweenPopUp)) then
+		//Take the location of the label to find the search rectangle
+		put imagelocation(text: lblTimeBetweenAppointments, validwords: lblTimeBetweenAppointments) into locTimeBetweenAppointments
+		
+		//Set the value location
+		Set srValueLoc to (locTimeBetweenAppointments+(-90,27))
+		
+		//Set the Unit of Measure location
+		Set srUnitMeasureLoc to (locTimeBetweenAppointments+(100,30))
+		
+		//Enter the desired Value [1, 2, 3, 4, etc..]
+		Click srValueLoc
+		TypeText controlkey, "a"
+		TypeText numValue
+		
+		//Enter the desired unit of measure [default Minutes, Hours, Days]
+		Click srUnitMeasureLoc
+		TypeText strUnitOfMeasure
+		
+		Click (text:"Set Time Between", validCharacters: "Set Time Between", searchRectangle: srSetTimeBetweenArea)
+		
+		//The Action buttons can be hidden by the drop down so it takes a second to refresh
+		Repeat One Time And Continue While not ImageFound(text: strAction, searchrectangle: srSetTimeBetweenPopUp)
+			If repeatIndex() > 6 
+				LogError "Failing Script. Did not detect the following button: " & strAction
+				Exit All
+			End If
+			if imagefound(4,(text: strAction, searchrectangle: srSetTimeBetweenPopUp)) 			then 
+				Click (text: strAction)
+			Else
+				Log "Unable to find the desired button action: " & strAction
+			End If
+		End Repeat
+	else 
+		throw "UnableToFindText", "Unable to find the description label."
+	End If
+	log "End handler: subPopulateSetTimeBetweenPopUp"
+End subPopulateSetTimeBetweenPopUp
+
+//////////////////////////////////////////////////////////////////////////////
+///Function for the First Available Times window to select the available options in the 'Search By' drop down. 
+//If 'Date Range' is selected then it will put in the first and last date. 
+//If 'Schedule In' is selected then it will put in the quantity and the unit. It reads under the first calendar field for if there is a invalid date.
+//
+//Parameters: 
+//searchBy: Container for the different Search By options
+//searchBy.dateRange: Container used to store the configuration if the desired approach is for "Date Range" option to be used.  *If this container is empty, then the "Date Range" option will not be used.
+//searchBy.dateRange.dateStart: The date that the beginning of the range to search for appointemnts should be.
+//searchBy.dateRange.dateEnd: The date that the end of the range is set to when search for appointemnts.
+
+//searchBy.scheduleIn: Container used to store the configuration if the desired approach is for "Schedule In" option to be used. *If this container is empty, then the "Schedule In" option will not be used.
+//searchBy.scheduleIn.daysToScheduleFromNow: This property will be used in the "Schedule In" scenario to indicate how many days from now the appointment should be scheduled.
+//searchBy.scheduleIn.unitOfTimeUsed: This property will be used in the "Schedule In" screnario to indicate the unit of time used (days, weeks, months, years). 
+
+//Note: The dates need to be put in the following format mm/dd/yyyy
+//////////////////////////////////////////////////////////////////////////////
+to funSetSearchByValues searchValues
+	log "Call handler: funSetSearchByValues"
+	//Set the Search Rectangle based off of the 'Appointments' header
+	Set srApptInfo to imagelocation(text:"Appointments", validwords: "Appointments", searchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant"))
+	Set the SearchRectangle to (srApptInfo+(-70,-2),srApptInfo+(290,700))
+	
+	//Search for the 'Search By' drop down and click to expand
+	If imagefound(text: "Search By", validwords: "Search By") then
+		put FoundImageLocation() into strFieldNameLoc
+		Click (strFieldNameLoc) + (0, 30)
+		Log "Search By Value: " & searchValues
+		Click (text:searchValues.searchBy)
+		//Moves the mouse to collapse and finalize selected option
+		Click text:"Search By"
+	Else
+		Log "Unable to find the 'Search By' drop down."
+		return (wasSuccessful: false)
+	End if
+	
+	//Determines what to do depending on the SearchBy option selected
+	If searchBy.dateRange Is Not Empty then
+		//Uses the 'Search By' field name to click in the first date field
+		Click (strFieldNameLoc) + (0, 80)
+		
+		//Clears out the field and types in the date
+		TypeText (controlKey, "a") & DeleteKey
+		TypeText searchValues.dateRange.dateStart
+		
+		//Reads the text directly below the first date field
+		log ReadText(strFieldNameLoc + (-45, 82), strFieldNameLoc+(105, 115))
+		
+		//Uses the 'Search By' field name to click in the second date field
+		Click (strFieldNameLoc) + (170, 80)
+		//Clears out the field and types in the date
+		TypeText (controlKey, "a") & DeleteKey
+		TypeText  searchValues.dateRange.dateEnd
+		
+	else If searchBy.ScheduleIn Is Not Empty then
+		//Uses the 'Search By' field name to click in the first field (Number of days)
+		Click (strFieldNameLoc) + (0, 80)
+		TypeText (controlKey, "a") & DeleteKey
+		TypeText searchValues.searchBy.scheduleIn.daysToScheduleFromNow
+		
+		//Select the unit of measure (days, weeks, years)
+		Click (strFieldNameLoc) + (170, 80)
+		Click text:  searchValues.searchBy.scheduleIn.unitOfTimeUsed
+		Click text:"Search By"
+	Else
+		Log "Verify the option selected for the Search By drop down"
+		return (wasSuccessful: false)
+	End If
+	return (wasSuccessful: true)
+	log "End handler: funSetSearchByValues"
+end funSetSearchByValues
+
+//////////////////////////////////////////////////////////////////////////////
+///Function for the First Available Times window to read the Medicare Warning message under the Search By section.
+//Set the Search Rectangle based off of the 'Appointments' header on the First Available window
+//
+//Variables:
+//strMedicareMessage: A String containing the desired Medicare Message to be displayed [INTERNAL]
+//////////////////////////////////////////////////////////////////////////////
+to funReadMedicareMessage 
+	log "Call handler: funReadMedicareMessage"
+	//Set the Search Rectangle based off of the 'Appointments' header
+	Set srApptInfo to imagelocation(text:"Appointments", validwords: "Appointments", searchRectangle:("MiscScreenUtilities").Screen_Part("TopLeftQuadrant"))
+	Set the SearchRectangle to (srApptInfo+(-70,-2),srApptInfo+(290,700))
+	
+	//Uses the Search By label to determine the section to read
+	If imagefound(text: "Search By", validwords: "Search By") then
+		put FoundImageLocation() into strFieldNameLoc
+		
+		//Reads the text directly below the first date field
+		Put ReadText(strFieldNameLoc + (-44, 89), strFieldNameLoc+(300, 205)) into strMedicareMessage
+		
+		//Reads the warning icon as a "A", this is to remove that
+		delete first "A" from strMedicareMessage
+		
+		//Takes out the '/n' eggplant uses as new lines in the logs
+		replace every occurrence of return in strMedicareMessage with " " 
+		
+		Log strMedicareMessage
+		return (message: strMedicareMessage, wasSuccessful: true)
+	Else
+		Log "Unable to find the 'Search By' drop down."
+		return (wasSuccessful: false)
+	End if
+	log "End handler: funReadMedicareMessage"
+end funReadMedicareMessage
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//This function will return the confirmed appointment date and time from First Available Times in the following format: 3 letter day, 3 letter month, numerical day of the month, and 4 digit year (example: Wed Jan 16, 2019) The date and time are read from the First Available Times window in the upper left corner of the dialog.
+//The function is to select the first available slot and return the date and time in a Global Variable.
+//Variables: Global apptDate, Global apptTime
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+to funSelectFirstAvailableSelectDateTime 
+	Log "Call Handler: funSelectFirstAvailableSelectDateTime"
+	if ImageFound(15, "AAP_FirstAvailableTimes/label_FirstAvailable_Times")
+		Click ImageRectangle("AAP_FirstAvailableTimes/label_FirstAvailable_Times").bottomRight+(600,90)
+		wait 5
+		Set retrieveFASuggestionData to readText((ImageRectangle("AAP_FirstAvailableTimes/label_FirstAvailable_Times").bottomLeft+(12,90),ImageRectangle("AAP_FirstAvailableTimes/label_FirstAvailable_Times").bottomRight + (190,170)),EnableAggressiveTextExtraction:On,EnableLocalContrast:On)
+		
+		replace "." with "," in retrieveFASuggestionData
+		set apptTimeRange to item 4 of retrieveFASuggestionData 
+		set apptMonth to item 2 of retrieveFASuggestionData
+		Delete first " " from apptMonth
+		set apptYear to item 3 of retrieveFASuggestionData
+		set apptDate to apptMonth&","&apptYear 
+		set apptTimeRange to TrimStart(apptTimeRange," ")
+		set count to 1
+		repeat until Character count of apptTimeRange equal "-"
+			if character count of apptTime equal "-" then
+				return apptTime
+			else
+				insert  character count of apptTimeRange into apptTime 
+				set count to count+"1"
+			end if
+		end repeat
+		//trim brackets from time
+		set apptTime to trimAll(apptTime,",")
+		set apptTime to trimAll(apptTime,"(")
+		set apptTime to trimAll(apptTime,")")	
+		
+		//This handler puts the variable into Global variables instead of just returning variables that is the difference from the one above.		
+		Put (apptDate) into Global apptDate
+		Put the time (apptTime) into Global apptTime	
+	end if
+	Log "End Handler: funSelectFirstAvailableSelectDateTime"
+end funSelectFirstAvailableSelectDateTime
+
+////////////////////////////////////////////////////////////////////////////////////
+//First Available Times Dialog
+//Function to select First Available Appointment Cards in Fuzzy Scheduling FA Workflow using exactly 3 appointment cards
+//Variables:
+//strAppointmentType - String variables of the appointment type on the appointment card
+//numCardPostion - Number of the position.  i.e. for the first card numCardPostion would be 1, second card numCardPostion would be 2
+////////////////////////////////////////////////////////////////////////////////////cw030848
+
+to funFAApptCard strAppointmentType,numCardPostion
+	Log "Start Handler: funFAApptCard "
+	
+	//Select First Appointment Card in the list of 3
+	if imagefound(20,imagename:"AAP_FirstAvailableTimes/label_FirstAvailable_Times",searchrectangle:("MiscScreenUtilities".Screen_Part("TopLeftQuadrant")))
+		set srApptCard to Foundimageinfo().imagerectangle+(-9,126,219,186)
+	end if
+	
+	if numCardPostion=1
+		if imagefound(text:strAppointmentType,DPI:144,SearchRectangle:(srApptCard)) then
+			return True
+		end if
+	end if
+	
+	//Select Second Appointment Card in the list of 3
+	If numCardPostion = 2 then
+		set srApptCard to srApptCard+(0,75,0,76)
+		if imagefound(text:strAppointmentType,DPI:144,SearchRectangle:(srApptCard)) then
+			click foundimagelocation()
+			return True
+		end if 
+	end if
+	
+	
+	//Select third appointment card in the list of 3
+	if numCardPostion >2
+		set srApptCard to srApptCard+(0,75,0,76)
+		
+		//Click the down arrow three times to displayed the last appointment card
+		click (imagename:"AAP_FirstAvailableTimes/image_ScrollDown",SearchRectangle:(srApptCard))
+		click (imagename:"AAP_FirstAvailableTimes/image_ScrollDown",SearchRectangle:(srApptCard))
+		click (imagename:"AAP_FirstAvailableTimes/image_ScrollDown",SearchRectangle:(srApptCard))
+		if imagefound(text:strAppointmentType,DPI:144,SearchRectangle:(srApptCard)) then
+			click foundimagelocation()
+			return True
+		end if 
+	end if
+	
+	Log "End Handler: funFAApptCard"
+	
+end funFAApptCard
+
+////////////////////////////////////////////////////////////////////////////////////
+//First Available Times Dialog - Function to verify Date/Time range in Fuzzy Scheduling FA Workflow
+//Variables:
+//listrange - the dates that need to validate in the First Available dialog when the grace period is selected
+////////////////////////////////////////////////////////////////////////////////////cw030848
+to funDateRange listrange
+	Log "Start Handler: funDateRange"
+	//Verifies the Date Range for each appointment card is dislayed
+	if imagefound(20,imagename:"AAP_FirstAvailableTimes/label_FirstAvailable_Times",searchrectangle:("MiscScreenUtilities".Screen_Part("TopLeftQuadrant")))
+		set srSearchBy to foundimageinfo().imagerectangle
+		if imagefound(text:"Search By",DPI:144,SearchRectangle:(srSearchBy)+(0,88,217,669))
+			set srSearchBy to foundimageinfo().imagerectangle
+			set srGracePeriod to srSearchBy+(-3,113,154,121)
+			set srDateRange to srSearchBy+(-3,64,246,80)
+		end if
+	end if
+	
+	if imagefound(imagename:"AAP_FirstAvailableTimes/image_CheckedBox",searchrectangle:(srGracePeriod))
+		log "Grace period selected"
+	else
+		if imagefound(imagename:"AAP_FirstAvailableTimes/image_UnCheckedBox",searchrectangle:(srGracePeriod))
+			click FoundImageLocation()
+		else
+			Log "Unable to include requested grace period.  The checkbox is not displayed, please ensure your build and prerequisites are correct." 
+		end if
+	end if
+	
+	repeat with each item of listrange
+		If imagefound(text:item repeatindex() of listrange,SearchRectangle:(srDateRange)) then
+			set outcome to True
+			Log outcome
+		else
+			return False
+		End If
+	end repeat
+	
+	return outcome
+	
+	Log "End Handler: funDateRange"
+end funDateRange
+
+
+
+
+
+
+
+
+
+

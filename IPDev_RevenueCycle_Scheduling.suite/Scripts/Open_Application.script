@@ -1,0 +1,24 @@
+﻿-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+(**
+Handler name:
+"Open_Application".run AppName
+
+Description: Opens run window, types application name and return key
+
+Input: AppName = The specific application name(including filename extension). Ex: "powerchart.exe"
+
+Expected Results: Application begins loading
+
+Author: BS046284
+**)
+to run AppName
+	//Opens run prompt window
+	typetext windowsKey & "r"
+	//Searches for image of the text "Open:" which is located inside of run prompt window
+	if imagefound(10,"Open_Applicaiton/Text_Open")
+		typetext AppName, returnKey
+	else
+		typetext AppName, returnKey
+		
+	end if
+end run

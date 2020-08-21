@@ -1,0 +1,62 @@
+﻿//////////////////////////////////////////////////////////
+//Handlers to help with various components of other handlers
+//////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////
+//Subfunction to validate required parameters of the calling handler have values
+//
+//This handler takes no explicit parameters and should be included at the beginning of every handler that takes in parameters
+//
+//When writing code to call this handler, call by passing in each required parameter from your handler, then passing a dummy string at the end of the call
+//
+//EXAMPLE:
+//"HandlerHelpers".subValidateParameters reqParam1, reqParam2, reqParam3, "t"
+//////////////////////////////////////////////////////////
+to subValidateRequiredParameters
+
+	log "Call handler: subValidateRequiredParameters"
+	
+	repeat with each item of parameterList()
+		
+		//Skip the last index of parameterList() which contains the dummy string
+		if it is the last item of parameterList()
+			//Skip
+			
+			//Log an error and exit all if there is a paramter that is required and empty
+		else if it is empty
+			
+			log parameterList()
+			logerror "No data input for required parameter."
+			exit all
+			
+		end if
+		
+	end repeat
+	
+	log "End handler: subValidateRequiredParameters"
+	
+end subValidateRequiredParameters
+
+/////////////////////////////////////////////////////////////////////
+//This function uses a textRectangle handler to find the text using increasing levels of validCharacters //and validWords. 
+//
+//Note:
+//Is is best when you are having issues finding certain words (i.e. a grid readout)
+//Example used with:
+//Script: AAP-EnterInformation >> Handler: funPatientDismissalDialog
+/////////////////////////////////////////////////////////////////////
+function textRectangle text, rectangle
+	if imageFound(text:text,  SearchRectangle: rectangle)
+		return ImageRectangle(text:text, SearchRectangle:rectangle)
+	else if imageFound(text:text, ValidCharacters:"*", SearchRectangle: rectangle)
+		LogWarning "Valid Characters required to identify text:" && text && "in" && readText(rectangle)
+		return ImageRectangle(text:text, ValidCharacters:"*", SearchRectangle:rectangle)
+	else  if imageFound(text:text, ValidWords:"*", SearchRectangle: rectangle)
+		LogWarning "Valid Words required to identify text:" && text && "in" && readText(rectangle)
+		return ImageRectangle(text:text,validWords:"*", SearchRectangle:rectangle)
+	else
+		LogWarning "Could not find text:" && text && "in" && readText(rectangle)
+		return ((0,0), (0,0))
+	end if
+end textRectangle
+

@@ -1,0 +1,68 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_ConfirmAppointment.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 08:54:36.121 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 08:54:36.602 +0530",
+				"message": "Using local data",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 08:54:36.679 +0530",
+				"message": "((domain:\"solm64\", password:\"cerner\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle3.55.21\\\\RevenueCycle.exe\", userName:\"regauto\"))",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 8,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_confirmappointment",
+				"timestamp": "2020-08-19 08:54:37.148 +0530",
+				"message": "(domain:\"solm64\", password:\"cerner\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle3.55.21\\\\RevenueCycle.exe\", userName:\"regauto\")",
+				"scriptName": "RCA_Sched_Scalability_ConfirmAppointment.script",
+				"handlerLine": 20,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_confirmappointment",
+				"timestamp": "2020-08-19 08:54:37.201 +0530",
+				"message": "(appointmentName:\"Recur_Data_Build\", comment:\"Test Comment\", confirmedDate:\"17-AUG-2020 08:00:00.00\", confirmedTime:\"\", location:\"RCA Reporting\", locationGroup:\"RegAuto Locations\", patientName:\"BASE, TEST123\", rescheduleReason:\"Patient Requested\", resource:\"Resource Group\", resourceGroup:\"Recur_Resource_Group1\", testDate:\"\", timeFrame:\"All Day\")",
+				"scriptName": "RCA_Sched_Scalability_ConfirmAppointment.script",
+				"handlerLine": 21,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_subrulesoftheroad",
+				"timestamp": "2020-08-19 08:54:38.013 +0530",
+				"message": "Remote Connection Unavailable",
+				"scriptName": "OpenApplication.script",
+				"handlerLine": 20,
+				"identifier": "Exception"
+			},
+		{
+				"handlerName": "on_killapplications",
+				"timestamp": "2020-08-19 08:54:38.340 +0530",
+				"message": "Remote Connection Unavailable",
+				"scriptName": "KillApplications.script",
+				"handlerLine": 6,
+				"identifier": "Exception"
+			},
+		{
+				"message": "(Duration:\"2.68\", Errors:\"1\", Exceptions:\"2\", StartTime:\"2020-08-19 08:54:36 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_ConfirmAppointment.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 08:54:38.828 +0530"
+			},
+		{
+				"message": "No Remote Connection typetext Error - Remote Connection Unavailable -- Execution Time 0:00:02 RCA_Sched_Scalability_ConfirmAppointment.script",
+				"identifier": "FAILURE",
+				"timestamp": "2020-08-19 08:54:39.293 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 08:54:36.146 +0530"
+}

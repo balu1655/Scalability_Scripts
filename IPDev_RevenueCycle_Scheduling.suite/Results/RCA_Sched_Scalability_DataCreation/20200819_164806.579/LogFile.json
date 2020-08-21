@@ -1,0 +1,43 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 16:48:06.593 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-19 16:48:07.300 +0530",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "Log",
+				"handlerLine": 5
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-19 16:48:07.358 +0530",
+				"message": "1",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_datacreation",
+				"timestamp": "2020-08-19 16:48:07.400 +0530",
+				"message": "IT",
+				"scriptName": "RCA_Sched_Scalability_DataCreation.script",
+				"handlerLine": 10,
+				"identifier": "Log"
+			},
+		{
+				"message": "(Duration:\"1.378\", Errors:\"0\", Exceptions:\"0\", StartTime:\"2020-08-19 16:48:06 +0530\", Successes:\"1\", TestCase:\"RCA_Sched_Scalability_DataCreation.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 16:48:07.995 +0530"
+			},
+		{
+				"message": "Execution Time 0:00:01 RCA_Sched_Scalability_DataCreation.script",
+				"identifier": "SUCCESS",
+				"timestamp": "2020-08-19 16:48:08.143 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 16:48:06.613 +0530"
+}

@@ -1,0 +1,60 @@
+{
+	"entries": [
+		{
+				"message": "Running RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"identifier": "START",
+				"timestamp": "2020-08-19 10:40:04.375 +0530"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 10:40:05.264 +0530",
+				"message": "Using local data",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 6,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_dataloader",
+				"timestamp": "2020-08-19 10:40:05.358 +0530",
+				"message": "((domain:\"ablgmprep\", password:\"system\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle\\\\RevenueCycle.exe\", userName:\"system\"))",
+				"scriptName": "RCA_Sched_Scalability_DataLoader.script",
+				"handlerLine": 8,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_checkin_appointment",
+				"timestamp": "2020-08-19 10:40:05.514 +0530",
+				"message": "((domain:\"ablgmprep\", password:\"system\", rcaPath:@\"C:\\\\Program Files\\\\Cerner\\\\RevenueCycle\\\\RevenueCycle.exe\", userName:\"system\"))",
+				"scriptName": "RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"handlerLine": 10,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_rca_sched_scalability_checkin_appointment",
+				"timestamp": "2020-08-19 10:40:05.569 +0530",
+				"message": "((appointmentName:\"scaleappt\", comment:\"Test Comment\", confirmedDate:\"00:00.0\", confirmedTime:\"\", location:\"RCA Reporting\", locationGroup:\"RegAuto Locations\", patientName:\"Test, Person\", rescheduleReason:\"Patient Requested\", resource:\"Resource Group\", resourceGroup:\"Recur_Resource_Group1\", testDate:\"\", timeFrame:\"All Day\"))",
+				"scriptName": "RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"handlerLine": 11,
+				"identifier": "Log"
+			},
+		{
+				"handlerName": "on_subrulesoftheroad",
+				"timestamp": "2020-08-19 10:40:08.641 +0530",
+				"message": "Searching For Image: OCR Error: Operation was aborted",
+				"scriptName": "OpenApplication.script",
+				"handlerLine": 2,
+				"identifier": "Exception"
+			},
+		{
+				"message": "(Duration:\"5.217\", Errors:\"1\", Exceptions:\"1\", StartTime:\"2020-08-19 10:40:04 +0530\", Successes:\"0\", TestCase:\"RCA_Sched_Scalability_CheckIn_Appointment.script\", Warnings:\"0\")",
+				"identifier": "EndTestCase",
+				"timestamp": "2020-08-19 10:40:09.608 +0530"
+			},
+		{
+				"message": "Execution Time 0:00:05 RCA_Sched_Scalability_CheckIn_Appointment.script",
+				"identifier": "ABORTED",
+				"timestamp": "2020-08-19 10:40:09.678 +0530"
+			}
+	],
+	"createdTimestamp": "2020-08-19 10:40:04.389 +0530"
+}

@@ -1,0 +1,134 @@
+﻿////////////////////////////////
+//Utility handlers for interacting with SUT screen
+/////////////////////////////////
+
+//////////////////////////////////////////////////////////////////
+//Functions to return search rectangle coordinates for quadrants and center of SUT screen
+//////////////////////////////////////////////////////////////////
+function funTopLeftRectangle
+
+	return (0,0,0.5 * RemoteScreenSize().x,0.5 * RemoteScreenSize().y)
+	
+end funTopLeftRectangle
+
+function funTopRightRectangle
+
+	return (0.5 * RemoteScreenSize().x,0,RemoteScreenSize().x,0.5 * RemoteScreenSize().y)
+	
+end funTopRightRectangle
+
+function funBottomLeftRectangle
+
+	return (0,0.5 * RemoteScreenSize().y,0.5 * RemoteScreenSize().x,RemoteScreenSize().y)
+	
+end funBottomLeftRectangle
+
+function funBottomRightRectangle
+
+	return (0.5 * RemoteScreenSize().x,0.5 * RemoteScreenSize().y,RemoteScreenSize().x,RemoteScreenSize().y)
+	
+end funBottomRightRectangle
+
+function funCenterRectangle
+
+	return (0.25 * RemoteScreenSize().x, 0.25 * RemoteScreenSize().y, 0.75 * RemoteScreenSize().x, 0.75 * RemoteScreenSize().y)
+	
+end funCenterRectangle
+
+//////////////////////////////////////////////////////////////////
+//Functions to return search rectangle coordinates for halves of SUT screen
+//////////////////////////////////////////////////////////////////
+function funTopRectangle
+
+	return (0,0,RemoteScreenSize().x,0.5 * RemoteScreenSize().y)
+	
+end funTopRectangle
+
+function funBottomRectangle
+
+	return (0,0.45 * RemoteScreenSize().y,RemoteScreenSize().x,RemoteScreenSize().y)
+	
+end funBottomRectangle
+
+function funLeftRectangle
+
+	return (0,0,0.5 * RemoteScreenSize().x,RemoteScreenSize().y)
+	
+end funLeftRectangle
+
+function funRightRectangle
+
+	return (0.5 * RemoteScreenSize().x,0,RemoteScreenSize().x,RemoteScreenSize().y)
+	
+end funRightRectangle
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//It will set the search rectangle based on input 
+//Varaiables:portion
+//portion:TopHalf,BottomHalf,LeftHalf,RightHalf,HorizontalMiddle,VerticalMiddle,TopLeftQuadrant,TopRightQuadrant,BottomLeftQuadrant,Center
+///////////////////////////////////////////////////////////////////////////-vr043596
+function Screen_Part portion
+	set screenPortions to {                   
+		TopHalf: ((0,0),(1,.5)),
+		BottomHalf: ((0,.5),(1,1)),
+		LeftHalf: ((0,0),(.5,1)),                    
+		RightHalf: ((.5,0),(1,1)),                 
+		HorizontalMiddle: ((0,.25),(1,.75)),                           
+		VerticalMiddle:((.25,0),(.75,1)),                 
+		TopLeftQuadrant:((0,0),(.5,.5)),                 
+		TopRightQuadrant:((.5,0),(1,.5)),                               
+		BottomLeftQuadrant:((0,.5),(.5,1)),                          
+		BottomRightQuadrant:((.5,.5),(1,1)),                       
+		Center:((.25,.25),(.75,.75)),          }              
+	set multiplier to screenPortions.(portion)
+	// Retrieves the value for the key in the property list. The name of the key is passed as a parameter into the function.              
+	// Error handling is needed in the event that an unrecognized parameter is passed to the function
+	if multiplier is empty then                            
+		throw "Parameter error", portion && "is not a recognized screen portion."
+	end if
+	return (the remoteScreenSize,the remotescreenSize) * multiplier
+End Screen_Part
+
+//////////////////////////////////////////////////////////////////////////////
+(* This handler is used to get the value for a label. 
+
+THESE ARE INTERNAL AND SHOULD NOT BE USED OUTSIDE OF THE SHARED REPO 
+
+Variables:
+label: The label that you are wanting to get the information below (i.e. Date, Resource, Time) [REQUIRED INTERNAL]
+apptInformationSR: The appointment information search Rectangle [REQUIRED INTERNAL]
+
+Example: Get the "Date" from the Appointment information on the Pending Confirmation section
+
+Called from:
+Appointments/AAP-PendingConfirmation
+         readPendingConfirmApptDetails
+*)
+//////////////////////////////////////////////////////////////////////////////
+to getValueForLabel label, apptInformationSR
+	Set labelRectangle to ImageRectangle(text:label, searchRectangle: apptInformationSR, validwords: "*")
+	Set valueRectangle to getSearchRectangleForValueOfLabel(labelRectangle)
+	return trim(ReadText(valueRectangle))
+end getValueForLabel
+
+//////////////////////////////////////////////////////////////////////////////
+(* This handler is used to set the SearchRectangle for a value of a label. 
+
+THESE ARE INTERNAL AND SHOULD NOT BE USED OUTSIDE OF THE SHARED REPO 
+
+Variables:
+labelImageRectangle: the search rectangle of the image [REQUIRED INTERNAL]
+
+Called from:
+Appointments/AAP-PendingConfirmation
+         readPendingConfirmApptDetails
+*)
+//////////////////////////////////////////////////////////////////////////////
+to getSearchRectangleForValueOfLabel labelImageRectangle
+	Set bottomOfLabel to item 4 in labelImageRectangle
+	Set valueSearchRectangle to labelImageRectangle + (-10, 0, 200, 25)
+	Set item 2 in valueSearchRectangle to (bottomOfLabel + 5)
+	return valueSearchRectangle
+end getSearchRectangleForValueOfLabel

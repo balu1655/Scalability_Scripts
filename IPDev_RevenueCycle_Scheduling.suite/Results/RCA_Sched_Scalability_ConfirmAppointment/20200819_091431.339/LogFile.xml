@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<testsuites>
+ <testsuite name="RCA_Sched_Scalability_ConfirmAppointment_script" package="IPDev_RevenueCycle_Scheduling.suite" timestamp="2020-08-19 09:14:31 +0530"
+ tests="1"  failures="0" errors="0" time="225.261000">
+  <properties>
+   <property name="RunDate" value="2020-08-19 09:14:31 +0530"/>
+   <property name="Status" value="Aborted"/>
+  </properties>
+  <testcase name="RCA_Sched_Scalability_ConfirmAppointment.script" assertions="1" status="error"  time="225.211">
+    <error type="Exception" message="Unable To Find Any Image On Screen &quot;Scalability_Captures/FirstAvailableTimes&quot; within 30.00 seconds" />
+  </testcase>
+ </testsuite>
+</testsuites>

@@ -1,0 +1,21 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Below script allows to close all applications belongs to Scheduling related applicantions and also the dependent applications
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Run_Window.openApplication "cmd"
+TypeText windowsKey & "r"
+TypeText controlKey & "a"
+TypeText deleteKey	
+TypeText "cmd"
+Typetext returnKey
+Wait 3// It will wait to stabilize the command prompt screen
+TypeText    "tskill Schapptbook" & returnKey
+TypeText    "tskill Schtools" & returnKey
+TypeText    "tskill Powerchart" & returnKey
+TypeText    "tskill RevenueCycle" & returnKey
+TypeText    "tskill PowerChart" & returnKey
+TypeText    "tskill RadExamMgmt" & returnKey
+TypeText    "tskill radtranscription" & returnKey
+TypeText    "taskkill /IM revenuecyclemaintenance.exe" & returnKey
+TypeText    "tskill cmd" & returnKey
+

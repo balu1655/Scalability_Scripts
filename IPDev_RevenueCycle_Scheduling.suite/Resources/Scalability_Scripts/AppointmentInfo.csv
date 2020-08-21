@@ -1,0 +1,2 @@
+﻿patientName,appointmentName,rescheduleReason,locationGroup,resourceGroup,resource,location,timeFrame,comment,confirmedDate,confirmedTime,testDate
+"Test, Person",scaleappt,Patient Requested,scaletest,ScaleTestRes,Resource,AF_Amer Fork,All Day,Test Comment,"Wed Aug 19, 2020",08:00 AM

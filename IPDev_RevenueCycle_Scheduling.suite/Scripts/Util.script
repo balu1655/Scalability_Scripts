@@ -1,0 +1,23 @@
+﻿-----------------------------------------------------------------------------------------------------------------------------------
+(*Handler Name: stepNumber
+Author:AS030767
+Input: 
+Output: Returns the step number and increments each time
+Description: Calculate step number to use in logs for steps and screen captures to name the file with*) 
+------------------------------------------------------------------------------------------------------------------------------------
+function stepNumber
+	Add 1 to Global stepNumber
+	return "Step " & Global stepNumber & ": "
+end stepNumber
+
+(*Handler Name: closeApplication
+Author:IN053316
+Input:  
+Output:
+Description: It's for the applications with two windows open for example Powerchart and Pmlaunch*)
+------------------------------------------------------------------------------------------------------------------------------------
+On closeApplication x
+	Repeat x times
+		TypeText AltKey,F4
+	End repeat	
+End closeApplication
